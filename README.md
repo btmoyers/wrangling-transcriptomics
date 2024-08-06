@@ -1,22 +1,14 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3260609.svg)](https://doi.org/10.5281/zenodo.3260609)
-[![Create a Slack Account with us](https://img.shields.io/badge/Create_Slack_Account-The_Carpentries-071159.svg)](https://slack-invite.carpentries.org/)
-[![Slack Status](https://img.shields.io/badge/Slack_Channel-dc--genomics-E01563.svg)](https://carpentries.slack.com/messages/C9N1K7DCY)
+# Wrangling Transcriptomics
 
-# Wrangling Genomics
-
-Lesson for quality control and wrangling genomics data. This repository is maintained by [Josh Herr](https://github.com/jrherr), [Ming Tang](https://github.com/crazyhottommy), and [Fotis Psomopoulos](https://github.com/fpsom).
-
-Amazon public AMI for this tutorial is "dataCgen-qc".
+Lesson for quality control and wrangling RNA-Seq data. This repository is modified from the [Data Carpentry](https://www.datacarpentry.org/) [Genomics Workshop](https://www.datacarpentry.org/genomics-workshop/) lesson on Wrangling Genomic Data.
 
 ## Background
 
-Wrangling genomics trains novice learners on a variant calling workflow. Participants will learn how to evaluate sequence quality and what to do if it is not good. We will then cover aligning reads to a genome, and calling variants, as well as discussing different file formats. Results will be visualized. Finally, we will cover how to automate the process by building a shell script.
-
-This lesson is part of the [Data Carpentry](https://www.datacarpentry.org/) [Genomics Workshop](https://www.datacarpentry.org/genomics-workshop/).
+Wrangling transcriptomics trains novice learners on a read counting workflow. Participants will learn how to evaluate sequence quality and what to do if it is not good. We will then cover aligning reads to a genome, and counting reads, as well as discussing different file formats. Results will be visualized. Finally, we will cover how to automate the process by building a shell script.
 
 ## Contribution
 
-- Make a suggestion or correct an error by [raising an Issue](https://github.com/datacarpentry/wrangling-genomics/issues).
+- Make a suggestion or correct an error by creating a pull request.
 
 ## Code of Conduct
 
@@ -24,11 +16,11 @@ All participants should agree to abide by the [Data Carpentry Code of Conduct](h
 
 ## Authors
 
-Wrangling genomics is authored and maintained by the [community](https://github.com/datacarpentry/wrangling-genomics/network/members).
+Wrangling transcriptomics is authored and maintained by Brook Moyers (btmoyers on Github)
 
 ## Citation
 
-Please cite as:
+This repo is modified from:
 
 Erin Alison Becker, Taylor Reiter, Fotis Psomopoulos, Sheldon John McKay, Jessica Elizabeth Mizzi, Jason Williams, … Winni Kretzschmar. (2019, June). datacarpentry/wrangling-genomics: Data Carpentry: Genomics data wrangling and processing, June 2019 (Version v2019.06.1). Zenodo. [http://doi.org/10.5281/zenodo.3260609](https://doi.org/10.5281/zenodo.3260609)
 
