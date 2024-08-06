@@ -1,99 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/01-background.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/01-background.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/02-quality-control.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/02-quality-control.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/03-trimming.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/03-trimming.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/04-variant_calling.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/04-variant_calling.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/05-automation.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/05-automation.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/404.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/404.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/CODE_OF_CONDUCT.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/CODE_OF_CONDUCT.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/LICENSE.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/aio.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/aio.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/discuss.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/discuss.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/images.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/images.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/index.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/index.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/01-background.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/01-background.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/02-quality-control.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/02-quality-control.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/03-trimming.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/03-trimming.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/04-variant_calling.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/04-variant_calling.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/05-automation.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/05-automation.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/404.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/404.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/CODE_OF_CONDUCT.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/CODE_OF_CONDUCT.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/LICENSE.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/aio.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/aio.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/discuss.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/discuss.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/images.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/images.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/index.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/index.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/instructor-notes.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/instructor-notes.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/key-points.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/key-points.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/profiles.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/profiles.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor/reference.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor/reference.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/instructor-notes.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/instructor-notes.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/key-points.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/key-points.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/profiles.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/profiles.html</loc>
   </url>
   <url>
-    <loc>https://datacarpentry.github.io/wrangling-genomics/reference.html</loc>
+    <loc>https://btmoyers.github.io/wrangling-transcriptomics/reference.html</loc>
   </url>
 </urlset>

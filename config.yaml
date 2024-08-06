@@ -8,32 +8,32 @@
 # lc: Library Carpentry
 # cp: Carpentries (to use for instructor training for instance)
 # incubator: The Carpentries Incubator
-carpentry: 'dc'
+carpentry: 'incubator'
 
 # Overall title for pages.
-title: 'Data Wrangling and Processing for Genomics'
+title: 'Data Wrangling and Processing for Transcriptomics'
 
 # Date the lesson was created (YYYY-MM-DD, this is empty by default)
-created: '2015-03-24'
+created: '2024-08-06'
 
 # Comma-separated list of keywords for the lesson
 keywords: 'software, data, lesson, The Carpentries'
 
 # Life cycle stage of the lesson
 # possible values: pre-alpha, alpha, beta, stable
-life_cycle: 'stable'
+life_cycle: 'pre-alpha'
 
 # License of the lesson materials (recommended CC-BY 4.0)
 license: 'CC-BY 4.0'
 
 # Link to the source repository for this lesson
-source: 'https://github.com/datacarpentry/wrangling-genomics'
+source: 'https://github.com/btmoyers/wrangling-transcriptomics'
 
 # Default branch of your lesson
 branch: 'main'
 
 # Who to contact if there are any issues
-contact: 'team@carpentries.org'
+contact: 'brook.moyers@gmail.com'
 
 # Navigation ------------------------------------------------
 #
@@ -80,6 +80,6 @@ profiles:
 # sandpaper and varnish versions) should live
 
 
-url: 'https://datacarpentry.github.io/wrangling-genomics'
+url: 'https://btmoyers.github.io/wrangling-transcriptomics'
 analytics: carpentries
 lang: en
