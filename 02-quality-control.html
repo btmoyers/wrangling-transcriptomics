@@ -507,7 +507,7 @@ moment.</p>
 installed. If you are using the Chimera then these <em>should</em> be
 preinstalled, but you’ll need to load some modules.</p>
 <p>Why do we need to load modules? Chimera is a shared resource used by
-many different people working on many diffeent types of projects. Not
+many different people working on many different types of projects. Not
 everybody needs to be able to use the same programs as each other, and
 if we had every program loaded at the same time it would potentially
 slow the chimera down and lead to conflicts between programs. Let’s take
@@ -515,10 +515,10 @@ a look at how many different modules exist on the chimera:</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> module avail</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="ex">$</span> clear</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> module avail</span></code></pre>
 </div>
+<p>That was a lot!! Remember you can use <code>clear</code> to calm your
+terminal down.</p>
 <div class="codewrapper sourceCode" id="cb9">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -596,7 +596,7 @@ directory</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/data/untrimmed_fastq/</span></code></pre>
 </div>
 <div id="exercise-1" class="callout challenge">
 <div class="callout-square">
@@ -723,16 +723,16 @@ will move these output files into a new directory within our
 <div class="codewrapper sourceCode" id="cb20">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/dc_workshop/results/fastqc_untrimmed_reads</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.zip ~/dc_workshop/results/fastqc_untrimmed_reads/</span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.html ~/dc_workshop/results/fastqc_untrimmed_reads/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/1_project/results/fastqc_untrimmed_reads</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.zip ~/1_project/results/fastqc_untrimmed_reads/</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.html ~/1_project/results/fastqc_untrimmed_reads/</span></code></pre>
 </div>
 <p>Now we can navigate into this results directory and do some closer
 inspection of our output files.</p>
 <div class="codewrapper sourceCode" id="cb21">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/results/fastqc_untrimmed_reads/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/results/fastqc_untrimmed_reads/</span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -758,11 +758,11 @@ top of your screen or the Cmd+t keyboard shortcut) and type:</p>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/Desktop/fastqc_html</span></code></pre>
 </div>
 <p>Now we can transfer our HTML files to our local computer using
-<code>scp</code>.</p>
+<code>scp</code>. Remember to replace the username with your own!</p>
 <div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> scp dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/<span class="pp">*</span>.html ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/<span class="pp">*</span>.html ~/Desktop/fastqc_html</span></code></pre>
 </div>
 <div id="note-on-using-zsh" class="callout">
 <div class="callout-square">
@@ -780,22 +780,17 @@ this problem the wildcard needs to be escaped with a “\”:</p>
 <div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> scp dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html</span></code></pre>
 </div>
 <p>Alternatively, you can put the whole path into quotation marks:</p>
 <div class="codewrapper sourceCode" id="cb25">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="ex">$</span> scp <span class="st">"dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html"</span> ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="ex">$</span> scp <span class="st">"your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html"</span> ~/Desktop/fastqc_html</span></code></pre>
 </div>
 </div>
 </div>
 </div>
-<p>As a reminder, the first part of the command
-<code>dcuser@ec2-34-238-162-94.compute-1.amazonaws.com</code> is the
-address for your remote computer. Make sure you replace everything after
-<code>dcuser@</code> with your instance number (the one you used to log
-in).</p>
 <p>The second part starts with a <code>:</code> and then gives the
 absolute path of the files you want to transfer from your remote
 computer. Do not forget the <code>:</code>. We used a wildcard
@@ -808,7 +803,7 @@ directory we just created <code>~/Desktop/fastqc_html</code>.</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>dcuser@chimera.umb.edu's password:
+<pre class="output" tabindex="0"><code>your.UMB.username@chimera.umb.edu's password:
 C1_S4_L001_R1_001_downsampled_fastqc.html     100%  626KB   7.4MB/s   00:00
 C1_S4_L001_R2_001_downsampled_fastqc.html     100%  627KB   9.1MB/s   00:00
 T1_S7_L001_R1_001_downsampled_fastqc.html     100%  629KB  10.9MB/s   00:00
@@ -912,12 +907,12 @@ positional bias within the reads.</li>
 <p>Now that we have looked at our HTML reports to get a feel for the
 data, let’s look more closely at the other output files. Go back to the
 tab in your terminal program that is connected to the chimera (the tab
-label will start with <code>dcuser@chimerahead</code>) and make sure you
-are in our results subdirectory.</p>
+label will start with <code>your.UMB.username@chimerahead</code>) and
+make sure you are in our results subdirectory.</p>
 <div class="codewrapper sourceCode" id="cb27">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/results/fastqc_untrimmed_reads/</span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/results/fastqc_untrimmed_reads/</span>
 <span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
@@ -1134,11 +1129,11 @@ samples</p>
 <p>by concatenating all of our <code>summary.txt</code> files into a
 single file using the <code>cat</code> command. We will call this
 <code>fastqc_summaries.txt</code> and move it to
-<code>~/dc_workshop/docs</code>.</p>
+<code>~/1_project/docs</code>.</p>
 <div class="codewrapper sourceCode" id="cb40">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="ex">$</span> cat <span class="pp">*</span>/summary.txt <span class="op">&gt;</span> ~/dc_workshop/docs/fastqc_summaries.txt</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="ex">$</span> cat <span class="pp">*</span>/summary.txt <span class="op">&gt;</span> ~/1_project/docs/fastqc_summaries.txt</span></code></pre>
 </div>
 <div id="exercise-3" class="callout challenge">
 <div class="callout-square">
@@ -1164,7 +1159,7 @@ test(s) did those samples fail?</p>
 <div class="codewrapper sourceCode" id="cb41">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/docs</span>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/docs</span>
 <span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a><span class="ex">$</span> grep FAIL fastqc_summaries.txt</span></code></pre>
 </div>
 <div class="codewrapper">
