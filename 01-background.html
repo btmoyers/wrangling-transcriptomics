@@ -365,7 +365,7 @@ transcriptome of a sample by sequencing RNA molecules.</p>
 <p><strong>Key Applications:</strong> - Gene expression profiling -
 Differential Gene Expression - Discovery of novel transcripts - Analysis
 of alternative splicing events - Study of non-coding RNAs</p>
-<figure><img src="./fig/RNA_Seq.png" alt="RNA Sequencing" class="figure mx-auto d-block"><div class="figcaption">RNA Sequencing</div>
+<figure><img src="./fig/RNA_Seq.png" alt="pre-spliced mRNA is spliced, sequenced, and aligned to a genome" class="figure mx-auto d-block"><div class="figcaption">RNA Sequencing</div>
 </figure></div>
 <div class="section level4">
 <h4 id="rna-seq-workflow">RNA-Seq Workflow<a class="anchor" aria-label="anchor" href="#rna-seq-workflow"></a></h4>
@@ -381,7 +381,7 @@ to the ends of the cDNA fragments.</li>
 <li>
 <strong>Sequencing:</strong> Following amplification, the RNA-Seq
 library is ready for sequencing.</li>
-</ul><figure><img src="./fig/RNA_Seq_workflow.png" alt="Workflow Diagram" class="figure mx-auto d-block"><div class="figcaption">Workflow Diagram</div>
+</ul><figure><img src="./fig/RNA_Seq_workflow.png" alt="Total RNA is extracted from cells, RNA types can be isolated, then these are reverse-transcribed into cDNA, adapters added, then sequenced" class="figure mx-auto d-block"><div class="figcaption">RNA-Seq Workflow Diagram</div>
 </figure></div>
 </div>
 <div class="section level3">
@@ -412,8 +412,8 @@ the amount of fluorescence measured at each sequence-specific location
 is directly proportional to the amount of mRNA with complementary
 sequence present in the sample analyzed (relative not absolute
 expression)</li>
-</ul><figure><img src="./fig/microArray1.png" alt="MicroArray vs RNA-Seq" class="figure mx-auto d-block"><div class="figcaption">MicroArray vs RNA-Seq</div>
-</figure><figure><img src="./fig/microarray2.png" alt="MicroArray vs RNA-Seq" class="figure mx-auto d-block"><div class="figcaption">MicroArray vs RNA-Seq</div>
+</ul><figure><img src="./fig/microArray1.png" alt="Visualization of microarrays from hybridization to imaging to the whole array" class="figure mx-auto d-block"><div class="figcaption">MicroArray</div>
+</figure><figure><img src="./fig/microarray2.png" alt="Two possible microarray workflows" class="figure mx-auto d-block"><div class="figcaption">MicroArray vs RNA-Seq</div>
 </figure><ul><li>The upper panel illustrates the two channel technology while the
 lower panel illustrates the single channel technology.</li>
 <li>The experiment is designed to compare the mRNA expression between
@@ -446,7 +446,7 @@ the ones we have been working with so far.</p>
 <ul><li><code>L1_R1_CCAAT_XXX.fastq</code></li>
 <li><code>L1_R2_CCAAT_XXX.fastq</code></li>
 </ul></li>
-</ul><figure><img src="./fig/fastq.png" alt="Sequencing Platforms" class="figure mx-auto d-block"><div class="figcaption">Sequencing Platforms</div>
+</ul><figure><img src="./fig/fastq.png" alt="Diagram of fastq format" class="figure mx-auto d-block"><div class="figcaption">Fastq format</div>
 </figure></div>
 </div>
 <div class="section level3">
@@ -458,16 +458,17 @@ discovery</li>
 <li>
 <strong>De Novo Assembly:</strong> When no reference genome is
 available</li>
-</ul><figure><img src="./fig/Major_Themes.png" alt="Sequencing Platforms" class="figure mx-auto d-block"><div class="figcaption">Sequencing Platforms</div>
+</ul><figure><img src="./fig/Major_Themes.png" alt="Three ways to analyze RNA-Seq data" class="figure mx-auto d-block"><div class="figcaption">Sequencing Platforms</div>
 </figure></div>
 <div class="section level3">
 <h3 id="data-quality-control">Data Quality Control<a class="anchor" aria-label="anchor" href="#data-quality-control"></a></h3>
+<p>You’ll learn all of these steps in the next set of episodes.</p>
 <p><strong>Quality Assessment:</strong> Evaluate read library quality
 using tools like FastQC.</p>
 <p><strong>Filtering and Trimming:</strong> - Remove low-quality bases
 from reads. - Filter out low-quality reads and sequence repeats. -
 Remove short reads (&lt; 20bp).</p>
-<p><img src="./fig/QC.png" alt="Sequencing Platforms" class="figure"><img src="./fig/trimming.png" alt="Sequencing Platforms" class="figure"></p>
+<p><img src="./fig/QC.png" alt="Quality control visuals" class="figure"><img src="./fig/trimming.png" alt="Removing unwanted or low-quality sequence" class="figure"></p>
 </div>
 <div class="section level3">
 <h3 id="alignment-to-reference-genome">Alignment to Reference Genome<a class="anchor" aria-label="anchor" href="#alignment-to-reference-genome"></a></h3>
@@ -477,7 +478,7 @@ Remove short reads (&lt; 20bp).</p>
 <strong>Short Sequence Aligners:</strong> BWA, Bowtie2</li>
 <li>
 <strong>RNA-Seq Specific:</strong> TopHat2, HISAT2, STAR</li>
-</ul><figure><img src="./fig/alignment.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
+</ul><figure><img src="./fig/alignment.png" alt="How RNA-Seq data are aligned" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
 </figure></div>
 </div>
 <div class="section level3">
@@ -485,7 +486,7 @@ Remove short reads (&lt; 20bp).</p>
 <p>We will be using this program for alignment, because it has a short
 processing time, simple quantification method (read counts), and
 differential analysis has low false positives.</p>
-<figure><img src="./fig/hisat2_workflow.png" alt="hisat2 Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">hisat2 Alignment Workflow</div>
+<figure><img src="./fig/hisat2_workflow.png" alt="hisat2 will identify alternative splice forms" class="figure mx-auto d-block"><div class="figcaption">hisat2 Alignment Workflow</div>
 </figure><div class="section level4">
 <h4 id="hisat2-is-splicing-aware">HISAT2 is splicing aware<a class="anchor" aria-label="anchor" href="#hisat2-is-splicing-aware"></a></h4>
 <ul><li>Unlike DNA alignment, RNA-Seq reads may span across introns due to
@@ -496,7 +497,7 @@ index files)</li>
 <li>Runs significantly faster than Bowtie2 and uses ~8Gb of memory</li>
 <li>On 100 million reads, it takes about 1 hour to finish the alignment
 process.</li>
-</ul><figure><img src="./fig/splice_aware.png" alt="Splice-aware alignment" class="figure mx-auto d-block"><div class="figcaption">Splice-aware alignment</div>
+</ul><figure><img src="./fig/splice_aware.png" alt="Multiple mRNA molecules can be spliced from the same transcribed sequence" class="figure mx-auto d-block"><div class="figcaption">Splice-aware alignment</div>
 </figure></div>
 <div class="section level4">
 <h4 id="rna-seq-hisat2-output">RNA-Seq: HISAT2 output<a class="anchor" aria-label="anchor" href="#rna-seq-hisat2-output"></a></h4>
@@ -510,7 +511,7 @@ process.</li>
 <li>Unmapped reads</li>
 <li>Properly paired reads</li>
 </ul></li>
-</ul><figure><img src="./fig/sam_file.png" alt="Typical hisat2 output (sam formatted)" class="figure mx-auto d-block"><div class="figcaption">Typical hisat2 output (sam formatted)</div>
+</ul><figure><img src="./fig/sam_file.png" alt="Typical hisat2 output in sam format" class="figure mx-auto d-block"><div class="figcaption">Typical hisat2 output (sam formatted)</div>
 </figure></div>
 </div>
 <div class="section level3">
@@ -522,11 +523,11 @@ meta-features).</li>
 <li>It also outputs stat info for the overall summarization
 results.</li>
 </ul><pre><code>featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
-<figure><img src="./fig/count_table.png" alt="Table of the number of counts of each gene" class="figure mx-auto d-block"><div class="figcaption">Table of the number of counts of each gene</div>
+<figure><img src="./fig/count_table.png" alt="Typical featureCounts output" class="figure mx-auto d-block"><div class="figcaption">Table of the number of counts of each gene</div>
 </figure></div>
 <div class="section level3">
 <h3 id="edger">edgeR<a class="anchor" aria-label="anchor" href="#edger"></a></h3>
-<figure><img src="./fig/hisat2_workflow3.png" alt="Differential Expression Analysis" class="figure mx-auto d-block"><div class="figcaption">Differential Expression Analysis</div>
+<figure><img src="./fig/hisat2_workflow3.png" alt="Now the workflow moves from bash to R" class="figure mx-auto d-block"><div class="figcaption">Differential Expression Analysis</div>
 </figure><p>edgeR is a Bioconductor R package that implements statistical methods
 based on generalized linear models (glms), suitable for multi-factor
 experiments of any complexity. edgeR can be applied to differential
@@ -535,7 +536,7 @@ design.</p>
 <p><strong>Code Example</strong> (note that this written in the language
 R):
 <code>design &lt;- model.matrix(~treatment)   CPM &lt;- cpm(counts[2:ncol(counts)])   y &lt;- DGEList(counts=x, group=treatment)   y &lt;- calcNormFactors(y)   fit &lt;- glmQLFit(new.y, new.design, robust=TRUE)   qlf &lt;- glmQLFTest(fit)   tt &lt;- topTags(qlf)   summary(decideTests(qlf))   plotMD(qlf)</code></p>
-<figure><img src="./fig/edgeR.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
+<figure><img src="./fig/edgeR.png" alt="edgeR output shows differentially expressed gene table and a volcano plot" class="figure mx-auto d-block"><div class="figcaption">Example edgeR output</div>
 </figure></div>
 <section><h2 class="section-heading" id="rna-seq-experimental-planning">RNA-Seq Experimental Planning<a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a>
 <a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a></h2>
@@ -714,9 +715,9 @@ sources of variability.</p></li>
 <ul><li>If you are processing samples in different batches, you can
 randomize the order of sample processing within each batch to avoid
 systematic errors.</li>
-</ul><figure><img src="./fig/experimental_design.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
-</figure></li>
-</ul></div>
+</ul></li>
+</ul><figure><img src="./fig/experimental_design.png" alt="Example case-control experimental design" class="figure mx-auto d-block"><div class="figcaption">Experimental Design</div>
+</figure></div>
 <div class="section level3">
 <h3 id="confounding-factors-and-batch-effects">Confounding Factors and Batch Effects<a class="anchor" aria-label="anchor" href="#confounding-factors-and-batch-effects"></a></h3>
 <ul><li>Confounding factors are variables that can influence the outcome of
