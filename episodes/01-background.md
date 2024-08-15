@@ -1,7 +1,7 @@
 ---
 title: Introduction and Experimental Planning Considerations for RNA-Seq
 teaching: 60
-exercises: 15
+exercises: 10
 ---
 
 ::::::::::::::::::::::::::::::::::::::: objectives
@@ -24,9 +24,9 @@ exercises: 15
 
 #### What is RNA-Seq?
 
-- RNA Sequencing (RNA-Seq) is a powerful technology used to analyze the transcriptome of a sample by sequencing RNA molecules.
+RNA Sequencing (RNA-Seq) is a powerful technology used to analyze the transcriptome of a sample by sequencing RNA molecules.
 
-- **Key Applications:**
+**Key Applications:**
   - Gene expression profiling
   - Differential Gene Expression
   - Discovery of novel transcripts
@@ -34,6 +34,7 @@ exercises: 15
   - Study of non-coding RNAs
 
 ![RNA Sequencing](./fig/RNA_Seq.png)
+
 #### RNA-Seq Workflow
 
 - **RNA Extraction:** RNA is extracted from the biological material of choice (e.g., cells, tissues).
@@ -45,18 +46,13 @@ exercises: 15
 
 ### Sequencing on Illumina Platforms
 
-#### Illumina Sequencing
+Illumina sequencing uses Sequencing by Synthesis (SBS) technology where nucleotides are incorporated into a growing DNA strand and the sequence is determined by the order of incorporation. 
 
-- Illumina sequencing uses Sequencing by Synthesis (SBS) technology where nucleotides are incorporated into a growing DNA strand and the sequence is determined by the order of incorporation.
+Key Illumina Platforms:
 
-#### Key Illumina Platforms
-
-- **NovaSeq:** High-throughput suitable for large-scale studies
-- **NextSeq:** Flexible, ideal for smaller labs
-
-#### Output
-
-- Output is typically in the form of FASTQ files, exactly like the ones we have been working with so far. 
+**MiSeq:** Older, still sometimes used for RNA-Seq or amplicon sequencing
+**NovaSeq:** High-throughput suitable for large-scale studies
+**NextSeq:** Flexible, ideal for smaller labs
 
 ### DNA MicroArray (Older Technology)
 
@@ -68,7 +64,8 @@ exercises: 15
 
 ![MicroArray vs RNA-Seq](./fig/microArray1.png)
 
-![MicroArray vs RNA-Seq](./fig/microArray2.png)
+![MicroArray vs RNA-Seq](./fig/microarray2.png)
+
 - The upper panel illustrates the two channel technology while the lower panel illustrates the single channel technology.
 - The experiment is designed to compare the mRNA expression between two conditions( normal vs. disease). 
 mRNA  is extracted. In the top panel, the normal and disease mRNA are labeled with two different dyes, mixed and then hybridized on the same array. After washing, the array is scanned at two different wavelengths to yield two images
@@ -78,10 +75,7 @@ mRNA  is extracted. In the top panel, the normal and disease mRNA are labeled wi
 
 #### RNA-Seq Advantages
 
-- Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcriptome, including novel transcripts and alternative splicing events.
-
-
-### RNA-Seq: Output Files
+Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcriptome, including novel transcripts and alternative splicing events. The output is typically in the form of FASTQ files, exactly like the ones we have been working with so far.
 
 #### Fastq File Format
 
@@ -102,21 +96,19 @@ mRNA  is extracted. In the top panel, the normal and disease mRNA are labeled wi
 
 ### Data Quality Control
 
-- **Quality Assessment:** Evaluate read library quality using tools like FastQC.
-- **Filtering and Trimming:**
+**Quality Assessment:** Evaluate read library quality using tools like FastQC.
+
+**Filtering and Trimming:**
   - Remove low-quality bases from reads.
   - Filter out low-quality reads and sequence repeats.
   - Remove short reads (< 20bp).
 
 ![Sequencing Platforms](./fig/QC.png)
 ![Sequencing Platforms](./fig/trimming.png)
-### Software
-
-- Recommended: `trime_galore`, Galaxy
 
 ### Alignment to Reference Genome
 
-### Alignment Protocols
+#### Alignment Protocols
 
 - **Short Sequence Aligners:** BWA, Bowtie2
 - **RNA-Seq Specific:** TopHat2, HISAT2, STAR
@@ -125,11 +117,9 @@ mRNA  is extracted. In the top panel, the normal and disease mRNA are labeled wi
 
 ### HISAT2
 
-![Alignment Workflow](./fig/hisat2_workflow.png)
-- Short processing time.
-- Simple quantification method (Counts).
-- Differential analysis has low false positives.
+We will be using this program for alignment, because it has a short processing time, simple quantification method (read counts), and differential analysis has low false positives.
 
+![hisat2 Alignment Workflow](./fig/hisat2_workflow.png)
 
 #### HISAT2 is splicing aware
 - Unlike DNA alignment, RNA-Seq reads may span across introns due to differences in splicing.
@@ -138,7 +128,7 @@ mRNA  is extracted. In the top panel, the normal and disease mRNA are labeled wi
 - Runs significantly faster than Bowtie2 and uses ~8Gb of memory
 - On 100 million reads, it takes about 1 hour to finish the alignment process.
 
-![Alignment Workflow](./fig/splice_aware.png)
+![Splice-aware alignment](./fig/splice_aware.png)
 
 #### RNA-Seq: HISAT2 output
 ```
@@ -154,7 +144,7 @@ hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_k
   - Unmapped reads
   - Properly paired reads
 
-![Alignment Workflow](./fig/sam_file.png)
+![Typical hisat2 output (sam formatted)](./fig/sam_file.png)
 
 ### featureCounts
 
@@ -165,20 +155,14 @@ hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_k
 ```
 featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam
 ```
-![Alignment Workflow](./fig/count_table.png)
+![Table of the number of counts of each gene](./fig/count_table.png)
 
 ### edgeR
-![Alignment Workflow](./fig/hisat2_workflow3.png)
+![Differential Expression Analysis](./fig/hisat2_workflow3.png)
 
-- edgeR is a Bioconductor R package  that implements statistical methods based on generalizedlinear models (glms), suitable for multifactor experiments of any complexity. 
-- edgeR can be applied to differential expression at the gene, exon, transcript or tag level for any design.
-![Alignment Workflow](./fig/experimental_design.png)
+edgeR is a Bioconductor R package that implements statistical methods based on generalized linear models (glms), suitable for multi-factor experiments of any complexity. edgeR can be applied to differential expression at the gene, exon, transcript or tag level for any design.
 
-### edgeR Workflow
-
-- edgeR is a Bioconductor R package that implements statistical methods based on generalized linear models (GLMs), suitable for multifactor experiments.
-
-- **Code Example:**
+**Code Example** (note that this written in the language R):
   ```
   design <- model.matrix(~treatment)
   CPM <- cpm(counts[2:ncol(counts)])
