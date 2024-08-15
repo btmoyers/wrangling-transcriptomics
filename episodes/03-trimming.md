@@ -84,10 +84,8 @@ Input may also be in FASTA format. Compressed input and output is supported and 
 ```
 
 Plus a lot more options.
-This output shows us that we must first specify whether we have paired end (`PE`) or single end (`SE`) reads.
-Next, we specify what flag we would like to run. For example, you can specify `threads` to indicate the number of
-processors on your computer that you want cutadapt to use. In most cases using multiple threads (processors) can help to run the trimming faster. These flags are not necessary, but they can give you more control over the command. The flags are followed by positional arguments, meaning the order in which you specify them is important.
-In paired end mode, cutadapt expects the two input files, and then the names of the output files. These files are described below. While, in single end mode, cutadapt will expect 1 file as input, after which you can enter the optional settings and lastly the name of the output file.
+
+In paired end mode, cutadapt expects the two input files (R1 and R) after the names of the output files given after the options `-o` and `-p`. These files are described below. 
 
 | option         | meaning                                                                                                      | 
 | -------------- | ------------------------------------------------------------------------------------------------------------ |
