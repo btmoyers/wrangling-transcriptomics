@@ -1,11 +1,12 @@
 ---
-title: Experimental Planning Considerations for RNA-Seq
-teaching: 10
-exercises: 5
+title: Introduction and Experimental Planning Considerations for RNA-Seq
+teaching: 60
+exercises: 15
 ---
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
+- Learn about the history, current status, and a typical analysis workflow of gene expression research.
 - How do we design useful RNA-Seq experiments?
 - Understand the data set through metadata.
 
@@ -13,19 +14,188 @@ exercises: 5
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
+- What is RNA-Seq?
 - What data are we using?
 - Why is this experiment important?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-## Background
+### RNA Sequencing Overview
 
-Thoughtful experimental design is the foundation of a successful RNA-Seq study, leading to robust and reproducible results.
+#### What is RNA-Seq?
+
+- RNA Sequencing (RNA-Seq) is a powerful technology used to analyze the transcriptome of a sample by sequencing RNA molecules.
+
+- **Key Applications:**
+  - Gene expression profiling
+  - Differential Gene Expression
+  - Discovery of novel transcripts
+  - Analysis of alternative splicing events
+  - Study of non-coding RNAs
+
+![RNA Sequencing](./fig/RNA_Seq.png)
+#### RNA-Seq Workflow
+
+- **RNA Extraction:** RNA is extracted from the biological material of choice (e.g., cells, tissues).
+- **Library Preparation:** The RNA is converted to complementary DNA (cDNA) by reverse transcription
+- **Adapter Ligation:** Sequencing adaptors are ligated to the ends of the cDNA fragments.
+- **Sequencing:** Following amplification, the RNA-Seq library is ready for sequencing.
+
+![Workflow Diagram](./fig/RNA_Seq_workflow.png)
+
+### Sequencing on Illumina Platforms
+
+#### Illumina Sequencing
+
+- Illumina sequencing uses Sequencing by Synthesis (SBS) technology where nucleotides are incorporated into a growing DNA strand and the sequence is determined by the order of incorporation.
+
+#### Key Illumina Platforms
+
+- **NovaSeq:** High-throughput suitable for large-scale studies
+- **NextSeq:** Flexible, ideal for smaller labs
+
+#### Output
+
+- Output is typically in the form of FASTQ files, exactly like the ones we have been working with so far. 
+
+### DNA MicroArray (Older Technology)
+
+- DNA microarrays can simultaneously measure the expression level of thousands of genes within a particular mRNA sample
+- The key physicochemical process involved in microarrays is DNA hybridization. Two DNA strands hybridize if they are complementary to each other, according to the Watson-Crick rules (A-T, C-G)
+- mRNA is extracted from tissues or cells, reversed-transcribed and labeled with a dye (usually fluorescent), and hybridized on the array
+- The next step is to generate an image using laser-induced fluorescent imaging
+- The principle behind the quantification of expression levels is that the amount of fluorescence measured at each sequence-specific location is directly proportional to the amount of mRNA with complementary sequence present in the sample analyzed (relative not absolute expression)
+
+![MicroArray vs RNA-Seq](./fig/microArray1.png)
+
+![MicroArray vs RNA-Seq](./fig/microArray2.png)
+- The upper panel illustrates the two channel technology while the lower panel illustrates the single channel technology.
+- The experiment is designed to compare the mRNA expression between two conditions( normal vs. disease). 
+mRNA  is extracted. In the top panel, the normal and disease mRNA are labeled with two different dyes, mixed and then hybridized on the same array. After washing, the array is scanned at two different wavelengths to yield two images
+- In the bottom panel B (single channel), each sample is labeled with the same fluorescent dye, but independently hybridized on different arrays.
+- Affymetrix GeneChip: oligonucleotide, single-channel array
+- Terminology: "probe" is the nucleotide sequence that is attached to the microarray surface. “target” in microarray experiments refers to what is hybridized to the probes.
+
+#### RNA-Seq Advantages
+
+- Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcriptome, including novel transcripts and alternative splicing events.
+
+
+### RNA-Seq: Output Files
+
+#### Fastq File Format
+
+- **Location on Cluster:** `/project/PI-groupname/project_name/`
+- **Filenames:**
+  - `L1_R1_CCAAT_XXX.fastq`
+  - `L1_R2_CCAAT_XXX.fastq`
+
+![Sequencing Platforms](./fig/fastq.png)
+
+### Central Data Analysis Themes
+
+- **Mapping to Transcriptome:** No novel transcript discovery
+- **Mapping to Genome**
+- **De Novo Assembly:** When no reference genome is available
+
+![Sequencing Platforms](./fig/Major_Themes.png)
+
+### Data Quality Control
+
+- **Quality Assessment:** Evaluate read library quality using tools like FastQC.
+- **Filtering and Trimming:**
+  - Remove low-quality bases from reads.
+  - Filter out low-quality reads and sequence repeats.
+  - Remove short reads (< 20bp).
+
+![Sequencing Platforms](./fig/QC.png)
+![Sequencing Platforms](./fig/trimming.png)
+### Software
+
+- Recommended: `trime_galore`, Galaxy
+
+### Alignment to Reference Genome
+
+### Alignment Protocols
+
+- **Short Sequence Aligners:** BWA, Bowtie2
+- **RNA-Seq Specific:** TopHat2, HISAT2, STAR
+
+![Alignment Workflow](./fig/alignment.png)
+
+### HISAT2
+
+![Alignment Workflow](./fig/hisat2_workflow.png)
+- Short processing time.
+- Simple quantification method (Counts).
+- Differential analysis has low false positives.
+
+
+#### HISAT2 is splicing aware
+- Unlike DNA alignment, RNA-Seq reads may span across introns due to differences in splicing.
+- Usually 35% of reads will span multiple exons
+- HISAT2 is a splice aware aligner (based on Bowtie2, uses many genome index files)
+- Runs significantly faster than Bowtie2 and uses ~8Gb of memory
+- On 100 million reads, it takes about 1 hour to finish the alignment process.
+
+![Alignment Workflow](./fig/splice_aware.png)
+
+#### RNA-Seq: HISAT2 output
+```
+hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_known_splice_sites.txt -1 ../trim_galore_out/JRN008_CGATGT_L001_R1_001_val_1.fq -2 ../trim_galore_out/JRN008_CGATGT_L001_R2_001_val_2.fq -S ./hisat2_out/JRN008_CGATGT_L001.sam
+```
+
+- Output:
+  - SAM / BAM  alignment files
+  - Software: SAMtoold
+  - Contain statistics:
+  - Uniquely mapped reads
+  - Reads with multiple alignment
+  - Unmapped reads
+  - Properly paired reads
+
+![Alignment Workflow](./fig/sam_file.png)
+
+### featureCounts
+
+- featureCounts takes as input SAM/BAM files and an annotation file as input.
+- It outputs numbers of reads assigned to features (or meta-features). 
+- It also outputs stat info for the overall summarization results.
+
+```
+featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam
+```
+![Alignment Workflow](./fig/count_table.png)
+
+### edgeR
+![Alignment Workflow](./fig/hisat2_workflow3.png)
+
+- edgeR is a Bioconductor R package  that implements statistical methods based on generalizedlinear models (glms), suitable for multifactor experiments of any complexity. 
+- edgeR can be applied to differential expression at the gene, exon, transcript or tag level for any design.
+![Alignment Workflow](./fig/experimental_design.png)
+
+### edgeR Workflow
+
+- edgeR is a Bioconductor R package that implements statistical methods based on generalized linear models (GLMs), suitable for multifactor experiments.
+
+- **Code Example:**
+  ```
+  design <- model.matrix(~treatment)
+  CPM <- cpm(counts[2:ncol(counts)])
+  y <- DGEList(counts=x, group=treatment)
+  y <- calcNormFactors(y)
+  fit <- glmQLFit(new.y, new.design, robust=TRUE)
+  qlf <- glmQLFTest(fit)
+  tt <- topTags(qlf)
+  summary(decideTests(qlf))
+  plotMD(qlf)
+  ```
+  
+  ![Alignment Workflow](./fig/edgeR.png)
 
 ## RNA-Seq Experimental Planning
 
-  - Proper experimental design ensures that the data generated is reliable, reproducible, and has the signal strength to draw meaningful biological results.
-  - Key aspects include selecting appropriate replicates, collecting detailed metadata, and considering sources of variability.
+Thoughtful experimental design is the foundation of a successful RNA-Seq study, leading to robust and reproducible results. Proper experimental design ensures that the data generated is reliable, reproducible, and has the signal strength to draw meaningful biological results. Key aspects include selecting appropriate replicates, collecting detailed metadata, and considering sources of variability.
 
 ## The data
 
