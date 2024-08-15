@@ -1296,12 +1296,12 @@ directory</p>
 </div>
 </div>
 <p>FastQC can accept multiple file names as input, and on both zipped
-and unzipped files, so we can use the *.fastq* wildcard to run FastQC on
+and unzipped files, so we can use the *.fastq wildcard to run FastQC on
 all of the FASTQ files in this directory.</p>
 <div class="codewrapper sourceCode" id="cb15">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">$</span> fastqc <span class="pp">*</span>.fastq<span class="pp">*</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">$</span> fastqc <span class="pp">*</span>.fastq</span></code></pre>
 </div>
 <p>You will see an automatically updating output message telling you the
 progress of the analysis. It will start like this:</p>
@@ -1337,12 +1337,69 @@ Approx 95% complete for V1_S1_L001_R2_001_downsampled.fastq
 Analysis complete for V1_S1_L001_R2_001_downsampled.fastq
 $</code></pre>
 </div>
-<p>The FastQC program has created several new files within our
-<code>data/untrimmed_fastq/</code> directory.</p>
+<div id="exercise-2" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<div id="exercise-2" class="callout-inner">
+<h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-2"></a>
+</h3>
+<div class="callout-content">
+<p>We did this directly on the command line, and it worked pretty
+quickly (in part because we only have six files that have been
+downsampled to only 5% of the original files). Usually for a task like
+this we will want to use a slurm script. Turn your fastqc command into a
+script and run it using <code>sbatch</code>.</p>
+<p>Hint: You’ll need to load the module within the script and include
+<code>sbatch</code> options.</p>
+</div>
+</div>
+</div>
+<div id="accordionSolution3" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
+  <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
+</button>
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">$</span> nano fastqc.sh</span></code></pre>
+</div>
+<pre><code>#!/bin/bash
+
+#SBATCH --job-name=fastqc # you can give your job a name
+#SBATCH --nodes 1 # the number of processors or tasks
+#SBATCH --cpus-per-task=2
+#SBATCH --account=itcga # our account
+#SBATCH --reservation=ITCGA_AUG2024 # this gives us special access during the workshop
+#SBATCH --time=1:00:00 # the maximum time for the job
+#SBATCH --mem=4gb # the amount of RAM
+#SBATCH --partition=itcga # the specific server in chimera we are using
+#SBATCH --error=%x-%A.err   # a filename to save error messages into
+#SBATCH --output=%x-%A.out  # a filename to save any printed output into
+
+# module load
+module load fastqc-0.11.9-gcc-10.2.0-osi6pqc
+
+# run fastqc
+fastqc *.fastq</code></pre>
+<div class="codewrapper sourceCode" id="cb20">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> sbatch fastqc.sh</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The FastQC program has created several new files within our
+<code>data/untrimmed_fastq/</code> directory.</p>
+<div class="codewrapper sourceCode" id="cb21">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1367,8 +1424,7 @@ $</code></pre>
 <span><span class="va">V1_S1_L001_R2_001_downsampled_fastqc.zip</span></span></code></pre>
 </div>
 <p>For each input FASTQ file, FastQC has created a <code>.zip</code>
-file and a</p>
-<p><code>.html</code> file. The <code>.zip</code> file extension
+file and a <code>.html</code> file. The <code>.zip</code> file extension
 indicates that this is actually a compressed set of multiple output
 files. We will be working with these output files soon. The
 <code>.html</code> file is a stable webpage displaying the summary
@@ -1376,19 +1432,19 @@ report for each of our samples.</p>
 <p>We want to keep our data files and our results files separate, so we
 will move these output files into a new directory within our
 <code>results/</code> directory.</p>
-<div class="codewrapper sourceCode" id="cb20">
+<div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/1_project/results/fastqc_untrimmed_reads</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.zip ~/1_project/results/fastqc_untrimmed_reads/</span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.html ~/1_project/results/fastqc_untrimmed_reads/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/1_project/results/fastqc_untrimmed_reads</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.zip ~/1_project/results/fastqc_untrimmed_reads/</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.html ~/1_project/results/fastqc_untrimmed_reads/</span></code></pre>
 </div>
 <p>Now we can navigate into this results directory and do some closer
 inspection of our output files.</p>
-<div class="codewrapper sourceCode" id="cb21">
+<div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/results/fastqc_untrimmed_reads/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/results/fastqc_untrimmed_reads/</span></code></pre>
 </div>
 </div>
 <div class="section level3">
@@ -1409,17 +1465,17 @@ lesson.</p>
 files we are transferring. Let’s put it on our desktop for now. Open a
 new tab in your terminal program (you can use the pull down menu at the
 top of your screen or the Cmd+t keyboard shortcut) and type:</p>
-<div class="codewrapper sourceCode" id="cb22">
+<div class="codewrapper sourceCode" id="cb25">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> ~/Desktop/fastqc_html</span></code></pre>
 </div>
 <p>Now we can transfer our HTML files to our local computer using
 <code>scp</code>. Remember to replace the username with your own!</p>
-<div class="codewrapper sourceCode" id="cb23">
+<div class="codewrapper sourceCode" id="cb26">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/<span class="pp">*</span>.html ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="ex">$</span> scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/<span class="pp">*</span>.html ~/Desktop/fastqc_html</span></code></pre>
 </div>
 <div id="note-on-using-zsh" class="callout">
 <div class="callout-square">
@@ -1434,16 +1490,16 @@ default recently to zsh), it is likely that a
 <code>no matches found</code> error will be displayed. The reason for
 this is that the wildcard (“*”) is not correctly interpreted. To fix
 this problem the wildcard needs to be escaped with a “\”:</p>
-<div class="codewrapper sourceCode" id="cb24">
+<div class="codewrapper sourceCode" id="cb27">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="ex">$</span> scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html</span></code></pre>
 </div>
 <p>Alternatively, you can put the whole path into quotation marks:</p>
-<div class="codewrapper sourceCode" id="cb25">
+<div class="codewrapper sourceCode" id="cb28">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="ex">$</span> scp <span class="st">"your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html"</span> ~/Desktop/fastqc_html</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="ex">$</span> scp <span class="st">"your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html"</span> ~/Desktop/fastqc_html</span></code></pre>
 </div>
 </div>
 </div>
@@ -1471,12 +1527,12 @@ V1_S1_L001_R2_001_downsampled_fastqc.html     100%  630KB  14.5MB/s   00:00 </co
 <p>Now we can go to our new directory and open the 6 HTML files.</p>
 <p>Depending on your system, you should be able to select and open them
 all at once via a right click menu in your file browser.</p>
-<div id="exercise-2" class="callout challenge">
+<div id="exercise-3" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
 </div>
-<div id="exercise-2" class="callout-inner">
-<h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-2"></a>
+<div id="exercise-3" class="callout-inner">
+<h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-3"></a>
 </h3>
 <div class="callout-content">
 <p>Discuss your results with a neighbor. Which sample(s) looks the best
@@ -1485,12 +1541,12 @@ worst?</p>
 </div>
 </div>
 </div>
-<div id="accordionSolution3" class="accordion challenge-accordion accordion-flush">
+<div id="accordionSolution4" class="accordion challenge-accordion accordion-flush">
 <div class="accordion-item">
-<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
-  <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
+  <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>All of the reads contain usable data, but the quality decreases
 toward the beginning and end of the reads.</p>
@@ -1570,11 +1626,11 @@ data, let’s look more closely at the other output files. Go back to the
 tab in your terminal program that is connected to the chimera (the tab
 label will start with <code>your.UMB.username@chimerahead</code>) and
 make sure you are in our results subdirectory.</p>
-<div class="codewrapper sourceCode" id="cb27">
+<div class="codewrapper sourceCode" id="cb30">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/results/fastqc_untrimmed_reads/</span>
-<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/results/fastqc_untrimmed_reads/</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1597,10 +1653,10 @@ multiple different types of output files for a single input FASTQ file.
 To view the contents of a <code>.zip</code> file, we can use the program
 <code>unzip</code> to decompress these files. Let’s try doing them all
 at once using a wildcard.</p>
-<div class="codewrapper sourceCode" id="cb29">
+<div class="codewrapper sourceCode" id="cb32">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="ex">$</span> unzip <span class="pp">*</span>.zip</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="ex">$</span> unzip <span class="pp">*</span>.zip</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1621,13 +1677,13 @@ consuming and error-prone. Someday you may have 500 files to unzip!</p>
 learned in the Shell Genomics lesson to iterate through all of our
 <code>.zip</code> files. Let’s see what that looks like and then we will
 discuss what we are doing with each line of our loop.</p>
-<div class="codewrapper sourceCode" id="cb31">
+<div class="codewrapper sourceCode" id="cb34">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="ex">$</span> for filename in <span class="pp">*</span>.zip</span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="op">&gt;</span> do</span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="op">&gt;</span> unzip <span class="va">$filename</span></span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="ex">$</span> for filename in <span class="pp">*</span>.zip</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="op">&gt;</span> do</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="op">&gt;</span> unzip <span class="va">$filename</span></span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
 </div>
 <p>In this example, the input is six filenames (one filename for each of
 our <code>.zip</code> files). Each time the loop iterates, it will
@@ -1717,10 +1773,10 @@ FastQC. There</p>
 files are still present, but now we also have a new directory for each
 of our samples. We can see for sure that it is a directory if we use the
 <code>-F</code> flag for <code>ls</code>.</p>
-<div class="codewrapper sourceCode" id="cb34">
+<div class="codewrapper sourceCode" id="cb37">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-F</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-F</span></span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1746,10 +1802,10 @@ of our samples. We can see for sure that it is a directory if we use the
 </div>
 <p>Let’s see what files are present within one of these output
 directories.</p>
-<div class="codewrapper sourceCode" id="cb36">
+<div class="codewrapper sourceCode" id="cb39">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-F</span> C1_S4_L001_R1_001_downsampled_fastqc/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-F</span> C1_S4_L001_R1_001_downsampled_fastqc/</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1758,10 +1814,10 @@ directories.</p>
 </div>
 <p>Use <code>less</code> to preview the <code>summary.txt</code> file
 for this sample.</p>
-<div class="codewrapper sourceCode" id="cb38">
+<div class="codewrapper sourceCode" id="cb41">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="ex">$</span> less C1_S4_L001_R1_001_downsampled_fastqc/summary.txt</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="ex">$</span> less C1_S4_L001_R1_001_downsampled_fastqc/summary.txt</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1792,17 +1848,17 @@ samples</p>
 single file using the <code>cat</code> command. We will call this
 <code>fastqc_summaries.txt</code> and move it to
 <code>~/1_project/docs</code>.</p>
-<div class="codewrapper sourceCode" id="cb40">
+<div class="codewrapper sourceCode" id="cb43">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="ex">$</span> cat <span class="pp">*</span>/summary.txt <span class="op">&gt;</span> ~/1_project/docs/fastqc_summaries.txt</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="ex">$</span> cat <span class="pp">*</span>/summary.txt <span class="op">&gt;</span> ~/1_project/docs/fastqc_summaries.txt</span></code></pre>
 </div>
-<div id="exercise-3" class="callout challenge">
+<div id="exercise-4" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
 </div>
-<div id="exercise-3" class="callout-inner">
-<h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-3"></a>
+<div id="exercise-4" class="callout-inner">
+<h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-4"></a>
 </h3>
 <div class="callout-content">
 <p>Which samples failed at least one of FastQC’s quality tests? What
@@ -1810,19 +1866,19 @@ test(s) did those samples fail?</p>
 </div>
 </div>
 </div>
-<div id="accordionSolution4" class="accordion challenge-accordion accordion-flush">
+<div id="accordionSolution5" class="accordion challenge-accordion accordion-flush">
 <div class="accordion-item">
-<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
-  <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
+  <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
 <div class="accordion-body">
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
-<div class="codewrapper sourceCode" id="cb41">
+<div class="codewrapper sourceCode" id="cb44">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/docs</span>
-<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a><span class="ex">$</span> grep FAIL fastqc_summaries.txt</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/docs</span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="ex">$</span> grep FAIL fastqc_summaries.txt</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2294,7 +2350,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>0.23%</li>
@@ -2403,7 +2459,7 @@ cutadapt?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb19">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2460,7 +2516,7 @@ whether your per base sequence quality is higher after trimming.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>In your AWS terminal window do:</p>
 <div class="codewrapper sourceCode" id="cb23">
@@ -3906,7 +3962,7 @@ directory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb36">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
