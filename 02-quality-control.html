@@ -227,6 +227,7 @@
       <div class="accordion-body">
         <ul><li><a href="#bioinformatic-workflows">Bioinformatic workflows</a></li>
 <li><a href="#starting-with-data">Starting with data</a></li>
+<li><a href="#quality-control">Quality control</a></li>
 <li><a href="#other-notes-optional">Other notes – optional</a></li>
         </ul></div><!--/div.accordion-body-->
     </div><!--/div.accordion-collapse-->
@@ -381,32 +382,33 @@ are therefore built under the assumption that the data will be provided
 in a specific format.</p>
 </section><section><h2 class="section-heading" id="starting-with-data">Starting with data<a class="anchor" aria-label="anchor" href="#starting-with-data"></a>
 <a class="anchor" aria-label="anchor" href="#starting-with-data"></a></h2>
-<hr class="half-width"><p>&lt;<stuff about the workshop data here>&gt;</stuff></p>
-<pre><code>
-## Quality control
-
-We will now assess the quality of the sequence reads contained in our fastq files.
-
-![](fig/var_calling_workflow_qc.png){alt='workflow\_qc'}
-
-### Details on the FASTQ format
-
-Although it looks complicated (and it is), we can understand the
-[fastq](https://en.wikipedia.org/wiki/FASTQ_format) format with a little decoding. Some rules about the format
-include...
-
-| Line | Description                                                                                                  |
-| ---- | ------------------------------------------------------------------------------------------------------------ |
-| 1    | Always begins with '@' and then information about the read                                                   |
-| 2    | The actual DNA sequence                                                                                      |
-| 3    | Always begins with a '+' and sometimes the same info in line 1                                               |
-| 4    | Has a string of characters which represent the quality scores; must have same number of characters as line 2 |
-
-We can view the first complete read in one of the files our dataset by using `head` to look at
-the first four lines.
-
-```bash
-$ head -n 4 C1_S4_L001_R1_001_downsampled.fastq</code></pre>
+<hr class="half-width"><p>Stuff about the workshop data here.</p>
+</section><section><h2 class="section-heading" id="quality-control">Quality control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
+<a class="anchor" aria-label="anchor" href="#quality-control"></a></h2>
+<hr class="half-width"><p>We will now assess the quality of the sequence reads contained in our
+fastq files.</p>
+<figure><img src="fig/var_calling_workflow_qc.png" alt="workflow_qc" class="figure mx-auto d-block"></figure><div class="section level3">
+<h3 id="details-on-the-fastq-format">Details on the FASTQ format<a class="anchor" aria-label="anchor" href="#details-on-the-fastq-format"></a></h3>
+<p>Although it looks complicated (and it is), we can understand the <a href="https://en.wikipedia.org/wiki/FASTQ_format" class="external-link">fastq</a> format with
+a little decoding. Some rules about the format include…</p>
+<table class="table"><colgroup><col width="3%"><col width="96%"></colgroup><thead><tr class="header"><th>Line</th>
+<th>Description</th>
+</tr></thead><tbody><tr class="odd"><td>1</td>
+<td>Always begins with ‘@’ and then information about the read</td>
+</tr><tr class="even"><td>2</td>
+<td>The actual DNA sequence</td>
+</tr><tr class="odd"><td>3</td>
+<td>Always begins with a ‘+’ and sometimes the same info in line 1</td>
+</tr><tr class="even"><td>4</td>
+<td>Has a string of characters which represent the quality scores; must
+have same number of characters as line 2</td>
+</tr></tbody></table><p>We can view the first complete read in one of the files our dataset
+by using <code>head</code> to look at the first four lines.</p>
+<div class="codewrapper sourceCode" id="cb1">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">$</span> head <span class="at">-n</span> 4 C1_S4_L001_R1_001_downsampled.fastq</span></code></pre>
+</div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -477,7 +479,7 @@ you in this read?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -548,6 +550,7 @@ it.</p>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="ex">$</span> module load fastqc-0.11.9-gcc-10.2.0-osi6pqc</span></code></pre>
 </div>
+</div>
 <div class="section level3">
 <h3 id="assessing-quality-using-fastqc">Assessing quality using FastQC<a class="anchor" aria-label="anchor" href="#assessing-quality-using-fastqc"></a></h3>
 <p>In real life, you will not be assessing the quality of your reads by
@@ -613,7 +616,7 @@ directory</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -835,7 +838,7 @@ worst?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>All of the reads contain usable data, but the quality decreases
 toward the beginning and end of the reads.</p>
@@ -1155,7 +1158,7 @@ test(s) did those samples fail?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
 <div class="codewrapper sourceCode" id="cb41">
