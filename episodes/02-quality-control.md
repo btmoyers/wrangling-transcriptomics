@@ -154,13 +154,13 @@ in just a moment.
 
 At this point, lets validate that all the relevant tools are installed. If you are using the Chimera then these *should* be preinstalled, but you'll need to load some modules.
 
-Why do we need to load modules? Chimera is a shared resource used by many different people working on many diffeent types of projects. Not everybody needs to be able to use the same programs as each other, and if we had every program loaded at the same time it would potentially slow the chimera down and lead to conflicts between programs. Let's take a look at how many different modules exist on the chimera:
+Why do we need to load modules? Chimera is a shared resource used by many different people working on many different types of projects. Not everybody needs to be able to use the same programs as each other, and if we had every program loaded at the same time it would potentially slow the chimera down and lead to conflicts between programs. Let's take a look at how many different modules exist on the chimera:
+
 ```bash
 $ module avail
-
-$ clear
 ```
 
+That was a lot!! Remember you can use `clear` to calm your terminal down.
 
 ```bash
 $ module avail fastqc
@@ -235,7 +235,7 @@ Here, we see positions within the read in which the boxes span a much wider rang
 We will now assess the quality of the reads that we downloaded. First, make sure you are still in the `untrimmed_fastq` directory
 
 ```bash
-$ cd ~/dc_workshop/data/untrimmed_fastq/
+$ cd ~/1_project/data/untrimmed_fastq/
 ```
 
 :::::::::::::::::::::::::::::::::::::::  challenge
@@ -351,16 +351,16 @@ will move these
 output files into a new directory within our `results/` directory.
 
 ```bash
-$ mkdir -p ~/dc_workshop/results/fastqc_untrimmed_reads
-$ mv *.zip ~/dc_workshop/results/fastqc_untrimmed_reads/
-$ mv *.html ~/dc_workshop/results/fastqc_untrimmed_reads/
+$ mkdir -p ~/1_project/results/fastqc_untrimmed_reads
+$ mv *.zip ~/1_project/results/fastqc_untrimmed_reads/
+$ mv *.html ~/1_project/results/fastqc_untrimmed_reads/
 ```
 
 Now we can navigate into this results directory and do some closer
 inspection of our output files.
 
 ```bash
-$ cd ~/dc_workshop/results/fastqc_untrimmed_reads/
+$ cd ~/1_project/results/fastqc_untrimmed_reads/
 ```
 
 ### Viewing the FastQC results
@@ -390,10 +390,10 @@ top of your screen or the Cmd+t keyboard shortcut) and type:
 $ mkdir -p ~/Desktop/fastqc_html
 ```
 
-Now we can transfer our HTML files to our local computer using `scp`.
+Now we can transfer our HTML files to our local computer using `scp`. Remember to replace the username with your own!
 
 ```bash
-$ scp dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html ~/Desktop/fastqc_html
+$ scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html ~/Desktop/fastqc_html
 
 ```
 
@@ -406,21 +406,16 @@ likely that a `no matches found` error will be displayed. The reason for this is
 ("\*") is not correctly interpreted. To fix this problem the wildcard needs to be escaped with a "\\":
 
 ```bash
-$ scp dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html
+$ scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html
 ```
 
 Alternatively, you can put the whole path into quotation marks:
 
 ```bash
-$ scp "dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html" ~/Desktop/fastqc_html
+$ scp "your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html" ~/Desktop/fastqc_html
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
-
-As a reminder, the first part
-of the command `dcuser@ec2-34-238-162-94.compute-1.amazonaws.com` is
-the address for your remote computer. Make sure you replace everything
-after `dcuser@` with your instance number (the one you used to log in).
 
 The second part starts with a `:` and then gives the absolute path
 of the files you want to transfer from your remote computer. Do not
@@ -434,7 +429,7 @@ directory we just created `~/Desktop/fastqc_html`.
 You should see a status output like this:
 
 ```output
-dcuser@chimera.umb.edu's password: 
+your.UMB.username@chimera.umb.edu's password: 
 C1_S4_L001_R1_001_downsampled_fastqc.html     100%  626KB   7.4MB/s   00:00    
 C1_S4_L001_R2_001_downsampled_fastqc.html     100%  627KB   9.1MB/s   00:00    
 T1_S7_L001_R1_001_downsampled_fastqc.html     100%  629KB  10.9MB/s   00:00    
@@ -490,11 +485,11 @@ We have now looked at quite a few "Per base sequence quality" FastQC graphs, but
 Now that we have looked at our HTML reports to get a feel for the data,
 let's look more closely at the other output files. Go back to the tab
 in your terminal program that is connected to the chimera
-(the tab label will start with `dcuser@chimerahead`) and make sure you are in
+(the tab label will start with `your.UMB.username@chimerahead`) and make sure you are in
 our results subdirectory.
 
 ```bash
-$ cd ~/dc_workshop/results/fastqc_untrimmed_reads/
+$ cd ~/1_project/results/fastqc_untrimmed_reads/
 $ ls
 ```
 
@@ -533,15 +528,9 @@ caution: filename not matched:  V1_S1_L001_R1_001_downsampled_fastqc.zip
 caution: filename not matched:  V1_S1_L001_R2_001_downsampled_fastqc.zip
 ```
 
-This did not work. We unzipped the first file and then got a warning
-message for each of the other `.zip` files. This is because `unzip`
-expects to get only one zip file as input. We could go through and
-unzip each file one at a time, but this is very time consuming and
-error-prone. Someday you may have 500 files to unzip!
+This did not work. We unzipped the first file and then got a warning message for each of the other `.zip` files. This is because `unzip` expects to get only one zip file as input. We could go through and unzip each file one at a time, but this is very time consuming and error-prone. Someday you may have 500 files to unzip!
 
-A more efficient way is to use a `for` loop like we learned in the Shell Genomics lesson to iterate through all of
-our `.zip` files. Let's see what that looks like and then we will
-discuss what we are doing with each line of our loop.
+A more efficient way is to use a `for` loop like we learned in the Shell Genomics lesson to iterate through all of our `.zip` files. Let's see what that looks like and then we will discuss what we are doing with each line of our loop.
 
 ```bash
 $ for filename in *.zip
@@ -704,10 +693,10 @@ We can make a record of the results we obtained for all our samples
 
 by concatenating all of our `summary.txt` files into a single file
 using the `cat` command. We will call this `fastqc_summaries.txt` and move
-it to `~/dc_workshop/docs`.
+it to `~/1_project/docs`.
 
 ```bash
-$ cat */summary.txt > ~/dc_workshop/docs/fastqc_summaries.txt
+$ cat */summary.txt > ~/1_project/docs/fastqc_summaries.txt
 ```
 
 :::::::::::::::::::::::::::::::::::::::  challenge
@@ -724,7 +713,7 @@ test(s) did those samples fail?
 We can get the list of all failed tests using `grep`.
 
 ```bash
-$ cd ~/dc_workshop/docs
+$ cd ~/1_project/docs
 $ grep FAIL fastqc_summaries.txt
 ```
 
