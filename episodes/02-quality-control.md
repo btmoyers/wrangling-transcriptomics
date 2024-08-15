@@ -43,51 +43,8 @@ built under the assumption that the data will be provided in a specific format.
 
 ## Starting with data
 
-Often times, the first step in a bioinformatic workflow is getting the data you want to work with onto a computer where you can work with it. If you have outsourced sequencing of your data, the sequencing center will usually provide you with a link that you can use to download your data. Today we will be working with publicly available sequencing data.
+<<stuff about the workshop data here>>
 
-We are studying a population of *Escherichia coli* (designated Ara-3), which were propagated for more than 50,000 generations in a glucose-limited minimal medium. We will be working with three samples from this experiment, one from 5,000 generations, one from 15,000 generations, and one from 50,000 generations. The population changed substantially during the course of the experiment, and we will be exploring how with our variant calling workflow.
-
-The data are paired-end, so we will download two files for each sample. We will use the [European Nucleotide Archive](https://www.ebi.ac.uk/ena) to get our data. The ENA "provides a comprehensive record of the world's nucleotide sequencing information, covering raw sequencing data, sequence assembly information and functional annotation." The ENA also provides sequencing data in the fastq format, an important format for sequencing reads that we will be learning about today.
-
-To download the data, run the commands below.
-
-Here we are using the `-p` option for `mkdir`. This option allows `mkdir` to create the new directory, even if one of the parent directories does not already exist. It also supresses errors if the directory already exists, without overwriting that directory.
-
-It will take about 15 minutes to download the files.
-
-```bash
-mkdir -p ~/dc_workshop/data/untrimmed_fastq/
-cd ~/dc_workshop/data/untrimmed_fastq
-
-curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/004/SRR2589044/SRR2589044_1.fastq.gz
-curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/004/SRR2589044/SRR2589044_2.fastq.gz
-curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_1.fastq.gz
-curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_2.fastq.gz
-curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/006/SRR2584866/SRR2584866_1.fastq.gz
-curl -O ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/006/SRR2584866/SRR2584866_2.fastq.gz
-```
-
-:::::::::::::::::::::::::::::::::::::::::  callout
-
-### Faster option
-
-If your workshop is short on time or the venue's internet connection is weak or unstable, learners can
-avoid needing to download the data and instead use the data files provided in the `.backup/` directory.
-
-```bash
-$ cp ~/.backup/untrimmed_fastq/*fastq.gz .
-```
-
-This command creates a copy of each of the files in the `.backup/untrimmed_fastq/` directory that end in `fastq.gz` and
-places the copies in the current working directory (signified by `.`).
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::
-
-The data comes in a compressed format, which is why there is a `.gz` at the end of the file names. This makes it faster to transfer, and allows it to take up less space on our computer. Let's unzip one of the files so that we can look at the fastq format.
-
-```bash
-$ gunzip SRR2584863_1.fastq.gz
 ```
 
 ## Quality control
@@ -113,14 +70,14 @@ We can view the first complete read in one of the files our dataset by using `he
 the first four lines.
 
 ```bash
-$ head -n 4 SRR2584863_1.fastq
+$ head -n 4 C1_S4_L001_R1_001_downsampled.fastq
 ```
 
 ```output
-@SRR2584863.1 HWI-ST957:244:H73TDADXX:1:1101:4712:2181/1
-TTCACATCCTGACCATTCAGTTGAGCAAAATAGTTCTTCAGTGCCTGTTTAACCGAGTCACGCAGGGGTTTTTGGGTTACCTGATCCTGAGAGTTAACGGTAGAAACGGTCAGTACGTCAGAATTTACGCGTTGTTCGAACATAGTTCTG
+@D00345:37:HBATBADXX:1:1214:3724:1975 1:N:0:GCCAAT
+GCCTATCCCAGAAGCCTCATCTTCTAGCATAAAGTCAAATAAGCCTCTCTG
 +
-CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBDDACCCCAA@@CA@C>C3>@5(8&>C:9?8+89<4(:83825C(:A#########################
+@@@BBDD?CFDHHE+<EFGGHAHFHHB>E>4A*:CE@@GCCDG<B@GE?BF
 ```
 
 Line 4 shows the quality for each nucleotide in the read. Quality is interpreted as the
@@ -131,7 +88,7 @@ represents the numerical quality score for an individual nucleotide. For example
 above, the quality score line is:
 
 ```output
-CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBDDACCCCAA@@CA@C>C3>@5(8&>C:9?8+89<4(:83825C(:A#########################
+@@@BBDD?CFDHHE+<EFGGHAHFHHB>E>4A*:CE@@GCCDG<B@GE?BF
 ```
 
 The numerical value assigned to each of these characters depends on the
@@ -155,10 +112,11 @@ much signal was captured for the base incorporation.
 Looking back at our read:
 
 ```output
-@SRR2584863.1 HWI-ST957:244:H73TDADXX:1:1101:4712:2181/1
-TTCACATCCTGACCATTCAGTTGAGCAAAATAGTTCTTCAGTGCCTGTTTAACCGAGTCACGCAGGGGTTTTTGGGTTACCTGATCCTGAGAGTTAACGGTAGAAACGGTCAGTACGTCAGAATTTACGCGTTGTTCGAACATAGTTCTG
+@D00345:37:HBATBADXX:1:1214:3724:1975 1:N:0:GCCAAT
+GCCTATCCCAGAAGCCTCATCTTCTAGCATAAAGTCAAATAAGCCTCTCTG
 +
-CCCFFFFFGHHHHJIJJJJIJJJIIJJJJIIIJJGFIIIJEDDFEGGJIFHHJIJJDECCGGEGIIJFHFFFACD:BBBDDACCCCAA@@CA@C>C3>@5(8&>C:9?8+89<4(:83825C(:A#########################
+@@@BBDD?CFDHHE+<EFGGHAHFHHB>E>4A*:CE@@GCCDG<B@GE?BF
+
 ```
 
 we can now see that there is a range of quality scores, but that the end of the sequence is
@@ -168,7 +126,7 @@ very poor (`#` = a quality score of 2).
 
 ### Exercise
 
-What is the last read in the `SRR2584863_1.fastq ` file? How confident
+What is the last read in the `V1_S1_L001_R1_001_downsampled.fastq` file? How confident
 are you in this read?
 
 :::::::::::::::  solution
@@ -176,17 +134,18 @@ are you in this read?
 ### Solution
 
 ```bash
-$ tail -n 4 SRR2584863_1.fastq
+$ tail -n 4 V1_S1_L001_R1_001_downsampled.fastq
 ```
 
 ```output
-@SRR2584863.1553259 HWI-ST957:245:H73R4ADXX:2:2216:21048:100894/1
-CTGCAATACCACGCTGATCTTTCACATGATGTAAGAAAAGTGGGATCAGCAAACCGGGTGCTGCTGTGGCTAGTTGCAGCAAACCATGCAGTGAACCCGCCTGTGCTTCGCTATAGCCGTGACTGATGAGGATCGCCGGAAGCCAGCCAA
+@D00345:37:HBATBADXX:1:1206:21030:101413 1:N:0:CGATGT
+GTTACTCGACCGAAGTCTTCACTATGCATCACAACTCAAGATTANNNTANA
 +
-CCCFFFFFHHHHGJJJJJJJJJHGIJJJIJJJJIJJJJIIIIJJJJJJJJJJJJJIIJJJHHHHHFFFFFEEEEEDDDDDDDDDDDDDDDDDCDEDDBDBDDBDDDDDDDDDBDEEDDDD7@BDDDDDD>AA>?B?<@BDD@BDC?BDA?
+@@@FDDFFHGDHHIGFH@@GGHGIIIIIGGDCEGGFHHGFGGAH###--#-
+
 ```
 
-This read has more consistent quality at its end than the first
+This read has less consistent quality at its end than the first
 read that we looked at, but still has a range of quality scores,
 most of them high. We will look at variations in position-based quality
 in just a moment.
@@ -195,133 +154,49 @@ in just a moment.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-At this point, lets validate that all the relevant tools are installed. If you are using the AWS AMI then these *should* be preinstalled.
+At this point, lets validate that all the relevant tools are installed. If you are using the Chimera then these *should* be preinstalled, but you'll need to load some modules.
+
+Why do we need to load modules? Chimera is a shared resource used by many different people working on many diffeent types of projects. Not everybody needs to be able to use the same programs as each other, and if we had every program loaded at the same time it would potentially slow the chimera down and lead to conflicts between programs. Let's take a look at how many different modules exist on the chimera:
+```bash
+$ module avail
+
+$ clear
+```
+
 
 ```bash
-$ fastqc -h
-            FastQC - A high throughput sequence QC analysis tool
+$ module avail fastqc
 
-SYNOPSIS
+----------------------- /share/apps/modulefiles/modules ------------------------
+   fastqc-0.11.9-gcc-10.2.0-osi6pqc (L)
 
-        fastqc seqfile1 seqfile2 .. seqfileN
+  Where:
+   L:  Module is loaded
 
-    fastqc [-o output dir] [--(no)extract] [-f fastq|bam|sam]
-           [-c contaminant file] seqfile1 .. seqfileN
-
-DESCRIPTION
-
-    FastQC reads a set of sequence files and produces from each one a quality
-    control report consisting of a number of different modules, each one of
-    which will help to identify a different potential type of problem in your
-    data.
-
-    If no files to process are specified on the command line then the program
-    will start as an interactive graphical application.  If files are provided
-    on the command line then the program will run with no user interaction
-    required.  In this mode it is suitable for inclusion into a standardised
-    analysis pipeline.
-
-    The options for the program as as follows:
-
-    -h --help       Print this help file and exit
-
-    -v --version    Print the version of the program and exit
-
-    -o --outdir     Create all output files in the specified output directory.
-                    Please note that this directory must exist as the program
-                    will not create it.  If this option is not set then the
-                    output file for each sequence file is created in the same
-                    directory as the sequence file which was processed.
-
-    --casava        Files come from raw casava output. Files in the same sample
-                    group (differing only by the group number) will be analysed
-                    as a set rather than individually. Sequences with the filter
-                    flag set in the header will be excluded from the analysis.
-                    Files must have the same names given to them by casava
-                    (including being gzipped and ending with .gz) otherwise they
-                    will not be grouped together correctly.
-
-    --nano          Files come from naopore sequences and are in fast5 format. In
-                    this mode you can pass in directories to process and the program
-                    will take in all fast5 files within those directories and produce
-                    a single output file from the sequences found in all files.
-
-    --nofilter      If running with --casava then don't remove read flagged by
-                    casava as poor quality when performing the QC analysis.
-
-    --extract       If set then the zipped output file will be uncompressed in
-                    the same directory after it has been created.  By default
-                    this option will be set if fastqc is run in non-interactive
-                    mode.
-
-    -j --java       Provides the full path to the java binary you want to use to
-                    launch fastqc. If not supplied then java is assumed to be in
-                    your path.
-
-    --noextract     Do not uncompress the output file after creating it.  You
-                    should set this option if you do not wish to uncompress
-                    the output when running in non-interactive mode.
-
-    --nogroup       Disable grouping of bases for reads >50bp. All reports will
-                    show data for every base in the read.  WARNING: Using this
-                    option will cause fastqc to crash and burn if you use it on
-                    really long reads, and your plots may end up a ridiculous size.
-                    You have been warned!
-
-    -f --format     Bypasses the normal sequence file format detection and
-                    forces the program to use the specified format.  Valid
-                    formats are bam,sam,bam_mapped,sam_mapped and fastq
-
-    -t --threads    Specifies the number of files which can be processed
-                    simultaneously.  Each thread will be allocated 250MB of
-                    memory so you shouldn't run more threads than your
-                    available memory will cope with, and not more than
-                    6 threads on a 32 bit machine
-
-    -c              Specifies a non-default file which contains the list of
-    --contaminants  contaminants to screen overrepresented sequences against.
-                    The file must contain sets of named contaminants in the
-                    form name[tab]sequence.  Lines prefixed with a hash will
-                    be ignored.
-
-    -a              Specifies a non-default file which contains the list of
-    --adapters      adapter sequences which will be explicity searched against
-                    the library. The file must contain sets of named adapters
-                    in the form name[tab]sequence.  Lines prefixed with a hash
-                    will be ignored.
-
-    -l              Specifies a non-default file which contains a set of criteria
-    --limits        which will be used to determine the warn/error limits for the
-                    various modules.  This file can also be used to selectively
-                    remove some modules from the output all together.  The format
-                    needs to mirror the default limits.txt file found in the
-                    Configuration folder.
-
-   -k --kmers       Specifies the length of Kmer to look for in the Kmer content
-                    module. Specified Kmer length must be between 2 and 10. Default
-                    length is 7 if not specified.
-
-   -q --quiet       Supress all progress messages on stdout and only report errors.
-
-   -d --dir         Selects a directory to be used for temporary files written when
-                    generating report images. Defaults to system temp directory if
-                    not specified.
-
-BUGS
-
-    Any bugs in fastqc should be reported either to simon.andrews@babraham.ac.uk
-    or in www.bioinformatics.babraham.ac.uk/bugzilla/
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching
+any of the "keys".
 ```
 
 if fastqc is not installed then you would expect to see an error like
 
 ```
-$ fastqc -h
-The program 'fastqc' is currently not installed. You can install it by typing:
-sudo apt-get install fastqc
+$ module avail fastqc
+No module(s) or extension(s) found!
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching
+any of the "keys".
+
 ```
 
 If this happens check with your instructor before trying to install it.
+
+Now let's load the fastqc module:
+
+```bash
+$ module load fastqc-0.11.9-gcc-10.2.0-osi6pqc
+
+```
 
 ### Assessing quality using FastQC
 
@@ -382,15 +257,16 @@ $ ls -l -h
 ```
 
 ```output
--rw-rw-r-- 1 dcuser dcuser 545M Jul  6 20:27 SRR2584863_1.fastq
--rw-rw-r-- 1 dcuser dcuser 183M Jul  6 20:29 SRR2584863_2.fastq.gz
--rw-rw-r-- 1 dcuser dcuser 309M Jul  6 20:34 SRR2584866_1.fastq.gz
--rw-rw-r-- 1 dcuser dcuser 296M Jul  6 20:37 SRR2584866_2.fastq.gz
--rw-rw-r-- 1 dcuser dcuser 124M Jul  6 20:22 SRR2589044_1.fastq.gz
--rw-rw-r-- 1 dcuser dcuser 128M Jul  6 20:24 SRR2589044_2.fastq.gz
+-rw-rw-r-- 1 alice.palmer001 alice.palmer001 133M Aug  7 00:54 C1_S4_L001_R1_001_downsampled.fastq
+-rw-rw-r-- 1 alice.palmer001 alice.palmer001 133M Aug  7 00:54 C1_S4_L001_R2_001_downsampled.fastq
+-rw-rw-r-- 1 alice.palmer001 alice.palmer001 126M Aug  7 00:55 T1_S7_L001_R1_001_downsampled.fastq
+-rw-rw-r-- 1 alice.palmer001 alice.palmer001 126M Aug  7 00:55 T1_S7_L001_R2_001_downsampled.fastq
+-rw-rw-r-- 1 alice.palmer001 alice.palmer001 146M Aug  7 00:55 V1_S1_L001_R1_001_downsampled.fastq
+-rw-rw-r-- 1 alice.palmer001 alice.palmer001 146M Aug  7 00:55 V1_S1_L001_R2_001_downsampled.fastq
+
 ```
 
-There are six FASTQ files ranging from 124M (124MB) to 545M.
+There are six FASTQ files ranging from 126M (1246B) to 1465M.
 
 :::::::::::::::::::::::::
 
@@ -406,28 +282,33 @@ You will see an automatically updating output message telling you the
 progress of the analysis. It will start like this:
 
 ```output
-Started analysis of SRR2584863_1.fastq
-Approx 5% complete for SRR2584863_1.fastq
-Approx 10% complete for SRR2584863_1.fastq
-Approx 15% complete for SRR2584863_1.fastq
-Approx 20% complete for SRR2584863_1.fastq
-Approx 25% complete for SRR2584863_1.fastq
-Approx 30% complete for SRR2584863_1.fastq
-Approx 35% complete for SRR2584863_1.fastq
-Approx 40% complete for SRR2584863_1.fastq
-Approx 45% complete for SRR2584863_1.fastq
+Started analysis of C1_S4_L001_R1_001_downsampled.fastq
+Approx 5% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 10% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 15% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 20% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 25% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 30% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 35% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 40% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 45% complete for C1_S4_L001_R1_001_downsampled.fastq
+Approx 50% complete for C1_S4_L001_R1_001_downsampled.fastq
 ```
 
-In total, it should take about five minutes for FastQC to run on all
+In total, it should take about thirty seconds for FastQC to run on all
 six of our FASTQ files. When the analysis completes, your prompt
 will return. So your screen will look something like this:
 
 ```output
-Approx 80% complete for SRR2589044_2.fastq.gz
-Approx 85% complete for SRR2589044_2.fastq.gz
-Approx 90% complete for SRR2589044_2.fastq.gz
-Approx 95% complete for SRR2589044_2.fastq.gz
-Analysis complete for SRR2589044_2.fastq.gz
+Approx 60% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 65% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 70% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 75% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 80% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 85% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 90% complete for V1_S1_L001_R2_001_downsampled.fastq
+Approx 95% complete for V1_S1_L001_R2_001_downsampled.fastq
+Analysis complete for V1_S1_L001_R2_001_downsampled.fastq
 $
 ```
 
@@ -439,12 +320,25 @@ $ ls
 ```
 
 ```output
-SRR2584863_1.fastq        SRR2584866_1_fastqc.html  SRR2589044_1_fastqc.html
-SRR2584863_1_fastqc.html  SRR2584866_1_fastqc.zip   SRR2589044_1_fastqc.zip
-SRR2584863_1_fastqc.zip   SRR2584866_1.fastq.gz     SRR2589044_1.fastq.gz
-SRR2584863_2_fastqc.html  SRR2584866_2_fastqc.html  SRR2589044_2_fastqc.html
-SRR2584863_2_fastqc.zip   SRR2584866_2_fastqc.zip   SRR2589044_2_fastqc.zip
-SRR2584863_2.fastq.gz     SRR2584866_2.fastq.gz     SRR2589044_2.fastq.gz
+C1_S4_L001_R1_001_downsampled.fastq
+C1_S4_L001_R1_001_downsampled_fastqc.html
+C1_S4_L001_R1_001_downsampled_fastqc.zip
+C1_S4_L001_R2_001_downsampled.fastq
+C1_S4_L001_R2_001_downsampled_fastqc.html
+C1_S4_L001_R2_001_downsampled_fastqc.zip
+T1_S7_L001_R1_001_downsampled.fastq
+T1_S7_L001_R1_001_downsampled_fastqc.html
+T1_S7_L001_R1_001_downsampled_fastqc.zip
+T1_S7_L001_R2_001_downsampled.fastq
+T1_S7_L001_R2_001_downsampled_fastqc.html
+T1_S7_L001_R2_001_downsampled_fastqc.zip
+V1_S1_L001_R1_001_downsampled.fastq
+V1_S1_L001_R1_001_downsampled_fastqc.html
+V1_S1_L001_R1_001_downsampled_fastqc.zip
+V1_S1_L001_R2_001_downsampled.fastq
+V1_S1_L001_R2_001_downsampled_fastqc.html
+V1_S1_L001_R2_001_downsampled_fastqc.zip
+
 ```
 
 For each input FASTQ file, FastQC has created a `.zip` file and a
@@ -501,7 +395,8 @@ $ mkdir -p ~/Desktop/fastqc_html
 Now we can transfer our HTML files to our local computer using `scp`.
 
 ```bash
-$ scp dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/*.html ~/Desktop/fastqc_html
+$ scp dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html ~/Desktop/fastqc_html
+
 ```
 
 :::::::::::::::::::::::::::::::::::::::::  callout
@@ -513,13 +408,13 @@ likely that a `no matches found` error will be displayed. The reason for this is
 ("\*") is not correctly interpreted. To fix this problem the wildcard needs to be escaped with a "\\":
 
 ```bash
-$ scp dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html
+$ scp dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html
 ```
 
 Alternatively, you can put the whole path into quotation marks:
 
 ```bash
-$ scp "dcuser@ec2-34-238-162-94.compute-1.amazonaws.com:~/dc_workshop/results/fastqc_untrimmed_reads/*.html" ~/Desktop/fastqc_html
+$ scp "dcuser@chimera.umb.edu:/itcgastorage/share_home/dcuser/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/*.html" ~/Desktop/fastqc_html
 ```
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -541,12 +436,13 @@ directory we just created `~/Desktop/fastqc_html`.
 You should see a status output like this:
 
 ```output
-SRR2584863_1_fastqc.html                      100%  249KB 152.3KB/s   00:01
-SRR2584863_2_fastqc.html                      100%  254KB 219.8KB/s   00:01
-SRR2584866_1_fastqc.html                      100%  254KB 271.8KB/s   00:00
-SRR2584866_2_fastqc.html                      100%  251KB 252.8KB/s   00:00
-SRR2589044_1_fastqc.html                      100%  249KB 370.1KB/s   00:00
-SRR2589044_2_fastqc.html                      100%  251KB 592.2KB/s   00:00
+dcuser@chimera.umb.edu's password: 
+C1_S4_L001_R1_001_downsampled_fastqc.html     100%  626KB   7.4MB/s   00:00    
+C1_S4_L001_R2_001_downsampled_fastqc.html     100%  627KB   9.1MB/s   00:00    
+T1_S7_L001_R1_001_downsampled_fastqc.html     100%  629KB  10.9MB/s   00:00    
+T1_S7_L001_R2_001_downsampled_fastqc.html     100%  626KB   8.4MB/s   00:00    
+V1_S1_L001_R1_001_downsampled_fastqc.html     100%  627KB  10.3MB/s   00:00    
+V1_S1_L001_R2_001_downsampled_fastqc.html     100%  630KB  14.5MB/s   00:00 
 ```
 
 Now we can go to our new directory and open the 6 HTML files.
@@ -568,7 +464,7 @@ worst?
 ### Solution
 
 All of the reads contain usable data, but the quality decreases toward
-the end of the reads.
+the beginning and end of the reads.
 
 
 
@@ -595,8 +491,8 @@ We have now looked at quite a few "Per base sequence quality" FastQC graphs, but
 
 Now that we have looked at our HTML reports to get a feel for the data,
 let's look more closely at the other output files. Go back to the tab
-in your terminal program that is connected to your AWS instance
-(the tab label will start with `dcuser@ip`) and make sure you are in
+in your terminal program that is connected to the chimera
+(the tab label will start with `dcuser@chimerahead`) and make sure you are in
 our results subdirectory.
 
 ```bash
@@ -605,10 +501,19 @@ $ ls
 ```
 
 ```output
-SRR2584863_1_fastqc.html  SRR2584866_1_fastqc.html  SRR2589044_1_fastqc.html
-SRR2584863_1_fastqc.zip   SRR2584866_1_fastqc.zip   SRR2589044_1_fastqc.zip
-SRR2584863_2_fastqc.html  SRR2584866_2_fastqc.html  SRR2589044_2_fastqc.html
-SRR2584863_2_fastqc.zip   SRR2584866_2_fastqc.zip   SRR2589044_2_fastqc.zip
+C1_S4_L001_R1_001_downsampled_fastqc.html
+C1_S4_L001_R1_001_downsampled_fastqc.zip
+C1_S4_L001_R2_001_downsampled_fastqc.html
+C1_S4_L001_R2_001_downsampled_fastqc.zip
+T1_S7_L001_R1_001_downsampled_fastqc.html
+T1_S7_L001_R1_001_downsampled_fastqc.zip
+T1_S7_L001_R2_001_downsampled_fastqc.html
+T1_S7_L001_R2_001_downsampled_fastqc.zip
+V1_S1_L001_R1_001_downsampled_fastqc.html
+V1_S1_L001_R1_001_downsampled_fastqc.zip
+V1_S1_L001_R2_001_downsampled_fastqc.html
+V1_S1_L001_R2_001_downsampled_fastqc.zip
+
 ```
 
 Our `.zip` files are compressed files. They each contain multiple
@@ -622,12 +527,12 @@ $ unzip *.zip
 ```
 
 ```output
-Archive:  SRR2584863_1_fastqc.zip
-caution: filename not matched:  SRR2584863_2_fastqc.zip
-caution: filename not matched:  SRR2584866_1_fastqc.zip
-caution: filename not matched:  SRR2584866_2_fastqc.zip
-caution: filename not matched:  SRR2589044_1_fastqc.zip
-caution: filename not matched:  SRR2589044_2_fastqc.zip
+Archive:  C1_S4_L001_R1_001_downsampled_fastqc.zip
+caution: filename not matched:  C1_S4_L001_R2_001_downsampled_fastqc.zip
+caution: filename not matched:  T1_S7_L001_R1_001_downsampled_fastqc.zip
+caution: filename not matched:  T1_S7_L001_R2_001_downsampled_fastqc.zip
+caution: filename not matched:  V1_S1_L001_R1_001_downsampled_fastqc.zip
+caution: filename not matched:  V1_S1_L001_R2_001_downsampled_fastqc.zip
 ```
 
 This did not work. We unzipped the first file and then got a warning
@@ -651,36 +556,53 @@ In this example, the input is six filenames (one filename for each of our `.zip`
 Each time the loop iterates, it will assign a file name to the variable `filename`
 and run the `unzip` command.
 The first time through the loop,
-`$filename` is `SRR2584863_1_fastqc.zip`.
-The interpreter runs the command `unzip` on `SRR2584863_1_fastqc.zip`.
+`$filename` is `C1_S4_L001_R1_001_downsampled_fastqc.zip`.
+The interpreter runs the command `unzip` on `C1_S4_L001_R1_001_downsampled_fastqc.zip`.
 For the second iteration, `$filename` becomes
-`SRR2584863_2_fastqc.zip`. This time, the shell runs `unzip` on `SRR2584863_2_fastqc.zip`.
+`C1_S4_L001_R2_001_downsampled_fastqc.zip`. This time, the shell runs `unzip` on `C1_S4_L001_R2_001_downsampled_fastqc.zip`.
 It then repeats this process for the four other `.zip` files in our directory.
 
 When we run our `for` loop, you will see output that starts like this:
 
 ```output
-Archive:  SRR2589044_2_fastqc.zip
-   creating: SRR2589044_2_fastqc/
-   creating: SRR2589044_2_fastqc/Icons/
-   creating: SRR2589044_2_fastqc/Images/
-  inflating: SRR2589044_2_fastqc/Icons/fastqc_icon.png
-  inflating: SRR2589044_2_fastqc/Icons/warning.png
-  inflating: SRR2589044_2_fastqc/Icons/error.png
-  inflating: SRR2589044_2_fastqc/Icons/tick.png
-  inflating: SRR2589044_2_fastqc/summary.txt
-  inflating: SRR2589044_2_fastqc/Images/per_base_quality.png
-  inflating: SRR2589044_2_fastqc/Images/per_tile_quality.png
-  inflating: SRR2589044_2_fastqc/Images/per_sequence_quality.png
-  inflating: SRR2589044_2_fastqc/Images/per_base_sequence_content.png
-  inflating: SRR2589044_2_fastqc/Images/per_sequence_gc_content.png
-  inflating: SRR2589044_2_fastqc/Images/per_base_n_content.png
-  inflating: SRR2589044_2_fastqc/Images/sequence_length_distribution.png
-  inflating: SRR2589044_2_fastqc/Images/duplication_levels.png
-  inflating: SRR2589044_2_fastqc/Images/adapter_content.png
-  inflating: SRR2589044_2_fastqc/fastqc_report.html
-  inflating: SRR2589044_2_fastqc/fastqc_data.txt
-  inflating: SRR2589044_2_fastqc/fastqc.fo
+Archive:  C1_S4_L001_R1_001_downsampled_fastqc.zip
+   creating: C1_S4_L001_R1_001_downsampled_fastqc/
+   creating: C1_S4_L001_R1_001_downsampled_fastqc/Icons/
+   creating: C1_S4_L001_R1_001_downsampled_fastqc/Images/
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Icons/fastqc_icon.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Icons/warning.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Icons/error.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Icons/tick.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/summary.txt  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/per_base_quality.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/per_tile_quality.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/per_sequence_quality.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/per_base_sequence_content.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/per_sequence_gc_content.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/per_base_n_content.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/sequence_length_distribution.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/duplication_levels.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/Images/adapter_content.png  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/fastqc_report.html  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/fastqc_data.txt  
+  inflating: C1_S4_L001_R1_001_downsampled_fastqc/fastqc.fo  
+Archive:  C1_S4_L001_R2_001_downsampled_fastqc.zip
+   creating: C1_S4_L001_R2_001_downsampled_fastqc/
+   creating: C1_S4_L001_R2_001_downsampled_fastqc/Icons/
+   creating: C1_S4_L001_R2_001_downsampled_fastqc/Images/
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Icons/fastqc_icon.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Icons/warning.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Icons/error.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Icons/tick.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/summary.txt  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/per_base_quality.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/per_tile_quality.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/per_sequence_quality.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/per_base_sequence_content.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/per_sequence_gc_content.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/per_base_n_content.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/sequence_length_distribution.png  
+  inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/duplication_levels.png 
 ```
 
 The `unzip` program is decompressing the `.zip` files and creating
@@ -693,16 +615,29 @@ are a lot of files here. The one we are going to focus on is the
 If you list the files in our directory now you will see:
 
 ```
-SRR2584863_1_fastqc       SRR2584866_1_fastqc       SRR2589044_1_fastqc
-SRR2584863_1_fastqc.html  SRR2584866_1_fastqc.html  SRR2589044_1_fastqc.html
-SRR2584863_1_fastqc.zip   SRR2584866_1_fastqc.zip   SRR2589044_1_fastqc.zip
-SRR2584863_2_fastqc       SRR2584866_2_fastqc       SRR2589044_2_fastqc
-SRR2584863_2_fastqc.html  SRR2584866_2_fastqc.html  SRR2589044_2_fastqc.html
-SRR2584863_2_fastqc.zip   SRR2584866_2_fastqc.zip   SRR2589044_2_fastqc.zip
+C1_S4_L001_R1_001_downsampled_fastqc
+C1_S4_L001_R1_001_downsampled_fastqc.html
+C1_S4_L001_R1_001_downsampled_fastqc.zip
+C1_S4_L001_R2_001_downsampled_fastqc
+C1_S4_L001_R2_001_downsampled_fastqc.html
+C1_S4_L001_R2_001_downsampled_fastqc.zip
+T1_S7_L001_R1_001_downsampled_fastqc
+T1_S7_L001_R1_001_downsampled_fastqc.html
+T1_S7_L001_R1_001_downsampled_fastqc.zip
+T1_S7_L001_R2_001_downsampled_fastqc
+T1_S7_L001_R2_001_downsampled_fastqc.html
+T1_S7_L001_R2_001_downsampled_fastqc.zip
+V1_S1_L001_R1_001_downsampled_fastqc
+V1_S1_L001_R1_001_downsampled_fastqc.html
+V1_S1_L001_R1_001_downsampled_fastqc.zip
+V1_S1_L001_R2_001_downsampled_fastqc
+V1_S1_L001_R2_001_downsampled_fastqc.html
+V1_S1_L001_R2_001_downsampled_fastqc.zip
+
 ```
 {:. output}
 
-The `.html` files and the uncompressed `.zip` files are still present,
+The `.html` files and the compressed `.zip` files are still present,
 but now we also have a new directory for each of our samples. We can
 see for sure that it is a directory if we use the `-F` flag for `ls`.
 
@@ -711,18 +646,31 @@ $ ls -F
 ```
 
 ```output
-SRR2584863_1_fastqc/      SRR2584866_1_fastqc/      SRR2589044_1_fastqc/
-SRR2584863_1_fastqc.html  SRR2584866_1_fastqc.html  SRR2589044_1_fastqc.html
-SRR2584863_1_fastqc.zip   SRR2584866_1_fastqc.zip   SRR2589044_1_fastqc.zip
-SRR2584863_2_fastqc/      SRR2584866_2_fastqc/      SRR2589044_2_fastqc/
-SRR2584863_2_fastqc.html  SRR2584866_2_fastqc.html  SRR2589044_2_fastqc.html
-SRR2584863_2_fastqc.zip   SRR2584866_2_fastqc.zip   SRR2589044_2_fastqc.zip
+C1_S4_L001_R1_001_downsampled_fastqc/
+C1_S4_L001_R1_001_downsampled_fastqc.html
+C1_S4_L001_R1_001_downsampled_fastqc.zip
+C1_S4_L001_R2_001_downsampled_fastqc/
+C1_S4_L001_R2_001_downsampled_fastqc.html
+C1_S4_L001_R2_001_downsampled_fastqc.zip
+T1_S7_L001_R1_001_downsampled_fastqc/
+T1_S7_L001_R1_001_downsampled_fastqc.html
+T1_S7_L001_R1_001_downsampled_fastqc.zip
+T1_S7_L001_R2_001_downsampled_fastqc/
+T1_S7_L001_R2_001_downsampled_fastqc.html
+T1_S7_L001_R2_001_downsampled_fastqc.zip
+V1_S1_L001_R1_001_downsampled_fastqc/
+V1_S1_L001_R1_001_downsampled_fastqc.html
+V1_S1_L001_R1_001_downsampled_fastqc.zip
+V1_S1_L001_R2_001_downsampled_fastqc/
+V1_S1_L001_R2_001_downsampled_fastqc.html
+V1_S1_L001_R2_001_downsampled_fastqc.zip
+
 ```
 
 Let's see what files are present within one of these output directories.
 
 ```bash
-$ ls -F SRR2584863_1_fastqc/
+$ ls -F C1_S4_L001_R1_001_downsampled_fastqc/
 ```
 
 ```output
@@ -732,21 +680,21 @@ fastqc_data.txt  fastqc.fo  fastqc_report.html	Icons/	Images/  summary.txt
 Use `less` to preview the `summary.txt` file for this sample.
 
 ```bash
-$ less SRR2584863_1_fastqc/summary.txt
+$ less C1_S4_L001_R1_001_downsampled_fastqc/summary.txt
 ```
 
 ```output
-PASS    Basic Statistics        SRR2584863_1.fastq
-PASS    Per base sequence quality       SRR2584863_1.fastq
-PASS    Per tile sequence quality       SRR2584863_1.fastq
-PASS    Per sequence quality scores     SRR2584863_1.fastq
-WARN    Per base sequence content       SRR2584863_1.fastq
-WARN    Per sequence GC content SRR2584863_1.fastq
-PASS    Per base N content      SRR2584863_1.fastq
-PASS    Sequence Length Distribution    SRR2584863_1.fastq
-PASS    Sequence Duplication Levels     SRR2584863_1.fastq
-PASS    Overrepresented sequences       SRR2584863_1.fastq
-WARN    Adapter Content SRR2584863_1.fastq
+PASS    Basic Statistics        C1_S4_L001_R1_001_downsampled.fastq
+PASS    Per base sequence quality       C1_S4_L001_R1_001_downsampled.fastq
+PASS    Per tile sequence quality       C1_S4_L001_R1_001_downsampled.fastq
+PASS    Per sequence quality scores     C1_S4_L001_R1_001_downsampled.fastq
+FAIL    Per base sequence content       C1_S4_L001_R1_001_downsampled.fastq
+WARN    Per sequence GC content C1_S4_L001_R1_001_downsampled.fastq
+PASS    Per base N content      C1_S4_L001_R1_001_downsampled.fastq
+PASS    Sequence Length Distribution    C1_S4_L001_R1_001_downsampled.fastq
+FAIL    Sequence Duplication Levels     C1_S4_L001_R1_001_downsampled.fastq
+WARN    Overrepresented sequences       C1_S4_L001_R1_001_downsampled.fastq
+PASS    Adapter Content C1_S4_L001_R1_001_downsampled.fastq
 ```
 
 The summary file gives us a list of tests that FastQC ran, and tells
@@ -783,18 +731,20 @@ $ grep FAIL fastqc_summaries.txt
 ```
 
 ```output
-FAIL    Per base sequence quality       SRR2584863_2.fastq.gz
-FAIL    Per tile sequence quality       SRR2584863_2.fastq.gz
-FAIL    Per base sequence content       SRR2584863_2.fastq.gz
-FAIL    Per base sequence quality       SRR2584866_1.fastq.gz
-FAIL    Per base sequence content       SRR2584866_1.fastq.gz
-FAIL    Adapter Content SRR2584866_1.fastq.gz
-FAIL    Adapter Content SRR2584866_2.fastq.gz
-FAIL    Adapter Content SRR2589044_1.fastq.gz
-FAIL    Per base sequence quality       SRR2589044_2.fastq.gz
-FAIL    Per tile sequence quality       SRR2589044_2.fastq.gz
-FAIL    Per base sequence content       SRR2589044_2.fastq.gz
-FAIL    Adapter Content SRR2589044_2.fastq.gz
+FAIL	Per base sequence content	C1_S4_L001_R1_001_downsampled.fastq
+FAIL	Sequence Duplication Levels	C1_S4_L001_R1_001_downsampled.fastq
+FAIL	Per base sequence content	C1_S4_L001_R2_001_downsampled.fastq
+FAIL	Sequence Duplication Levels	C1_S4_L001_R2_001_downsampled.fastq
+FAIL	Per base sequence content	T1_S7_L001_R1_001_downsampled.fastq
+FAIL	Sequence Duplication Levels	T1_S7_L001_R1_001_downsampled.fastq
+FAIL	Per base sequence content	T1_S7_L001_R2_001_downsampled.fastq
+FAIL	Sequence Duplication Levels	T1_S7_L001_R2_001_downsampled.fastq
+FAIL	Per base sequence content	V1_S1_L001_R1_001_downsampled.fastq
+FAIL	Sequence Duplication Levels	V1_S1_L001_R1_001_downsampled.fastq
+FAIL	Per base sequence content	V1_S1_L001_R2_001_downsampled.fastq
+FAIL	Per sequence GC content	V1_S1_L001_R2_001_downsampled.fastq
+FAIL	Sequence Duplication Levels	V1_S1_L001_R2_001_downsampled.fastq
+
 ```
 
 :::::::::::::::::::::::::
