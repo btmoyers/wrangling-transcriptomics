@@ -270,14 +270,13 @@ There are six FASTQ files ranging from 126M (1246B) to 1465M.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-FastQC can accept multiple file names as input, and on both zipped and unzipped files, so we can use the \*.fastq\* wildcard to run FastQC on all of the FASTQ files in this directory.
+FastQC can accept multiple file names as input, and on both zipped and unzipped files, so we can use the \*.fastq wildcard to run FastQC on all of the FASTQ files in this directory.
 
 ```bash
-$ fastqc *.fastq*
+$ fastqc *.fastq
 ```
 
-You will see an automatically updating output message telling you the
-progress of the analysis. It will start like this:
+You will see an automatically updating output message telling you the progress of the analysis. It will start like this:
 
 ```output
 Started analysis of C1_S4_L001_R1_001_downsampled.fastq
@@ -293,9 +292,7 @@ Approx 45% complete for C1_S4_L001_R1_001_downsampled.fastq
 Approx 50% complete for C1_S4_L001_R1_001_downsampled.fastq
 ```
 
-In total, it should take about thirty seconds for FastQC to run on all
-six of our FASTQ files. When the analysis completes, your prompt
-will return. So your screen will look something like this:
+In total, it should take about thirty seconds for FastQC to run on all six of our FASTQ files. When the analysis completes, your prompt will return. So your screen will look something like this:
 
 ```output
 Approx 60% complete for V1_S1_L001_R2_001_downsampled.fastq
@@ -309,6 +306,53 @@ Approx 95% complete for V1_S1_L001_R2_001_downsampled.fastq
 Analysis complete for V1_S1_L001_R2_001_downsampled.fastq
 $
 ```
+
+:::::::::::::::::::::::::::::::::::::::  challenge
+
+### Exercise
+
+We did this directly on the command line, and it worked pretty quickly (in part because we only have six files that have been downsampled to only 5% of the original files). Usually for a task like this we will want to use a slurm script. Turn your fastqc command into a script and run it using `sbatch`.
+
+Hint: You'll need to load the module within the script and include `sbatch` options.
+
+:::::::::::::::  solution
+
+### Solution
+
+```bash
+$ nano fastqc.sh
+```
+
+```
+#!/bin/bash
+
+#SBATCH --job-name=fastqc # you can give your job a name
+#SBATCH --nodes 1 # the number of processors or tasks
+#SBATCH --cpus-per-task=2
+#SBATCH --account=itcga # our account
+#SBATCH --reservation=ITCGA_AUG2024 # this gives us special access during the workshop
+#SBATCH --time=1:00:00 # the maximum time for the job
+#SBATCH --mem=4gb # the amount of RAM
+#SBATCH --partition=itcga # the specific server in chimera we are using
+#SBATCH --error=%x-%A.err   # a filename to save error messages into
+#SBATCH --output=%x-%A.out  # a filename to save any printed output into
+
+# module load
+module load fastqc-0.11.9-gcc-10.2.0-osi6pqc
+
+# run fastqc
+fastqc *.fastq
+```
+
+```bash
+$ sbatch fastqc.sh
+```
+
+:::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::::::::
+
+
 
 The FastQC program has created several new files within our
 `data/untrimmed_fastq/` directory.
@@ -339,16 +383,9 @@ V1_S1_L001_R2_001_downsampled_fastqc.zip
 
 ```
 
-For each input FASTQ file, FastQC has created a `.zip` file and a
+For each input FASTQ file, FastQC has created a `.zip` file and a `.html` file. The `.zip` file extension indicates that this is actually a compressed set of multiple output files. We will be working with these output files soon. The `.html` file is a stable webpage displaying the summary report for each of our samples.
 
-`.html` file. The `.zip` file extension indicates that this is
-actually a compressed set of multiple output files. We will be working
-with these output files soon. The `.html` file is a stable webpage
-displaying the summary report for each of our samples.
-
-We want to keep our data files and our results files separate, so we
-will move these
-output files into a new directory within our `results/` directory.
+We want to keep our data files and our results files separate, so we will move these output files into a new directory within our `results/` directory.
 
 ```bash
 $ mkdir -p ~/1_project/results/fastqc_untrimmed_reads
