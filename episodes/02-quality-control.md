@@ -43,9 +43,7 @@ built under the assumption that the data will be provided in a specific format.
 
 ## Starting with data
 
-<<stuff about the workshop data here>>
-
-```
+Stuff about the workshop data here.
 
 ## Quality control
 
