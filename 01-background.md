@@ -33,7 +33,7 @@ RNA Sequencing (RNA-Seq) is a powerful technology used to analyze the transcript
   - Analysis of alternative splicing events
   - Study of non-coding RNAs
 
-![RNA Sequencing](./fig/RNA_Seq.png)
+![RNA Sequencing](./fig/RNA_Seq.png){alt='pre-spliced mRNA is spliced, sequenced, and aligned to a genome'}
 
 #### RNA-Seq Workflow
 
@@ -42,7 +42,7 @@ RNA Sequencing (RNA-Seq) is a powerful technology used to analyze the transcript
 - **Adapter Ligation:** Sequencing adaptors are ligated to the ends of the cDNA fragments.
 - **Sequencing:** Following amplification, the RNA-Seq library is ready for sequencing.
 
-![Workflow Diagram](./fig/RNA_Seq_workflow.png)
+![RNA-Seq Workflow Diagram](./fig/RNA_Seq_workflow.png){alt='Total RNA is extracted from cells, RNA types can be isolated, then these are reverse-transcribed into cDNA, adapters added, then sequenced'}
 
 ### Sequencing on Illumina Platforms
 
@@ -62,9 +62,9 @@ Key Illumina Platforms:
 - The next step is to generate an image using laser-induced fluorescent imaging
 - The principle behind the quantification of expression levels is that the amount of fluorescence measured at each sequence-specific location is directly proportional to the amount of mRNA with complementary sequence present in the sample analyzed (relative not absolute expression)
 
-![MicroArray vs RNA-Seq](./fig/microArray1.png)
+![MicroArray](./fig/microArray1.png){alt='Visualization of microarrays from hybridization to imaging to the whole array'}
 
-![MicroArray vs RNA-Seq](./fig/microarray2.png)
+![MicroArray vs RNA-Seq](./fig/microarray2.png){alt='Two possible microarray workflows'}
 
 - The upper panel illustrates the two channel technology while the lower panel illustrates the single channel technology.
 - The experiment is designed to compare the mRNA expression between two conditions( normal vs. disease). 
@@ -84,7 +84,7 @@ Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcript
   - `L1_R1_CCAAT_XXX.fastq`
   - `L1_R2_CCAAT_XXX.fastq`
 
-![Sequencing Platforms](./fig/fastq.png)
+![Fastq format](./fig/fastq.png){alt='Diagram of fastq format'}
 
 ### Central Data Analysis Themes
 
@@ -92,9 +92,10 @@ Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcript
 - **Mapping to Genome**
 - **De Novo Assembly:** When no reference genome is available
 
-![Sequencing Platforms](./fig/Major_Themes.png)
+![Sequencing Platforms](./fig/Major_Themes.png){alt='Three ways to analyze RNA-Seq data'}
 
 ### Data Quality Control
+You'll learn all of these steps in the next set of episodes.
 
 **Quality Assessment:** Evaluate read library quality using tools like FastQC.
 
@@ -103,8 +104,8 @@ Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcript
   - Filter out low-quality reads and sequence repeats.
   - Remove short reads (< 20bp).
 
-![Sequencing Platforms](./fig/QC.png)
-![Sequencing Platforms](./fig/trimming.png)
+![Quality Control](./fig/QC.png){alt='Quality control visuals'}
+![Trimming](./fig/trimming.png){alt='Removing unwanted or low-quality sequence'}
 
 ### Alignment to Reference Genome
 
@@ -113,13 +114,13 @@ Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcript
 - **Short Sequence Aligners:** BWA, Bowtie2
 - **RNA-Seq Specific:** TopHat2, HISAT2, STAR
 
-![Alignment Workflow](./fig/alignment.png)
+![Alignment Workflow](./fig/alignment.png){alt='How RNA-Seq data are aligned'}
 
 ### HISAT2
 
 We will be using this program for alignment, because it has a short processing time, simple quantification method (read counts), and differential analysis has low false positives.
 
-![hisat2 Alignment Workflow](./fig/hisat2_workflow.png)
+![hisat2 Alignment Workflow](./fig/hisat2_workflow.png){alt='hisat2 will identify alternative splice forms'}
 
 #### HISAT2 is splicing aware
 - Unlike DNA alignment, RNA-Seq reads may span across introns due to differences in splicing.
@@ -128,7 +129,7 @@ We will be using this program for alignment, because it has a short processing t
 - Runs significantly faster than Bowtie2 and uses ~8Gb of memory
 - On 100 million reads, it takes about 1 hour to finish the alignment process.
 
-![Splice-aware alignment](./fig/splice_aware.png)
+![Splice-aware alignment](./fig/splice_aware.png){alt='Multiple mRNA molecules can be spliced from the same transcribed sequence'}
 
 #### RNA-Seq: HISAT2 output
 ```
@@ -144,7 +145,7 @@ hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_k
   - Unmapped reads
   - Properly paired reads
 
-![Typical hisat2 output (sam formatted)](./fig/sam_file.png)
+![Typical hisat2 output (sam formatted)](./fig/sam_file.png){alt='Typical hisat2 output in sam format'}
 
 ### featureCounts
 
@@ -155,10 +156,10 @@ hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_k
 ```
 featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam
 ```
-![Table of the number of counts of each gene](./fig/count_table.png)
+![Table of the number of counts of each gene](./fig/count_table.png){alt='Typical featureCounts output'}
 
 ### edgeR
-![Differential Expression Analysis](./fig/hisat2_workflow3.png)
+![Differential Expression Analysis](./fig/hisat2_workflow3.png){alt='Now the workflow moves from bash to R'}
 
 edgeR is a Bioconductor R package that implements statistical methods based on generalized linear models (glms), suitable for multi-factor experiments of any complexity. edgeR can be applied to differential expression at the gene, exon, transcript or tag level for any design.
 
@@ -175,7 +176,7 @@ edgeR is a Bioconductor R package that implements statistical methods based on g
   plotMD(qlf)
   ```
   
-  ![Alignment Workflow](./fig/edgeR.png)
+![Example edgeR output](./fig/edgeR.png){alt='edgeR output shows differentially expressed gene table and a volcano plot'}
 
 ## RNA-Seq Experimental Planning
 
@@ -240,7 +241,7 @@ We will be working with data from...
 - **Example:**
   - If you are processing samples in different batches, you can randomize the order of sample processing within each batch to avoid systematic errors.
 
-  ![Alignment Workflow](./fig/experimental_design.png)
+![Experimental Design](./fig/experimental_design.png){alt='Example case-control experimental design'}
   
 ### Confounding Factors and Batch Effects
 
