@@ -324,7 +324,7 @@
 
 
 
-        <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 75 minutes</p>
+        <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 70 minutes</p>
 
         <div class="text-end">
           <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
@@ -362,18 +362,15 @@ workflow of gene expression research.</li>
 <h3 id="rna-sequencing-overview">RNA Sequencing Overview<a class="anchor" aria-label="anchor" href="#rna-sequencing-overview"></a></h3>
 <div class="section level4">
 <h4 id="what-is-rna-seq">What is RNA-Seq?<a class="anchor" aria-label="anchor" href="#what-is-rna-seq"></a></h4>
-<ul><li><p>RNA Sequencing (RNA-Seq) is a powerful technology used to analyze
-the transcriptome of a sample by sequencing RNA molecules.</p></li>
-<li>
-<p><strong>Key Applications:</strong></p>
-<ul><li>Gene expression profiling</li>
-<li>Differential Gene Expression</li>
-<li>Discovery of novel transcripts</li>
-<li>Analysis of alternative splicing events</li>
-<li>Study of non-coding RNAs</li>
-</ul></li>
-</ul><p><img src=".././fig/RNA_Seq.png" alt="RNA Sequencing" class="figure"> #### RNA-Seq
-Workflow</p>
+<p>RNA Sequencing (RNA-Seq) is a powerful technology used to analyze the
+transcriptome of a sample by sequencing RNA molecules.</p>
+<p><strong>Key Applications:</strong> - Gene expression profiling -
+Differential Gene Expression - Discovery of novel transcripts - Analysis
+of alternative splicing events - Study of non-coding RNAs</p>
+<figure><img src=".././fig/RNA_Seq.png" alt="RNA Sequencing" class="figure mx-auto d-block"><div class="figcaption">RNA Sequencing</div>
+</figure></div>
+<div class="section level4">
+<h4 id="rna-seq-workflow">RNA-Seq Workflow<a class="anchor" aria-label="anchor" href="#rna-seq-workflow"></a></h4>
 <ul><li>
 <strong>RNA Extraction:</strong> RNA is extracted from the
 biological material of choice (e.g., cells, tissues).</li>
@@ -391,25 +388,14 @@ library is ready for sequencing.</li>
 </div>
 <div class="section level3">
 <h3 id="sequencing-on-illumina-platforms">Sequencing on Illumina Platforms<a class="anchor" aria-label="anchor" href="#sequencing-on-illumina-platforms"></a></h3>
-<div class="section level4">
-<h4 id="illumina-sequencing">Illumina Sequencing<a class="anchor" aria-label="anchor" href="#illumina-sequencing"></a></h4>
-<ul><li>Illumina sequencing uses Sequencing by Synthesis (SBS) technology
+<p>Illumina sequencing uses Sequencing by Synthesis (SBS) technology
 where nucleotides are incorporated into a growing DNA strand and the
-sequence is determined by the order of incorporation.</li>
-</ul></div>
-<div class="section level4">
-<h4 id="key-illumina-platforms">Key Illumina Platforms<a class="anchor" aria-label="anchor" href="#key-illumina-platforms"></a></h4>
-<ul><li>
-<strong>NovaSeq:</strong> High-throughput suitable for large-scale
-studies</li>
-<li>
-<strong>NextSeq:</strong> Flexible, ideal for smaller labs</li>
-</ul></div>
-<div class="section level4">
-<h4 id="output">Output<a class="anchor" aria-label="anchor" href="#output"></a></h4>
-<ul><li>Output is typically in the form of FASTQ files, exactly like the
-ones we have been working with so far.</li>
-</ul></div>
+sequence is determined by the order of incorporation.</p>
+<p>Key Illumina Platforms:</p>
+<p><strong>MiSeq:</strong> Older, still sometimes used for RNA-Seq or
+amplicon sequencing <strong>NovaSeq:</strong> High-throughput suitable
+for large-scale studies <strong>NextSeq:</strong> Flexible, ideal for
+smaller labs</p>
 </div>
 <div class="section level3">
 <h3 id="dna-microarray-older-technology">DNA MicroArray (Older Technology)<a class="anchor" aria-label="anchor" href="#dna-microarray-older-technology"></a></h3>
@@ -429,29 +415,28 @@ is directly proportional to the amount of mRNA with complementary
 sequence present in the sample analyzed (relative not absolute
 expression)</li>
 </ul><figure><img src=".././fig/microArray1.png" alt="MicroArray vs RNA-Seq" class="figure mx-auto d-block"><div class="figcaption">MicroArray vs RNA-Seq</div>
-</figure><p><img src=".././fig/microArray2.png" alt="MicroArray vs RNA-Seq" class="figure"> - The
-upper panel illustrates the two channel technology while the lower panel
-illustrates the single channel technology. - The experiment is designed
-to compare the mRNA expression between two conditions( normal
-vs. disease). mRNA is extracted. In the top panel, the normal and
-disease mRNA are labeled with two different dyes, mixed and then
-hybridized on the same array. After washing, the array is scanned at two
-different wavelengths to yield two images - In the bottom panel B
-(single channel), each sample is labeled with the same fluorescent dye,
-but independently hybridized on different arrays. - Affymetrix GeneChip:
-oligonucleotide, single-channel array - Terminology: “probe” is the
-nucleotide sequence that is attached to the microarray surface. “target”
-in microarray experiments refers to what is hybridized to the
-probes.</p>
-<div class="section level4">
+</figure><figure><img src=".././fig/microarray2.png" alt="MicroArray vs RNA-Seq" class="figure mx-auto d-block"><div class="figcaption">MicroArray vs RNA-Seq</div>
+</figure><ul><li>The upper panel illustrates the two channel technology while the
+lower panel illustrates the single channel technology.</li>
+<li>The experiment is designed to compare the mRNA expression between
+two conditions( normal vs. disease). mRNA is extracted. In the top
+panel, the normal and disease mRNA are labeled with two different dyes,
+mixed and then hybridized on the same array. After washing, the array is
+scanned at two different wavelengths to yield two images</li>
+<li>In the bottom panel B (single channel), each sample is labeled with
+the same fluorescent dye, but independently hybridized on different
+arrays.</li>
+<li>Affymetrix GeneChip: oligonucleotide, single-channel array</li>
+<li>Terminology: “probe” is the nucleotide sequence that is attached to
+the microarray surface. “target” in microarray experiments refers to
+what is hybridized to the probes.</li>
+</ul><div class="section level4">
 <h4 id="rna-seq-advantages">RNA-Seq Advantages<a class="anchor" aria-label="anchor" href="#rna-seq-advantages"></a></h4>
-<ul><li>Unlike microarrays, RNA-Seq provides a more comprehensive view of
-the transcriptome, including novel transcripts and alternative splicing
-events.</li>
-</ul></div>
+<p>Unlike microarrays, RNA-Seq provides a more comprehensive view of the
+transcriptome, including novel transcripts and alternative splicing
+events. The output is typically in the form of FASTQ files, exactly like
+the ones we have been working with so far.</p>
 </div>
-<div class="section level3">
-<h3 id="rna-seq-output-files">RNA-Seq: Output Files<a class="anchor" aria-label="anchor" href="#rna-seq-output-files"></a></h3>
 <div class="section level4">
 <h4 id="fastq-file-format">Fastq File Format<a class="anchor" aria-label="anchor" href="#fastq-file-format"></a></h4>
 <ul><li>
@@ -479,35 +464,31 @@ available</li>
 </figure></div>
 <div class="section level3">
 <h3 id="data-quality-control">Data Quality Control<a class="anchor" aria-label="anchor" href="#data-quality-control"></a></h3>
-<ul><li>
-<strong>Quality Assessment:</strong> Evaluate read library quality
-using tools like FastQC.</li>
-<li>
-<strong>Filtering and Trimming:</strong>
-<ul><li>Remove low-quality bases from reads.</li>
-<li>Filter out low-quality reads and sequence repeats.</li>
-<li>Remove short reads (&lt; 20bp).</li>
-</ul></li>
-</ul><p><img src=".././fig/QC.png" alt="Sequencing Platforms" class="figure"><img src=".././fig/trimming.png" alt="Sequencing Platforms" class="figure"> ### Software</p>
-<ul><li>Recommended: <code>trime_galore</code>, Galaxy</li>
-</ul></div>
-<div class="section level3">
-<h3 id="alignment-to-reference-genome">Alignment to Reference Genome<a class="anchor" aria-label="anchor" href="#alignment-to-reference-genome"></a></h3>
+<p><strong>Quality Assessment:</strong> Evaluate read library quality
+using tools like FastQC.</p>
+<p><strong>Filtering and Trimming:</strong> - Remove low-quality bases
+from reads. - Filter out low-quality reads and sequence repeats. -
+Remove short reads (&lt; 20bp).</p>
+<p><img src=".././fig/QC.png" alt="Sequencing Platforms" class="figure"><img src=".././fig/trimming.png" alt="Sequencing Platforms" class="figure"></p>
 </div>
 <div class="section level3">
-<h3 id="alignment-protocols">Alignment Protocols<a class="anchor" aria-label="anchor" href="#alignment-protocols"></a></h3>
+<h3 id="alignment-to-reference-genome">Alignment to Reference Genome<a class="anchor" aria-label="anchor" href="#alignment-to-reference-genome"></a></h3>
+<div class="section level4">
+<h4 id="alignment-protocols">Alignment Protocols<a class="anchor" aria-label="anchor" href="#alignment-protocols"></a></h4>
 <ul><li>
 <strong>Short Sequence Aligners:</strong> BWA, Bowtie2</li>
 <li>
 <strong>RNA-Seq Specific:</strong> TopHat2, HISAT2, STAR</li>
 </ul><figure><img src=".././fig/alignment.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
 </figure></div>
+</div>
 <div class="section level3">
 <h3 id="hisat2">HISAT2<a class="anchor" aria-label="anchor" href="#hisat2"></a></h3>
-<p><img src=".././fig/hisat2_workflow.png" alt="Alignment Workflow" class="figure"> -
-Short processing time. - Simple quantification method (Counts). -
-Differential analysis has low false positives.</p>
-<div class="section level4">
+<p>We will be using this program for alignment, because it has a short
+processing time, simple quantification method (read counts), and
+differential analysis has low false positives.</p>
+<figure><img src=".././fig/hisat2_workflow.png" alt="hisat2 Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">hisat2 Alignment Workflow</div>
+</figure><div class="section level4">
 <h4 id="hisat2-is-splicing-aware">HISAT2 is splicing aware<a class="anchor" aria-label="anchor" href="#hisat2-is-splicing-aware"></a></h4>
 <ul><li>Unlike DNA alignment, RNA-Seq reads may span across introns due to
 differences in splicing.</li>
@@ -517,7 +498,7 @@ index files)</li>
 <li>Runs significantly faster than Bowtie2 and uses ~8Gb of memory</li>
 <li>On 100 million reads, it takes about 1 hour to finish the alignment
 process.</li>
-</ul><figure><img src=".././fig/splice_aware.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
+</ul><figure><img src=".././fig/splice_aware.png" alt="Splice-aware alignment" class="figure mx-auto d-block"><div class="figcaption">Splice-aware alignment</div>
 </figure></div>
 <div class="section level4">
 <h4 id="rna-seq-hisat2-output">RNA-Seq: HISAT2 output<a class="anchor" aria-label="anchor" href="#rna-seq-hisat2-output"></a></h4>
@@ -531,7 +512,7 @@ process.</li>
 <li>Unmapped reads</li>
 <li>Properly paired reads</li>
 </ul></li>
-</ul><figure><img src=".././fig/sam_file.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
+</ul><figure><img src=".././fig/sam_file.png" alt="Typical hisat2 output (sam formatted)" class="figure mx-auto d-block"><div class="figcaption">Typical hisat2 output (sam formatted)</div>
 </figure></div>
 </div>
 <div class="section level3">
@@ -543,36 +524,21 @@ meta-features).</li>
 <li>It also outputs stat info for the overall summarization
 results.</li>
 </ul><pre><code>featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
-<figure><img src=".././fig/count_table.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
+<figure><img src=".././fig/count_table.png" alt="Table of the number of counts of each gene" class="figure mx-auto d-block"><div class="figcaption">Table of the number of counts of each gene</div>
 </figure></div>
 <div class="section level3">
 <h3 id="edger">edgeR<a class="anchor" aria-label="anchor" href="#edger"></a></h3>
-<figure><img src=".././fig/hisat2_workflow3.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
-</figure><ul><li>edgeR is a Bioconductor R package that implements statistical
-methods based on generalizedlinear models (glms), suitable for
-multifactor experiments of any complexity.</li>
-<li>edgeR can be applied to differential expression at the gene, exon,
-transcript or tag level for any design. <img src=".././fig/experimental_design.png" alt="Alignment Workflow" class="figure"></li>
-</ul></div>
-<div class="section level3">
-<h3 id="edger-workflow">edgeR Workflow<a class="anchor" aria-label="anchor" href="#edger-workflow"></a></h3>
-<ul><li><p>edgeR is a Bioconductor R package that implements statistical
-methods based on generalized linear models (GLMs), suitable for
-multifactor experiments.</p></li>
-<li>
-<p><strong>Code Example:</strong></p>
-<pre><code><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu">model.matrix</span><span class="op">(</span><span class="op">~</span><span class="va">treatment</span><span class="op">)</span></span>
-<span><span class="va">CPM</span> <span class="op">&lt;-</span> <span class="fu">cpm</span><span class="op">(</span><span class="va">counts</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fu">ncol</span><span class="op">(</span><span class="va">counts</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">DGEList</span><span class="op">(</span>counts<span class="op">=</span><span class="va">x</span>, group<span class="op">=</span><span class="va">treatment</span><span class="op">)</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">calcNormFactors</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">glmQLFit</span><span class="op">(</span><span class="va">new.y</span>, <span class="va">new.design</span>, robust<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">qlf</span> <span class="op">&lt;-</span> <span class="fu">glmQLFTest</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="va">tt</span> <span class="op">&lt;-</span> <span class="fu">topTags</span><span class="op">(</span><span class="va">qlf</span><span class="op">)</span></span>
-<span><span class="fu">summary</span><span class="op">(</span><span class="fu">decideTests</span><span class="op">(</span><span class="va">qlf</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">plotMD</span><span class="op">(</span><span class="va">qlf</span><span class="op">)</span></span></code></pre>
+<figure><img src=".././fig/hisat2_workflow3.png" alt="Differential Expression Analysis" class="figure mx-auto d-block"><div class="figcaption">Differential Expression Analysis</div>
+</figure><p>edgeR is a Bioconductor R package that implements statistical methods
+based on generalized linear models (glms), suitable for multi-factor
+experiments of any complexity. edgeR can be applied to differential
+expression at the gene, exon, transcript or tag level for any
+design.</p>
+<p><strong>Code Example</strong> (note that this written in the language
+R):
+<code>design &lt;- model.matrix(~treatment)   CPM &lt;- cpm(counts[2:ncol(counts)])   y &lt;- DGEList(counts=x, group=treatment)   y &lt;- calcNormFactors(y)   fit &lt;- glmQLFit(new.y, new.design, robust=TRUE)   qlf &lt;- glmQLFTest(fit)   tt &lt;- topTags(qlf)   summary(decideTests(qlf))   plotMD(qlf)</code></p>
 <figure><img src=".././fig/edgeR.png" alt="Alignment Workflow" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
-</figure></li>
-</ul></div>
+</figure></div>
 <section><h2 class="section-heading" id="rna-seq-experimental-planning">RNA-Seq Experimental Planning<a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a>
 <a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a></h2>
 <hr class="half-width"><p>Thoughtful experimental design is the foundation of a successful
@@ -792,7 +758,7 @@ has more than one associated file.</li>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal"><li>36 files</li>
 <li>36 rows, 6 columns</li>
