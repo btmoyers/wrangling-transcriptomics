@@ -276,6 +276,8 @@ Based on the information `metadata.csv` in `~/itcga_workshop/metadata/`, can you
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
+  - RNA-Seq is a powerful tool for understanding differences in gene expression in various experiments. 
+  - There are many ways to analyze these data, and we will show you one of them.
   - It is important to record and understand your experiment's metadata.
   - Carefully plan your experiment to account for potential sources of variability.
   - Use appropriate numbers of biological replicates and consider technical replicates where necessary.
