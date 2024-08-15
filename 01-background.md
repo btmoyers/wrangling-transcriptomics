@@ -1,14 +1,13 @@
 ---
-title: Background and Metadata
+title: Experimental Planning Considerations for RNA-Seq
 teaching: 10
 exercises: 5
 ---
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- Why study *E. coli*?
-- Understand the data set.
-- What is hypermutability?
+- How do we design useful RNA-Seq experiments?
+- Understand the data set through metadata.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -21,76 +20,113 @@ exercises: 5
 
 ## Background
 
-We are going to use a long-term sequencing dataset from a population of *Escherichia coli*.
+Thoughtful experimental design is the foundation of a successful RNA-Seq study, leading to robust and reproducible results.
 
-- **What is *E. coli*?**
-  - *E. coli* are rod-shaped bacteria that can survive under a wide variety of conditions including variable temperatures, nutrient availability, and oxygen levels. Most strains are harmless, but some are associated with food-poisoning.
+## RNA-Seq Experimental Planning
 
-![](fig/172px-EscherichiaColi_NIAID.jpg){alt='Wikimedia'}
-
-<!-- https://species.wikimedia.org/wiki/Escherichia_coli#/media/File:EscherichiaColi_NIAID.jpg -->
-
-- **Why is *E. coli* important?**
-  - *E. coli* are one of the most well-studied model organisms in science. As a single-celled organism, *E. coli* reproduces rapidly, typically doubling its population every 20 minutes, which means it can be manipulated easily in experiments. In addition, most naturally occurring strains of *E. coli* are harmless. Most importantly, the genetics of *E. coli* are fairly well understood and can be manipulated to study adaptation and evolution.
+  - Proper experimental design ensures that the data generated is reliable, reproducible, and has the signal strength to draw meaningful biological results.
+  - Key aspects include selecting appropriate replicates, collecting detailed metadata, and considering sources of variability.
 
 ## The data
 
-- The data we are going to use is part of a long-term evolution experiment led by [Richard Lenski](https://en.wikipedia.org/wiki/E._coli_long-term_evolution_experiment).
+We will be working with data from...
 
-- The experiment was designed to assess adaptation in *E. coli*. A population was propagated for more than 40,000 generations in a glucose-limited minimal medium (in most conditions glucose is the best carbon source for *E. coli*, providing faster growth than other sugars). This medium was supplemented with citrate, which *E. coli* cannot metabolize in the aerobic conditions of the experiment. Sequencing of the populations at regular time points revealed that spontaneous citrate-using variant (**Cit+**) appeared between 31,000 and 31,500 generations, causing an increase in population size and diversity. In addition, this experiment showed hypermutability in certain regions. Hypermutability is important and can help accelerate adaptation to novel environments, but also can be selected against in well-adapted populations.
+# Metadata in RNA-Seq
 
-- To see a timeline of the experiment to date, check out this [figure](https://en.wikipedia.org/wiki/E._coli_long-term_evolution_experiment#/media/File:LTEE_Timeline_as_of_May_28,_2016.png), and this paper [Blount et al. 2008: Historical contingency and the evolution of a key innovation in an experimental population of *Escherichia coli*](https://www.pnas.org/content/105/23/7899).
+  - Metadata refers to the descriptive information about samples.
+  - This includes biological details (e.g., tissue type, cell type, condition, treatment) and technical details such as library prep method, sequencing platform, sequencing depth, and sequencing batch.
+  - Detailed metadata is essential for understanding and interpreting the RNA-Seq data.
+  - Proper metadata annotation allows for better reproducibility and data sharing.
 
-### View the metadata
+- **Example:**
+  - Consider a case-control study, where we are interested in changes in gene expression in treated vs. untreated cells. Treatment can refer to different growth conditions, disease vs. normal, treated with a drug or vehicle.
+  - Metadata should include the treatment type, dosage, duration, cell line, and batch number.
 
-We will be working with three sample events from the **Ara-3** strain of this experiment, one from 5,000 generations, one from 15,000 generations, and one from 50,000 generations. The population changed substantially during the course of the experiment, and we will be exploring how (the evolution of a **Cit+** mutant and **hypermutability**) with our variant calling workflow. The metadata file associated with this lesson can be [downloaded directly here](files/Ecoli_metadata_composite.csv) or [viewed in Github](https://github.com/datacarpentry/wrangling-genomics/blob/main/episodes/files/Ecoli_metadata_composite.csv). If you would like to know details of how the file was created, you can look at [some notes and sources here](https://github.com/datacarpentry/wrangling-genomics/blob/main/episodes/files/Ecoli_metadata_composite_README.md).
+## Example Metadata Table
 
-This metadata describes information on the *Ara-3* clones and the columns represent:
+| Sample_ID | Condition  | Treatment | Time_Point | Tissue_Type | Batch | Sequencing_Run | Library_Prep_Kit | RNA_Concentration (ng/µL) |
+|-----------|------------|-----------|------------|-------------|-------|----------------|------------------|---------------------------|
+| Sample_01 | Control    | None      | 0 hours    | Liver       | 1     | Run_01         | Kit_A            | 200                       |
+| Sample_02 | Treated    | Drug_X    | 6 hours    | Liver       | 1     | Run_01         | Kit_A            | 210                       |
+| Sample_03 | Control    | None      | 12 hours   | Liver       | 1     | Run_02         | Kit_B            | 190                       |
+| Sample_04 | Treated    | Drug_X    | 24 hours   | Liver       | 2     | Run_02         | Kit_B            | 220                       |
+| Sample_05 | Control    | None      | 0 hours    | Heart       | 2     | Run_03         | Kit_A            | 230                       |
+| Sample_06 | Treated    | Drug_X    | 6 hours    | Heart       | 2     | Run_03         | Kit_A            | 215                       |
+| Sample_07 | Control    | None      | 12 hours   | Heart       | 3     | Run_04         | Kit_B            | 205                       |
+| Sample_08 | Treated    | Drug_X    | 24 hours   | Heart       | 3     | Run_04         | Kit_B            | 225                       |
 
-| Column           | Description                                     | 
-| ---------------- | ----------------------------------------------- |
-| strain           | strain name                                     | 
-| generation       | generation when sample frozen                   | 
-| clade            | based on parsimony-based tree                   | 
-| reference        | study the samples were originally sequenced for | 
-| population       | ancestral population group                      | 
-| mutator          | hypermutability mutant status                   | 
-| facility         | facility samples were sequenced at              | 
-| run              | Sequence read archive sample ID                 | 
-| read\_type        | library type of reads                           | 
-| read\_length      | length of reads in sample                       | 
-| sequencing\_depth | depth of sequencing                             | 
-| cit              | citrate-using mutant status                     | 
+### Metadata Explanation
+
+- **Sample_ID:** A unique identifier for each sample.
+- **Condition:** Indicates the experimental condition (e.g., control, treated).
+- **Treatment:** Details of any treatment applied to the samples (e.g., Drug_X).
+- **Time_Point:** The time point at which the sample was collected.
+- **Tissue_Type:** The type of tissue from which the sample was extracted.
+- **Batch:** The batch number indicating when the samples were processed.
+- **Sequencing_Run:** The specific sequencing run in which the sample was sequenced.
+- **Library_Prep_Kit:** The kit used for sequencing library preparation.
+- **RNA_Concentration:** The concentration of RNA in the sample, which is important for assessing sample quality.
+
+### Biological and Technical Replicates
+
+  - Biological replicates are independent samples from the same experimental condition.
+  - They capture natural biological variability, which is crucial for generalizing results.
+  - These replicates are crucially needed for downstream statistical analysis.
+  - Technical replicates involve repeating the same sample processing steps (e.g., sequencing, library prep) to assess technical variability (instrument measurement noise).
+
+  - Replicates increase the reliability of your findings by allowing for statistical analysis.
+  - It is highly recommended to generate at least 3 biological replicates per condition to ensure sufficient statistical power for detecting differential expression.
+
+### Randomization and Block Design
+
+  - Randomization refers to randomly assigning samples to different experimental conditions or processing orders to minimize bias.
+  - Randomization helps to evenly distribute confounding factors (e.g., time of day, machine variability) across all experimental conditions.
+  - Block design is a strategy where samples are grouped into blocks that share a common characteristic (e.g., batch) to control for known sources of variability.
+
+- **Example:**
+  - If you are processing samples in different batches, you can randomize the order of sample processing within each batch to avoid systematic errors.
+
+  ![Alignment Workflow](./fig/experimental_design.png)
+  
+### Confounding Factors and Batch Effects
+
+  - Confounding factors are variables that can influence the outcome of the experiment without being of direct interest (e.g., technician handling, machine type, sequencing center).
+  - Batch effects are unwanted variations that arise from differences in sample processing or sequencing batches.
+  - Confounding factors and batch effects can obscure the true biological signals in the data.
+  - **Design stage:** Include batch as a factor in your experimental design.
+  - **Analysis stage:** Apply batch effect correction methods, such as ComBat or include batch as a covariate in the statistical model.
+
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ### Challenge
 
-Based on the metadata, can you answer the following questions?
+Based on the information `metadata.csv` in `~/itcga_workshop/metadata/`, can you answer the following questions?
 
-1. How many different generations exist in the data?
+1. How many different fastq files do we have?
 2. How many rows and how many columns are in this data?
-3. How many citrate+ mutants have been recorded in **Ara-3**?
-4. How many hypermutable mutants have been recorded in **Ara-3**?
+3. How many CXCL12-treated samples do we have? Note that each sample has more than one associated file.
 
 :::::::::::::::  solution
 
 ### Solution
 
-1. 25 different generations
-2. 62 rows, 12 columns
-3. 10 citrate+ mutants
-4. 6 hypermutable mutants
+1. 36 files
+2. 36 rows, 6 columns
+3. Three samples (S4,S5,S6), each with four files (PE = R1 & R2 on lane = L1 & L2)
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-<!-- can add some additional info relevant to interplay of hypermutability and Cit+ adaptations, but keep it simple for now -->
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
-- It is important to record and understand your experiment's metadata.
+  - It is important to record and understand your experiment's metadata.
+  - Carefully plan your experiment to account for potential sources of variability.
+  - Use appropriate numbers of biological replicates and consider technical replicates where necessary.
+  - Randomize sample processing and use block designs to minimize bias.
+  - Address batch effects during both the design and analysis stages.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
