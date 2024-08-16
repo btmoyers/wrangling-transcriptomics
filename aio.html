@@ -358,7 +358,7 @@
         
 <section id="aio-01-background"><p>Content from <a href="01-background.html">Introduction and Experimental Planning Considerations for RNA-Seq</a></p>
 <hr>
-<p>Last updated on 2024-08-15 |
+<p>Last updated on 2024-08-16 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/01-background.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -384,8 +384,8 @@
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
 <ul>
-<li>Learn about the history, current status, and a typical analysis
-workflow of gene expression research.</li>
+<li>Learn about the history and the current status of gene expression
+research.</li>
 <li>How do we design useful RNA-Seq experiments?</li>
 <li>Understand the data set through metadata.</li>
 </ul>
@@ -506,122 +506,6 @@ the ones we have been working with so far.</p>
 <figure><img src="./fig/fastq.png" alt="Diagram of fastq format" class="figure mx-auto d-block"><div class="figcaption">Fastq format</div>
 </figure>
 </div>
-</div>
-<div class="section level3">
-<h3 id="central-data-analysis-themes">Central Data Analysis Themes<a class="anchor" aria-label="anchor" href="#central-data-analysis-themes"></a>
-</h3>
-<ul>
-<li>
-<strong>Mapping to Transcriptome:</strong> No novel transcript
-discovery</li>
-<li><strong>Mapping to Genome</strong></li>
-<li>
-<strong>De Novo Assembly:</strong> When no reference genome is
-available</li>
-</ul>
-<figure><img src="./fig/Major_Themes.png" alt="Three ways to analyze RNA-Seq data" class="figure mx-auto d-block"><div class="figcaption">Sequencing Platforms</div>
-</figure>
-</div>
-<div class="section level3">
-<h3 id="data-quality-control">Data Quality Control<a class="anchor" aria-label="anchor" href="#data-quality-control"></a>
-</h3>
-<p>You’ll learn all of these steps in the next set of episodes.</p>
-<p><strong>Quality Assessment:</strong> Evaluate read library quality
-using tools like FastQC.</p>
-<p><strong>Filtering and Trimming:</strong> - Remove low-quality bases
-from reads. - Filter out low-quality reads and sequence repeats. -
-Remove short reads (&lt; 20bp).</p>
-<p><img src="./fig/QC.png" alt="Quality control visuals" class="figure"><img src="./fig/trimming.png" alt="Removing unwanted or low-quality sequence" class="figure"></p>
-</div>
-<div class="section level3">
-<h3 id="alignment-to-reference-genome">Alignment to Reference Genome<a class="anchor" aria-label="anchor" href="#alignment-to-reference-genome"></a>
-</h3>
-<div class="section level4">
-<h4 id="alignment-protocols">Alignment Protocols<a class="anchor" aria-label="anchor" href="#alignment-protocols"></a>
-</h4>
-<ul>
-<li>
-<strong>Short Sequence Aligners:</strong> BWA, Bowtie2</li>
-<li>
-<strong>RNA-Seq Specific:</strong> TopHat2, HISAT2, STAR</li>
-</ul>
-<figure><img src="./fig/alignment.png" alt="How RNA-Seq data are aligned" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
-</figure>
-</div>
-</div>
-<div class="section level3">
-<h3 id="hisat2">HISAT2<a class="anchor" aria-label="anchor" href="#hisat2"></a>
-</h3>
-<p>We will be using this program for alignment, because it has a short
-processing time, simple quantification method (read counts), and
-differential analysis has low false positives.</p>
-<figure><img src="./fig/hisat2_workflow.png" alt="hisat2 will identify alternative splice forms" class="figure mx-auto d-block"><div class="figcaption">hisat2 Alignment Workflow</div>
-</figure><div class="section level4">
-<h4 id="hisat2-is-splicing-aware">HISAT2 is splicing aware<a class="anchor" aria-label="anchor" href="#hisat2-is-splicing-aware"></a>
-</h4>
-<ul>
-<li>Unlike DNA alignment, RNA-Seq reads may span across introns due to
-differences in splicing.</li>
-<li>Usually 35% of reads will span multiple exons</li>
-<li>HISAT2 is a splice aware aligner (based on Bowtie2, uses many genome
-index files)</li>
-<li>Runs significantly faster than Bowtie2 and uses ~8Gb of memory</li>
-<li>On 100 million reads, it takes about 1 hour to finish the alignment
-process.</li>
-</ul>
-<figure><img src="./fig/splice_aware.png" alt="Multiple mRNA molecules can be spliced from the same transcribed sequence" class="figure mx-auto d-block"><div class="figcaption">Splice-aware alignment</div>
-</figure>
-</div>
-<div class="section level4">
-<h4 id="rna-seq-hisat2-output">RNA-Seq: HISAT2 output<a class="anchor" aria-label="anchor" href="#rna-seq-hisat2-output"></a>
-</h4>
-<pre><code>hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_known_splice_sites.txt -1 ../trim_galore_out/JRN008_CGATGT_L001_R1_001_val_1.fq -2 ../trim_galore_out/JRN008_CGATGT_L001_R2_001_val_2.fq -S ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
-<ul>
-<li>Output:
-<ul>
-<li>SAM / BAM alignment files</li>
-<li>Software: SAMtoold</li>
-<li>Contain statistics:</li>
-<li>Uniquely mapped reads</li>
-<li>Reads with multiple alignment</li>
-<li>Unmapped reads</li>
-<li>Properly paired reads</li>
-</ul>
-</li>
-</ul>
-<figure><img src="./fig/sam_file.png" alt="Typical hisat2 output in sam format" class="figure mx-auto d-block"><div class="figcaption">Typical hisat2 output (sam formatted)</div>
-</figure>
-</div>
-</div>
-<div class="section level3">
-<h3 id="featurecounts">featureCounts<a class="anchor" aria-label="anchor" href="#featurecounts"></a>
-</h3>
-<ul>
-<li>featureCounts takes as input SAM/BAM files and an annotation file as
-input.</li>
-<li>It outputs numbers of reads assigned to features (or
-meta-features).</li>
-<li>It also outputs stat info for the overall summarization
-results.</li>
-</ul>
-<pre><code>featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
-<figure><img src="./fig/count_table.png" alt="Typical featureCounts output" class="figure mx-auto d-block"><div class="figcaption">Table of the number of counts of each gene</div>
-</figure>
-</div>
-<div class="section level3">
-<h3 id="edger">edgeR<a class="anchor" aria-label="anchor" href="#edger"></a>
-</h3>
-<figure><img src="./fig/hisat2_workflow3.png" alt="Now the workflow moves from bash to R" class="figure mx-auto d-block"><div class="figcaption">Differential Expression Analysis</div>
-</figure><p>edgeR is a Bioconductor R package that implements statistical methods
-based on generalized linear models (glms), suitable for multi-factor
-experiments of any complexity. edgeR can be applied to differential
-expression at the gene, exon, transcript or tag level for any
-design.</p>
-<p><strong>Code Example</strong> (note that this written in the language
-R):
-<code>design &lt;- model.matrix(~treatment)   CPM &lt;- cpm(counts[2:ncol(counts)])   y &lt;- DGEList(counts=x, group=treatment)   y &lt;- calcNormFactors(y)   fit &lt;- glmQLFit(new.y, new.design, robust=TRUE)   qlf &lt;- glmQLFTest(fit)   tt &lt;- topTags(qlf)   summary(decideTests(qlf))   plotMD(qlf)</code></p>
-<figure><img src="./fig/edgeR.png" alt="edgeR output shows differentially expressed gene table and a volcano plot" class="figure mx-auto d-block"><div class="figcaption">Example edgeR output</div>
-</figure>
 </div>
 <section><h2 class="section-heading" id="rna-seq-experimental-planning">RNA-Seq Experimental Planning<a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a>
 <a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a>
@@ -1129,7 +1013,7 @@ you in this read?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1268,7 +1152,7 @@ directory</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1356,7 +1240,7 @@ script and run it using <code>sbatch</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1542,7 +1426,7 @@ worst?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>All of the reads contain usable data, but the quality decreases
 toward the beginning and end of the reads.</p>
@@ -1867,7 +1751,7 @@ test(s) did those samples fail?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
 <div class="accordion-body">
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
 <div class="codewrapper sourceCode" id="cb44">
@@ -1964,7 +1848,7 @@ multiple files with a single command.</li>
 </div>
 </section></section><section id="aio-03-trimming"><p>Content from <a href="03-trimming.html">Trimming and Filtering</a></p>
 <hr>
-<p>Last updated on 2024-08-15 |
+<p>Last updated on 2024-08-16 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/03-trimming.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -2094,6 +1978,16 @@ below.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td>&lt;outputFile1&gt;</td>
+<td>After -o, output file that contains trimmed or filtered reads from
+the first input file (typically ‘R1’)</td>
+</tr>
+<tr class="even">
+<td>&lt;outputFile2&gt;</td>
+<td>After -p, output file that contains trimmed or filtered reads from
+the first input file (typically ‘R2’)</td>
+</tr>
+<tr class="odd">
 <td>&lt;inputFile1&gt;</td>
 <td>Input reads to be trimmed. Typically the file name will contain an
 <code>_1</code> or <code>_R1</code> in the name.</td>
@@ -2103,95 +1997,22 @@ below.</p>
 <td>Input reads to be trimmed. Typically the file name will contain an
 <code>_2</code> or <code>_R2</code> in the name.</td>
 </tr>
-<tr class="odd">
-<td>&lt;outputFile1P&gt;</td>
-<td>Output file that contains surviving pairs from the <code>_1</code>
-file.</td>
-</tr>
-<tr class="even">
-<td>&lt;outputFile1U&gt;</td>
-<td>Output file that contains orphaned reads from the <code>_1</code>
-file.</td>
-</tr>
-<tr class="odd">
-<td>&lt;outputFile2P&gt;</td>
-<td>Output file that contains surviving pairs from the <code>_2</code>
-file.</td>
-</tr>
-<tr class="even">
-<td>&lt;outputFile2U&gt;</td>
-<td>Output file that contains orphaned reads from the <code>_2</code>
-file.</td>
-</tr>
 </tbody>
 </table>
-<p>The last thing cutadapt expects to see is the trimming
-parameters:</p>
-<table class="table">
-<colgroup>
-<col width="11%">
-<col width="88%">
-</colgroup>
-<thead><tr class="header">
-<th>step</th>
-<th>meaning</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>ILLUMINACLIP</code></td>
-<td>Perform adapter removal.</td>
-</tr>
-<tr class="even">
-<td><code>SLIDINGWINDOW</code></td>
-<td>Perform sliding window trimming, cutting once the average quality
-within the window falls below a threshold.</td>
-</tr>
-<tr class="odd">
-<td><code>LEADING</code></td>
-<td>Cut bases off the start of a read, if below a threshold
-quality.</td>
-</tr>
-<tr class="even">
-<td><code>TRAILING</code></td>
-<td>Cut bases off the end of a read, if below a threshold quality.</td>
-</tr>
-<tr class="odd">
-<td><code>CROP</code></td>
-<td>Cut the read to a specified length.</td>
-</tr>
-<tr class="even">
-<td><code>HEADCROP</code></td>
-<td>Cut the specified number of bases from the start of the read.</td>
-</tr>
-<tr class="odd">
-<td><code>MINLEN</code></td>
-<td>Drop an entire read if it is below a specified length.</td>
-</tr>
-<tr class="even">
-<td><code>TOPHRED33</code></td>
-<td>Convert quality scores to Phred-33.</td>
-</tr>
-<tr class="odd">
-<td><code>TOPHRED64</code></td>
-<td>Convert quality scores to Phred-64.</td>
-</tr>
-</tbody>
-</table>
-<p>We will use only a few of these options and trimming steps in our
-analysis. It is important to understand the steps you are using to clean
-your data. For more information about the cutadapt arguments and
-options, see <a href="https://www.usadellab.org/cms/uploads/supplementary/cutadapt/cutadaptManual_V0.32.pdf" class="external-link">the
-cutadapt manual</a>.</p>
+<p>Cutadapt can remove adapter sequences that are in your sequence data,
+trim or remove low-quality bases or reads, and do a few other useful
+things. We will use only a few of these options and trimming steps in
+our analysis. It is important to understand the steps you are using to
+clean your data. For more information about the cutadapt arguments and
+options, see <a href="https://cutadapt.readthedocs.io/en/stable/guide.html" class="external-link">the cutadapt
+manual</a>.</p>
 <p>However, a complete command for cutadapt will look something like the
 command below. This command is an example and will not work, as we do
 not have the files it refers to:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt PE <span class="at">-threads</span> 4 SRR_1056_1.fastq SRR_1056_2.fastq  <span class="dt">\</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>              SRR_1056_1.trimmed.fastq SRR_1056_1un.trimmed.fastq <span class="dt">\</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>              SRR_1056_2.trimmed.fastq SRR_1056_2un.trimmed.fastq <span class="dt">\</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>              ILLUMINACLIP:SRR_adapters.fa SLIDINGWINDOW:4:20</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-q</span> 10 <span class="at">-m</span> 35 <span class="at">-o</span> example_R1_trim.fastq <span class="at">-p</span> example_R2_trim.fastq exampleR1.fastq exampleR2.fastq</span></code></pre>
 </div>
 <p>In this example, we have told cutadapt:</p>
 <table class="table">
@@ -2205,52 +2026,31 @@ not have the files it refers to:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>PE</code></td>
-<td>that it will be taking a paired end file as input</td>
+<td><code>-q 10</code></td>
+<td>remove (trim) bases with quality below 10 from the ends of
+reads</td>
 </tr>
 <tr class="even">
-<td><code>-threads 4</code></td>
-<td>to use four computing threads to run (this will speed up our
-run)</td>
+<td><code>-m 35</code></td>
+<td>discard any reads that are shorter than 35 bases after trimming</td>
 </tr>
 <tr class="odd">
-<td><code>SRR_1056_1.fastq</code></td>
-<td>the first input file name</td>
-</tr>
-<tr class="even">
-<td><code>SRR_1056_2.fastq</code></td>
-<td>the second input file name</td>
-</tr>
-<tr class="odd">
-<td><code>SRR_1056_1.trimmed.fastq</code></td>
-<td>the output file for surviving pairs from the <code>_1</code>
+<td><code>-o example_R1_trim.fastq</code></td>
+<td>the output file for trimmed and filtered reads from the R1 input
 file</td>
 </tr>
 <tr class="even">
-<td><code>SRR_1056_1un.trimmed.fastq</code></td>
-<td>the output file for orphaned reads from the <code>_1</code>
+<td><code>-p example_R2_trim.fastq</code></td>
+<td>the output file for trimmed and filtered reads from the R2 input
 file</td>
 </tr>
 <tr class="odd">
-<td><code>SRR_1056_2.trimmed.fastq</code></td>
-<td>the output file for surviving pairs from the <code>_2</code>
-file</td>
+<td><code>exampleR1.fastq</code></td>
+<td>the input R1 fastq file</td>
 </tr>
 <tr class="even">
-<td><code>SRR_1056_2un.trimmed.fastq</code></td>
-<td>the output file for orphaned reads from the <code>_2</code>
-file</td>
-</tr>
-<tr class="odd">
-<td><code>ILLUMINACLIP:SRR_adapters.fa</code></td>
-<td>to clip the Illumina adapters from the input file using the adapter
-sequences listed in <code>SRR_adapters.fa</code>
-</td>
-</tr>
-<tr class="even">
-<td><code>SLIDINGWINDOW:4:20</code></td>
-<td>to use a sliding window of size 4 that will remove bases if their
-phred score is below 20</td>
+<td><code>exampleR2.fastq</code></td>
+<td>the input R2 fastq file</td>
 </tr>
 </tbody>
 </table>
@@ -2278,50 +2078,23 @@ your code more readable.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/data/untrimmed_fastq</span></code></pre>
 </div>
-<p>We are going to run cutadapt on one of our paired-end samples. While
-using FastQC we saw that Nextera adapters were present in our samples.
-The adapter sequences came with the installation of cutadapt, so we will
-first copy these sequences into our current directory.</p>
+<p>We are going to run cutadapt on one of our paired-end samples (V1).
+We will remove bases from the ends of the reads if their phred score is
+below 10 and filter out any reads that are shorter than 35 bases in our
+trimmed sequences (like in our example above).</p>
+<p>While using FastQC we saw that adapters were present in our
+samples.???</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> cp ~/.miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/NexteraPE-PE.fa .</span></code></pre>
-</div>
-<p>We will also use a sliding window of size 4 that will remove bases if
-their phred score is below 20 (like in our example above). We will also
-discard any reads that do not have at least 25 bases remaining after
-this trimming step. Three additional pieces of code are also added to
-the end of the ILLUMINACLIP step. These three additional numbers
-(2:40:15) tell Trimmimatic how to handle sequence matches to the Nextera
-adapters. A detailed explanation of how they work is advanced for this
-particular lesson. For now we will use these numbers as a default and
-recognize they are needed to for cutadapt to run properly. This command
-will take a few minutes to run.</p>
-<div class="codewrapper sourceCode" id="cb9">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="ex">$</span> cutadapt PE SRR2589044_1.fastq.gz SRR2589044_2.fastq.gz <span class="dt">\</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                SRR2589044_1.trim.fastq.gz SRR2589044_1un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                SRR2589044_2.trim.fastq.gz SRR2589044_2un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-q</span> 10 <span class="at">-m</span> 35 <span class="at">-o</span> V1_S1_L001_R1_001_ds_trim.fastq <span class="at">-p</span> V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>cutadaptPE: Started with arguments:
- SRR2589044_1.fastq.gz SRR2589044_2.fastq.gz SRR2589044_1.trim.fastq.gz SRR2589044_1un.trim.fastq.gz SRR2589044_2.trim.fastq.gz SRR2589044_2un.trim.fastq.gz SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
-Multiple cores found: Using 2 threads
-Using PrefixPair: 'AGATGTGTATAAGAGACAG' and 'AGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'CTGTCTCTTATACACATCTCCGAGCCCACGAGAC'
-Using Long Clipping Sequence: 'CTGTCTCTTATACACATCTGACGCTGCCGACGA'
-ILLUMINACLIP: Using 1 prefix pairs, 4 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
-Quality encoding detected as phred33
-Input Read Pairs: 1107090 Both Surviving: 885220 (79.96%) Forward Only Surviving: 216472 (19.55%) Reverse Only Surviving: 2850 (0.26%) Dropped: 2548 (0.23%)
-cutadaptPE: Completed successfully</code></pre>
+<pre class="output" tabindex="0"><code></code></pre>
 </div>
 <div id="exercise" class="callout challenge">
 <div class="callout-square">
@@ -2345,7 +2118,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>0.23%</li>
@@ -2359,10 +2132,10 @@ questions.</p>
 encoding of our sample. It is always a good idea to double-check this or
 to enter the quality encoding manually.</p>
 <p>We can confirm that we have our output files:</p>
-<div class="codewrapper sourceCode" id="cb11">
+<div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span></span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2372,10 +2145,10 @@ SRR2589044_1.trim.fastq.gz  SRR2589044_2.fastq.gz         SRR2589044_2un.trim.fa
 </div>
 <p>The output files are also FASTQ files. It should be smaller than our
 input file, because we have removed reads. We can confirm this:</p>
-<div class="codewrapper sourceCode" id="cb13">
+<div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span> <span class="at">-l</span> <span class="at">-h</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span> <span class="at">-l</span> <span class="at">-h</span></span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2394,22 +2167,22 @@ use a <code>for</code> loop to iterate through our sample files
 quickly!</p>
 <p>We unzipped one of our files before to work with it, let’s compress
 it again before we run our for loop.</p>
+<div class="codewrapper sourceCode" id="cb14">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">gzip</span> SRR2584863_1.fastq </span></code></pre>
+</div>
 <div class="codewrapper sourceCode" id="cb15">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">gzip</span> SRR2584863_1.fastq </span></code></pre>
-</div>
-<div class="codewrapper sourceCode" id="cb16">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> for infile in <span class="pp">*</span>_1.fastq.gz</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="op">&gt;</span> do</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="op">&gt;</span>   base=<span class="va">$(</span><span class="fu">basename</span> <span class="va">${infile}</span> _1.fastq.gz<span class="va">)</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="op">&gt;</span>   cutadapt <span class="ex">PE</span> <span class="va">${infile}</span> <span class="va">${base}</span>_2.fastq.gz <span class="dt">\</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_1.trim.fastq.gz <span class="va">${base}</span>_1un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_2.trim.fastq.gz <span class="va">${base}</span>_2un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="op">&gt;</span>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 </span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">$</span> for infile in <span class="pp">*</span>_1.fastq.gz</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="op">&gt;</span> do</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="op">&gt;</span>   base=<span class="va">$(</span><span class="fu">basename</span> <span class="va">${infile}</span> _1.fastq.gz<span class="va">)</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="op">&gt;</span>   cutadapt <span class="ex">PE</span> <span class="va">${infile}</span> <span class="va">${base}</span>_2.fastq.gz <span class="dt">\</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_1.trim.fastq.gz <span class="va">${base}</span>_1un.trim.fastq.gz <span class="dt">\</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_2.trim.fastq.gz <span class="va">${base}</span>_2un.trim.fastq.gz <span class="dt">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="op">&gt;</span>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 </span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
 </div>
 <p>Go ahead and run the for loop. It should take a few minutes for
 cutadapt to run for each of our six input files. Once it is done
@@ -2419,10 +2192,10 @@ running the for loop, there is only one set of files for it. Because we
 matched the ending <code>_1.fastq.gz</code>, we re-ran cutadapt on this
 file, overwriting our first results. That is ok, but it is good to be
 aware that it happened.</p>
-<div class="codewrapper sourceCode" id="cb17">
+<div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2454,12 +2227,12 @@ cutadapt?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
-<div class="codewrapper sourceCode" id="cb19">
+<div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="ex">$</span> ls ~/miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">$</span> ls ~/miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2474,14 +2247,14 @@ TruSeq2-PE.fa    TruSeq3-PE-2.fa  TruSeq3-SE.fa</code></pre>
 <p>We have now completed the trimming and filtering steps of our quality
 control process! Before we move on, let’s move our trimmed FASTQ files
 to a new subdirectory within our <code>data/</code> directory.</p>
-<div class="codewrapper sourceCode" id="cb21">
+<div class="codewrapper sourceCode" id="cb20">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="ex">$</span> mkdir ../trimmed_fastq</span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.trim<span class="pp">*</span> ../trimmed_fastq</span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="ex">$</span> cd ../trimmed_fastq</span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/data/untrimmed_fastq</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="ex">$</span> mkdir ../trimmed_fastq</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.trim<span class="pp">*</span> ../trimmed_fastq</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="ex">$</span> cd ../trimmed_fastq</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2511,20 +2284,20 @@ whether your per base sequence quality is higher after trimming.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>In your AWS terminal window do:</p>
+<div class="codewrapper sourceCode" id="cb22">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="ex">$</span> fastqc ~/1_project/data/trimmed_fastq/<span class="pp">*</span>.fastq<span class="pp">*</span></span></code></pre>
+</div>
+<p>In a new tab in your terminal do:</p>
 <div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> fastqc ~/dc_workshop/data/trimmed_fastq/<span class="pp">*</span>.fastq<span class="pp">*</span></span></code></pre>
-</div>
-<p>In a new tab in your terminal do:</p>
-<div class="codewrapper sourceCode" id="cb24">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> mkdir ~/Desktop/fastqc_html/trimmed</span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/data/trimmed_fastq/<span class="pp">*</span>.html ~/Desktop/fastqc_html/trimmed</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> mkdir ~/Desktop/fastqc_html/trimmed</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/data/trimmed_fastq/<span class="pp">*</span>.html ~/Desktop/fastqc_html/trimmed</span></code></pre>
 </div>
 <p>Then take a look at the html files in your browser.</p>
 <p>Remember to replace everything between the <code>@</code> and
@@ -3404,7 +3177,7 @@ file, and how it was derived.</li>
 </div>
 </section></section><section id="aio-05-automation"><p>Content from <a href="05-automation.html">Automating a Variant Calling Workflow</a></p>
 <hr>
-<p>Last updated on 2024-07-08 |
+<p>Last updated on 2024-08-16 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/05-automation.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <div class="text-end">
@@ -3993,7 +3766,121 @@ number of variants change per sample?</p>
 </div>
 </div>
 </div>
-<div id="keypoints1" class="callout keypoints">
+<div class="section level3">
+<h3 id="central-data-analysis-themes">Central Data Analysis Themes<a class="anchor" aria-label="anchor" href="#central-data-analysis-themes"></a>
+</h3>
+<ul>
+<li>
+<strong>Mapping to Transcriptome:</strong> No novel transcript
+discovery</li>
+<li><strong>Mapping to Genome</strong></li>
+<li>
+<strong>De Novo Assembly:</strong> When no reference genome is
+available</li>
+</ul>
+<figure><img src="./fig/Major_Themes.png" alt="Three ways to analyze RNA-Seq data" class="figure mx-auto d-block"><div class="figcaption">Sequencing Platforms</div>
+</figure>
+</div>
+<div class="section level3">
+<h3 id="data-quality-control">Data Quality Control<a class="anchor" aria-label="anchor" href="#data-quality-control"></a>
+</h3>
+<p>You’ll learn all of these steps in the next set of episodes.</p>
+<p><strong>Quality Assessment:</strong> Evaluate read library quality
+using tools like FastQC.</p>
+<p><strong>Filtering and Trimming:</strong> - Remove low-quality bases
+from reads. - Filter out low-quality reads and sequence repeats. -
+Remove short reads (&lt; 20bp).</p>
+<p><img src="./fig/QC.png" alt="Quality control visuals" class="figure"><img src="./fig/trimming.png" alt="Removing unwanted or low-quality sequence" class="figure"></p>
+</div>
+<div class="section level3">
+<h3 id="alignment-to-reference-genome">Alignment to Reference Genome<a class="anchor" aria-label="anchor" href="#alignment-to-reference-genome"></a>
+</h3>
+<div class="section level4">
+<h4 id="alignment-protocols">Alignment Protocols<a class="anchor" aria-label="anchor" href="#alignment-protocols"></a>
+</h4>
+<ul>
+<li>
+<strong>Short Sequence Aligners:</strong> BWA, Bowtie2</li>
+<li>
+<strong>RNA-Seq Specific:</strong> TopHat2, HISAT2, STAR</li>
+</ul>
+<figure><img src="./fig/alignment.png" alt="How RNA-Seq data are aligned" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
+</figure>
+</div>
+</div>
+<div class="section level3">
+<h3 id="hisat2">HISAT2<a class="anchor" aria-label="anchor" href="#hisat2"></a>
+</h3>
+<p>We will be using this program for alignment, because it has a short
+processing time, simple quantification method (read counts), and
+differential analysis has low false positives.</p>
+<figure><img src="./fig/hisat2_workflow.png" alt="hisat2 will identify alternative splice forms" class="figure mx-auto d-block"><div class="figcaption">hisat2 Alignment Workflow</div>
+</figure><div class="section level4">
+<h4 id="hisat2-is-splicing-aware">HISAT2 is splicing aware<a class="anchor" aria-label="anchor" href="#hisat2-is-splicing-aware"></a>
+</h4>
+<ul>
+<li>Unlike DNA alignment, RNA-Seq reads may span across introns due to
+differences in splicing.</li>
+<li>Usually 35% of reads will span multiple exons</li>
+<li>HISAT2 is a splice aware aligner (based on Bowtie2, uses many genome
+index files)</li>
+<li>Runs significantly faster than Bowtie2 and uses ~8Gb of memory</li>
+<li>On 100 million reads, it takes about 1 hour to finish the alignment
+process.</li>
+</ul>
+<figure><img src="./fig/splice_aware.png" alt="Multiple mRNA molecules can be spliced from the same transcribed sequence" class="figure mx-auto d-block"><div class="figcaption">Splice-aware alignment</div>
+</figure>
+</div>
+<div class="section level4">
+<h4 id="rna-seq-hisat2-output">RNA-Seq: HISAT2 output<a class="anchor" aria-label="anchor" href="#rna-seq-hisat2-output"></a>
+</h4>
+<pre><code>hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_known_splice_sites.txt -1 ../trim_galore_out/JRN008_CGATGT_L001_R1_001_val_1.fq -2 ../trim_galore_out/JRN008_CGATGT_L001_R2_001_val_2.fq -S ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
+<ul>
+<li>Output:
+<ul>
+<li>SAM / BAM alignment files</li>
+<li>Software: SAMtoold</li>
+<li>Contain statistics:</li>
+<li>Uniquely mapped reads</li>
+<li>Reads with multiple alignment</li>
+<li>Unmapped reads</li>
+<li>Properly paired reads</li>
+</ul>
+</li>
+</ul>
+<figure><img src="./fig/sam_file.png" alt="Typical hisat2 output in sam format" class="figure mx-auto d-block"><div class="figcaption">Typical hisat2 output (sam formatted)</div>
+</figure>
+</div>
+</div>
+<div class="section level3">
+<h3 id="featurecounts">featureCounts<a class="anchor" aria-label="anchor" href="#featurecounts"></a>
+</h3>
+<ul>
+<li>featureCounts takes as input SAM/BAM files and an annotation file as
+input.</li>
+<li>It outputs numbers of reads assigned to features (or
+meta-features).</li>
+<li>It also outputs stat info for the overall summarization
+results.</li>
+</ul>
+<pre><code>featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
+<figure><img src="./fig/count_table.png" alt="Typical featureCounts output" class="figure mx-auto d-block"><div class="figcaption">Table of the number of counts of each gene</div>
+</figure>
+</div>
+<div class="section level3">
+<h3 id="edger">edgeR<a class="anchor" aria-label="anchor" href="#edger"></a>
+</h3>
+<figure><img src="./fig/hisat2_workflow3.png" alt="Now the workflow moves from bash to R" class="figure mx-auto d-block"><div class="figcaption">Differential Expression Analysis</div>
+</figure><p>edgeR is a Bioconductor R package that implements statistical methods
+based on generalized linear models (glms), suitable for multi-factor
+experiments of any complexity. edgeR can be applied to differential
+expression at the gene, exon, transcript or tag level for any
+design.</p>
+<p><strong>Code Example</strong> (note that this written in the language
+R):
+<code>design &lt;- model.matrix(~treatment)   CPM &lt;- cpm(counts[2:ncol(counts)])   y &lt;- DGEList(counts=x, group=treatment)   y &lt;- calcNormFactors(y)   fit &lt;- glmQLFit(new.y, new.design, robust=TRUE)   qlf &lt;- glmQLFTest(fit)   tt &lt;- topTags(qlf)   summary(decideTests(qlf))   plotMD(qlf)</code></p>
+<figure><img src="./fig/edgeR.png" alt="edgeR output shows differentially expressed gene table and a volcano plot" class="figure mx-auto d-block"><div class="figcaption">Example edgeR output</div>
+</figure><div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
 <i class="callout-icon" data-feather="key"></i>
 </div>
@@ -4007,6 +3894,7 @@ workflow.</li>
 <li>Use <code>echo</code> statements within your scripts to get an
 automated progress update.</li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -4058,8 +3946,8 @@ automated progress update.</li>
   "url": "https://btmoyers.github.io/wrangling-transcriptomics/aio.html",
   "identifier": "https://btmoyers.github.io/wrangling-transcriptomics/aio.html",
   "dateCreated": "2024-08-06",
-  "dateModified": "2024-08-15",
-  "datePublished": "2024-08-15"
+  "dateModified": "2024-08-16",
+  "datePublished": "2024-08-16"
 }
 
   </script><script>

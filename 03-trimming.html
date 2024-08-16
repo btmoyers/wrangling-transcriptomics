@@ -320,7 +320,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Trimming and Filtering</h1>
-        <p>Last updated on 2024-08-15 |
+        <p>Last updated on 2024-08-16 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/03-trimming.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -437,95 +437,51 @@ after the names of the output files given after the options
 below.</p>
 <table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>option</th>
 <th>meaning</th>
-</tr></thead><tbody><tr class="odd"><td>&lt;inputFile1&gt;</td>
+</tr></thead><tbody><tr class="odd"><td>&lt;outputFile1&gt;</td>
+<td>After -o, output file that contains trimmed or filtered reads from
+the first input file (typically ‘R1’)</td>
+</tr><tr class="even"><td>&lt;outputFile2&gt;</td>
+<td>After -p, output file that contains trimmed or filtered reads from
+the first input file (typically ‘R2’)</td>
+</tr><tr class="odd"><td>&lt;inputFile1&gt;</td>
 <td>Input reads to be trimmed. Typically the file name will contain an
 <code>_1</code> or <code>_R1</code> in the name.</td>
 </tr><tr class="even"><td>&lt;inputFile2&gt;</td>
 <td>Input reads to be trimmed. Typically the file name will contain an
 <code>_2</code> or <code>_R2</code> in the name.</td>
-</tr><tr class="odd"><td>&lt;outputFile1P&gt;</td>
-<td>Output file that contains surviving pairs from the <code>_1</code>
-file.</td>
-</tr><tr class="even"><td>&lt;outputFile1U&gt;</td>
-<td>Output file that contains orphaned reads from the <code>_1</code>
-file.</td>
-</tr><tr class="odd"><td>&lt;outputFile2P&gt;</td>
-<td>Output file that contains surviving pairs from the <code>_2</code>
-file.</td>
-</tr><tr class="even"><td>&lt;outputFile2U&gt;</td>
-<td>Output file that contains orphaned reads from the <code>_2</code>
-file.</td>
-</tr></tbody></table><p>The last thing cutadapt expects to see is the trimming
-parameters:</p>
-<table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>step</th>
-<th>meaning</th>
-</tr></thead><tbody><tr class="odd"><td><code>ILLUMINACLIP</code></td>
-<td>Perform adapter removal.</td>
-</tr><tr class="even"><td><code>SLIDINGWINDOW</code></td>
-<td>Perform sliding window trimming, cutting once the average quality
-within the window falls below a threshold.</td>
-</tr><tr class="odd"><td><code>LEADING</code></td>
-<td>Cut bases off the start of a read, if below a threshold
-quality.</td>
-</tr><tr class="even"><td><code>TRAILING</code></td>
-<td>Cut bases off the end of a read, if below a threshold quality.</td>
-</tr><tr class="odd"><td><code>CROP</code></td>
-<td>Cut the read to a specified length.</td>
-</tr><tr class="even"><td><code>HEADCROP</code></td>
-<td>Cut the specified number of bases from the start of the read.</td>
-</tr><tr class="odd"><td><code>MINLEN</code></td>
-<td>Drop an entire read if it is below a specified length.</td>
-</tr><tr class="even"><td><code>TOPHRED33</code></td>
-<td>Convert quality scores to Phred-33.</td>
-</tr><tr class="odd"><td><code>TOPHRED64</code></td>
-<td>Convert quality scores to Phred-64.</td>
-</tr></tbody></table><p>We will use only a few of these options and trimming steps in our
-analysis. It is important to understand the steps you are using to clean
-your data. For more information about the cutadapt arguments and
-options, see <a href="https://www.usadellab.org/cms/uploads/supplementary/cutadapt/cutadaptManual_V0.32.pdf" class="external-link">the
-cutadapt manual</a>.</p>
+</tr></tbody></table><p>Cutadapt can remove adapter sequences that are in your sequence data,
+trim or remove low-quality bases or reads, and do a few other useful
+things. We will use only a few of these options and trimming steps in
+our analysis. It is important to understand the steps you are using to
+clean your data. For more information about the cutadapt arguments and
+options, see <a href="https://cutadapt.readthedocs.io/en/stable/guide.html" class="external-link">the cutadapt
+manual</a>.</p>
 <p>However, a complete command for cutadapt will look something like the
 command below. This command is an example and will not work, as we do
 not have the files it refers to:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt PE <span class="at">-threads</span> 4 SRR_1056_1.fastq SRR_1056_2.fastq  <span class="dt">\</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>              SRR_1056_1.trimmed.fastq SRR_1056_1un.trimmed.fastq <span class="dt">\</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>              SRR_1056_2.trimmed.fastq SRR_1056_2un.trimmed.fastq <span class="dt">\</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>              ILLUMINACLIP:SRR_adapters.fa SLIDINGWINDOW:4:20</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-q</span> 10 <span class="at">-m</span> 35 <span class="at">-o</span> example_R1_trim.fastq <span class="at">-p</span> example_R2_trim.fastq exampleR1.fastq exampleR2.fastq</span></code></pre>
 </div>
 <p>In this example, we have told cutadapt:</p>
 <table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>code</th>
 <th>meaning</th>
-</tr></thead><tbody><tr class="odd"><td><code>PE</code></td>
-<td>that it will be taking a paired end file as input</td>
-</tr><tr class="even"><td><code>-threads 4</code></td>
-<td>to use four computing threads to run (this will speed up our
-run)</td>
-</tr><tr class="odd"><td><code>SRR_1056_1.fastq</code></td>
-<td>the first input file name</td>
-</tr><tr class="even"><td><code>SRR_1056_2.fastq</code></td>
-<td>the second input file name</td>
-</tr><tr class="odd"><td><code>SRR_1056_1.trimmed.fastq</code></td>
-<td>the output file for surviving pairs from the <code>_1</code>
+</tr></thead><tbody><tr class="odd"><td><code>-q 10</code></td>
+<td>remove (trim) bases with quality below 10 from the ends of
+reads</td>
+</tr><tr class="even"><td><code>-m 35</code></td>
+<td>discard any reads that are shorter than 35 bases after trimming</td>
+</tr><tr class="odd"><td><code>-o example_R1_trim.fastq</code></td>
+<td>the output file for trimmed and filtered reads from the R1 input
 file</td>
-</tr><tr class="even"><td><code>SRR_1056_1un.trimmed.fastq</code></td>
-<td>the output file for orphaned reads from the <code>_1</code>
+</tr><tr class="even"><td><code>-p example_R2_trim.fastq</code></td>
+<td>the output file for trimmed and filtered reads from the R2 input
 file</td>
-</tr><tr class="odd"><td><code>SRR_1056_2.trimmed.fastq</code></td>
-<td>the output file for surviving pairs from the <code>_2</code>
-file</td>
-</tr><tr class="even"><td><code>SRR_1056_2un.trimmed.fastq</code></td>
-<td>the output file for orphaned reads from the <code>_2</code>
-file</td>
-</tr><tr class="odd"><td><code>ILLUMINACLIP:SRR_adapters.fa</code></td>
-<td>to clip the Illumina adapters from the input file using the adapter
-sequences listed in <code>SRR_adapters.fa</code>
-</td>
-</tr><tr class="even"><td><code>SLIDINGWINDOW:4:20</code></td>
-<td>to use a sliding window of size 4 that will remove bases if their
-phred score is below 20</td>
+</tr><tr class="odd"><td><code>exampleR1.fastq</code></td>
+<td>the input R1 fastq file</td>
+</tr><tr class="even"><td><code>exampleR2.fastq</code></td>
+<td>the input R2 fastq file</td>
 </tr></tbody></table><div id="multi-line-commands" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -548,50 +504,23 @@ your code more readable.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/data/untrimmed_fastq</span></code></pre>
 </div>
-<p>We are going to run cutadapt on one of our paired-end samples. While
-using FastQC we saw that Nextera adapters were present in our samples.
-The adapter sequences came with the installation of cutadapt, so we will
-first copy these sequences into our current directory.</p>
+<p>We are going to run cutadapt on one of our paired-end samples (V1).
+We will remove bases from the ends of the reads if their phred score is
+below 10 and filter out any reads that are shorter than 35 bases in our
+trimmed sequences (like in our example above).</p>
+<p>While using FastQC we saw that adapters were present in our
+samples.???</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> cp ~/.miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/NexteraPE-PE.fa .</span></code></pre>
-</div>
-<p>We will also use a sliding window of size 4 that will remove bases if
-their phred score is below 20 (like in our example above). We will also
-discard any reads that do not have at least 25 bases remaining after
-this trimming step. Three additional pieces of code are also added to
-the end of the ILLUMINACLIP step. These three additional numbers
-(2:40:15) tell Trimmimatic how to handle sequence matches to the Nextera
-adapters. A detailed explanation of how they work is advanced for this
-particular lesson. For now we will use these numbers as a default and
-recognize they are needed to for cutadapt to run properly. This command
-will take a few minutes to run.</p>
-<div class="codewrapper sourceCode" id="cb9">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="ex">$</span> cutadapt PE SRR2589044_1.fastq.gz SRR2589044_2.fastq.gz <span class="dt">\</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                SRR2589044_1.trim.fastq.gz SRR2589044_1un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                SRR2589044_2.trim.fastq.gz SRR2589044_2un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-q</span> 10 <span class="at">-m</span> 35 <span class="at">-o</span> V1_S1_L001_R1_001_ds_trim.fastq <span class="at">-p</span> V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>cutadaptPE: Started with arguments:
- SRR2589044_1.fastq.gz SRR2589044_2.fastq.gz SRR2589044_1.trim.fastq.gz SRR2589044_1un.trim.fastq.gz SRR2589044_2.trim.fastq.gz SRR2589044_2un.trim.fastq.gz SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
-Multiple cores found: Using 2 threads
-Using PrefixPair: 'AGATGTGTATAAGAGACAG' and 'AGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'CTGTCTCTTATACACATCTCCGAGCCCACGAGAC'
-Using Long Clipping Sequence: 'CTGTCTCTTATACACATCTGACGCTGCCGACGA'
-ILLUMINACLIP: Using 1 prefix pairs, 4 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
-Quality encoding detected as phred33
-Input Read Pairs: 1107090 Both Surviving: 885220 (79.96%) Forward Only Surviving: 216472 (19.55%) Reverse Only Surviving: 2850 (0.26%) Dropped: 2548 (0.23%)
-cutadaptPE: Completed successfully</code></pre>
+<pre class="output" tabindex="0"><code></code></pre>
 </div>
 <div id="exercise" class="callout challenge">
 <div class="callout-square">
@@ -613,7 +542,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal"><li>0.23%</li>
 <li>79.96%</li>
@@ -625,10 +554,10 @@ questions.</p>
 encoding of our sample. It is always a good idea to double-check this or
 to enter the quality encoding manually.</p>
 <p>We can confirm that we have our output files:</p>
-<div class="codewrapper sourceCode" id="cb11">
+<div class="codewrapper sourceCode" id="cb10">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span></span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -638,10 +567,10 @@ SRR2589044_1.trim.fastq.gz  SRR2589044_2.fastq.gz         SRR2589044_2un.trim.fa
 </div>
 <p>The output files are also FASTQ files. It should be smaller than our
 input file, because we have removed reads. We can confirm this:</p>
-<div class="codewrapper sourceCode" id="cb13">
+<div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span> <span class="at">-l</span> <span class="at">-h</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">$</span> ls SRR2589044<span class="pp">*</span> <span class="at">-l</span> <span class="at">-h</span></span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -660,22 +589,22 @@ use a <code>for</code> loop to iterate through our sample files
 quickly!</p>
 <p>We unzipped one of our files before to work with it, let’s compress
 it again before we run our for loop.</p>
+<div class="codewrapper sourceCode" id="cb14">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">gzip</span> SRR2584863_1.fastq </span></code></pre>
+</div>
 <div class="codewrapper sourceCode" id="cb15">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">gzip</span> SRR2584863_1.fastq </span></code></pre>
-</div>
-<div class="codewrapper sourceCode" id="cb16">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> for infile in <span class="pp">*</span>_1.fastq.gz</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="op">&gt;</span> do</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="op">&gt;</span>   base=<span class="va">$(</span><span class="fu">basename</span> <span class="va">${infile}</span> _1.fastq.gz<span class="va">)</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="op">&gt;</span>   cutadapt <span class="ex">PE</span> <span class="va">${infile}</span> <span class="va">${base}</span>_2.fastq.gz <span class="dt">\</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_1.trim.fastq.gz <span class="va">${base}</span>_1un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_2.trim.fastq.gz <span class="va">${base}</span>_2un.trim.fastq.gz <span class="dt">\</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="op">&gt;</span>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 </span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">$</span> for infile in <span class="pp">*</span>_1.fastq.gz</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="op">&gt;</span> do</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="op">&gt;</span>   base=<span class="va">$(</span><span class="fu">basename</span> <span class="va">${infile}</span> _1.fastq.gz<span class="va">)</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="op">&gt;</span>   cutadapt <span class="ex">PE</span> <span class="va">${infile}</span> <span class="va">${base}</span>_2.fastq.gz <span class="dt">\</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_1.trim.fastq.gz <span class="va">${base}</span>_1un.trim.fastq.gz <span class="dt">\</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="op">&gt;</span>                <span class="va">${base}</span>_2.trim.fastq.gz <span class="va">${base}</span>_2un.trim.fastq.gz <span class="dt">\</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="op">&gt;</span>                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 </span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
 </div>
 <p>Go ahead and run the for loop. It should take a few minutes for
 cutadapt to run for each of our six input files. Once it is done
@@ -685,10 +614,10 @@ running the for loop, there is only one set of files for it. Because we
 matched the ending <code>_1.fastq.gz</code>, we re-ran cutadapt on this
 file, overwriting our first results. That is ok, but it is good to be
 aware that it happened.</p>
-<div class="codewrapper sourceCode" id="cb17">
+<div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -720,12 +649,12 @@ cutadapt?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
-<div class="codewrapper sourceCode" id="cb19">
+<div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="ex">$</span> ls ~/miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">$</span> ls ~/miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -740,14 +669,14 @@ TruSeq2-PE.fa    TruSeq3-PE-2.fa  TruSeq3-SE.fa</code></pre>
 <p>We have now completed the trimming and filtering steps of our quality
 control process! Before we move on, let’s move our trimmed FASTQ files
 to a new subdirectory within our <code>data/</code> directory.</p>
-<div class="codewrapper sourceCode" id="cb21">
+<div class="codewrapper sourceCode" id="cb20">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> cd ~/dc_workshop/data/untrimmed_fastq</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="ex">$</span> mkdir ../trimmed_fastq</span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.trim<span class="pp">*</span> ../trimmed_fastq</span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="ex">$</span> cd ../trimmed_fastq</span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project/data/untrimmed_fastq</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="ex">$</span> mkdir ../trimmed_fastq</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="ex">$</span> mv <span class="pp">*</span>.trim<span class="pp">*</span> ../trimmed_fastq</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="ex">$</span> cd ../trimmed_fastq</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="ex">$</span> ls</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -777,20 +706,20 @@ whether your per base sequence quality is higher after trimming.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>In your AWS terminal window do:</p>
+<div class="codewrapper sourceCode" id="cb22">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="ex">$</span> fastqc ~/1_project/data/trimmed_fastq/<span class="pp">*</span>.fastq<span class="pp">*</span></span></code></pre>
+</div>
+<p>In a new tab in your terminal do:</p>
 <div class="codewrapper sourceCode" id="cb23">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> fastqc ~/dc_workshop/data/trimmed_fastq/<span class="pp">*</span>.fastq<span class="pp">*</span></span></code></pre>
-</div>
-<p>In a new tab in your terminal do:</p>
-<div class="codewrapper sourceCode" id="cb24">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> mkdir ~/Desktop/fastqc_html/trimmed</span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/data/trimmed_fastq/<span class="pp">*</span>.html ~/Desktop/fastqc_html/trimmed</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> mkdir ~/Desktop/fastqc_html/trimmed</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/data/trimmed_fastq/<span class="pp">*</span>.html ~/Desktop/fastqc_html/trimmed</span></code></pre>
 </div>
 <p>Then take a look at the html files in your browser.</p>
 <p>Remember to replace everything between the <code>@</code> and
@@ -879,8 +808,8 @@ important!</li>
   "url": "https://btmoyers.github.io/wrangling-transcriptomics/03-trimming.html",
   "identifier": "https://btmoyers.github.io/wrangling-transcriptomics/03-trimming.html",
   "dateCreated": "2024-08-06",
-  "dateModified": "2024-08-15",
-  "datePublished": "2024-08-15"
+  "dateModified": "2024-08-16",
+  "datePublished": "2024-08-16"
 }
 
   </script><script>

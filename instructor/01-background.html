@@ -318,7 +318,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Introduction and Experimental Planning Considerations for RNA-Seq</h1>
-        <p>Last updated on 2024-08-15 |
+        <p>Last updated on 2024-08-16 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/01-background.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -349,8 +349,8 @@
 <div class="card-body">
 <div class="inner bordered">
 <h3 class="card-title">Objectives</h3>
-<ul><li>Learn about the history, current status, and a typical analysis
-workflow of gene expression research.</li>
+<ul><li>Learn about the history and the current status of gene expression
+research.</li>
 <li>How do we design useful RNA-Seq experiments?</li>
 <li>Understand the data set through metadata.</li>
 </ul></div>
@@ -451,95 +451,6 @@ the ones we have been working with so far.</p>
 </ul><figure><img src=".././fig/fastq.png" alt="Diagram of fastq format" class="figure mx-auto d-block"><div class="figcaption">Fastq format</div>
 </figure></div>
 </div>
-<div class="section level3">
-<h3 id="central-data-analysis-themes">Central Data Analysis Themes<a class="anchor" aria-label="anchor" href="#central-data-analysis-themes"></a></h3>
-<ul><li>
-<strong>Mapping to Transcriptome:</strong> No novel transcript
-discovery</li>
-<li><strong>Mapping to Genome</strong></li>
-<li>
-<strong>De Novo Assembly:</strong> When no reference genome is
-available</li>
-</ul><figure><img src=".././fig/Major_Themes.png" alt="Three ways to analyze RNA-Seq data" class="figure mx-auto d-block"><div class="figcaption">Sequencing Platforms</div>
-</figure></div>
-<div class="section level3">
-<h3 id="data-quality-control">Data Quality Control<a class="anchor" aria-label="anchor" href="#data-quality-control"></a></h3>
-<p>You’ll learn all of these steps in the next set of episodes.</p>
-<p><strong>Quality Assessment:</strong> Evaluate read library quality
-using tools like FastQC.</p>
-<p><strong>Filtering and Trimming:</strong> - Remove low-quality bases
-from reads. - Filter out low-quality reads and sequence repeats. -
-Remove short reads (&lt; 20bp).</p>
-<p><img src=".././fig/QC.png" alt="Quality control visuals" class="figure"><img src=".././fig/trimming.png" alt="Removing unwanted or low-quality sequence" class="figure"></p>
-</div>
-<div class="section level3">
-<h3 id="alignment-to-reference-genome">Alignment to Reference Genome<a class="anchor" aria-label="anchor" href="#alignment-to-reference-genome"></a></h3>
-<div class="section level4">
-<h4 id="alignment-protocols">Alignment Protocols<a class="anchor" aria-label="anchor" href="#alignment-protocols"></a></h4>
-<ul><li>
-<strong>Short Sequence Aligners:</strong> BWA, Bowtie2</li>
-<li>
-<strong>RNA-Seq Specific:</strong> TopHat2, HISAT2, STAR</li>
-</ul><figure><img src=".././fig/alignment.png" alt="How RNA-Seq data are aligned" class="figure mx-auto d-block"><div class="figcaption">Alignment Workflow</div>
-</figure></div>
-</div>
-<div class="section level3">
-<h3 id="hisat2">HISAT2<a class="anchor" aria-label="anchor" href="#hisat2"></a></h3>
-<p>We will be using this program for alignment, because it has a short
-processing time, simple quantification method (read counts), and
-differential analysis has low false positives.</p>
-<figure><img src=".././fig/hisat2_workflow.png" alt="hisat2 will identify alternative splice forms" class="figure mx-auto d-block"><div class="figcaption">hisat2 Alignment Workflow</div>
-</figure><div class="section level4">
-<h4 id="hisat2-is-splicing-aware">HISAT2 is splicing aware<a class="anchor" aria-label="anchor" href="#hisat2-is-splicing-aware"></a></h4>
-<ul><li>Unlike DNA alignment, RNA-Seq reads may span across introns due to
-differences in splicing.</li>
-<li>Usually 35% of reads will span multiple exons</li>
-<li>HISAT2 is a splice aware aligner (based on Bowtie2, uses many genome
-index files)</li>
-<li>Runs significantly faster than Bowtie2 and uses ~8Gb of memory</li>
-<li>On 100 million reads, it takes about 1 hour to finish the alignment
-process.</li>
-</ul><figure><img src=".././fig/splice_aware.png" alt="Multiple mRNA molecules can be spliced from the same transcribed sequence" class="figure mx-auto d-block"><div class="figcaption">Splice-aware alignment</div>
-</figure></div>
-<div class="section level4">
-<h4 id="rna-seq-hisat2-output">RNA-Seq: HISAT2 output<a class="anchor" aria-label="anchor" href="#rna-seq-hisat2-output"></a></h4>
-<pre><code>hisat2 --threads 20 -x ../grch38/genome --known-splicesite-infile ../HS_hisat2_known_splice_sites.txt -1 ../trim_galore_out/JRN008_CGATGT_L001_R1_001_val_1.fq -2 ../trim_galore_out/JRN008_CGATGT_L001_R2_001_val_2.fq -S ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
-<ul><li>Output:
-<ul><li>SAM / BAM alignment files</li>
-<li>Software: SAMtoold</li>
-<li>Contain statistics:</li>
-<li>Uniquely mapped reads</li>
-<li>Reads with multiple alignment</li>
-<li>Unmapped reads</li>
-<li>Properly paired reads</li>
-</ul></li>
-</ul><figure><img src=".././fig/sam_file.png" alt="Typical hisat2 output in sam format" class="figure mx-auto d-block"><div class="figcaption">Typical hisat2 output (sam formatted)</div>
-</figure></div>
-</div>
-<div class="section level3">
-<h3 id="featurecounts">featureCounts<a class="anchor" aria-label="anchor" href="#featurecounts"></a></h3>
-<ul><li>featureCounts takes as input SAM/BAM files and an annotation file as
-input.</li>
-<li>It outputs numbers of reads assigned to features (or
-meta-features).</li>
-<li>It also outputs stat info for the overall summarization
-results.</li>
-</ul><pre><code>featureCounts -T 5 -t exon -g gene_id -a ../annotation.gtf -o ../counts.txt ./hisat2_out/JRN008_CGATGT_L001.sam</code></pre>
-<figure><img src=".././fig/count_table.png" alt="Typical featureCounts output" class="figure mx-auto d-block"><div class="figcaption">Table of the number of counts of each gene</div>
-</figure></div>
-<div class="section level3">
-<h3 id="edger">edgeR<a class="anchor" aria-label="anchor" href="#edger"></a></h3>
-<figure><img src=".././fig/hisat2_workflow3.png" alt="Now the workflow moves from bash to R" class="figure mx-auto d-block"><div class="figcaption">Differential Expression Analysis</div>
-</figure><p>edgeR is a Bioconductor R package that implements statistical methods
-based on generalized linear models (glms), suitable for multi-factor
-experiments of any complexity. edgeR can be applied to differential
-expression at the gene, exon, transcript or tag level for any
-design.</p>
-<p><strong>Code Example</strong> (note that this written in the language
-R):
-<code>design &lt;- model.matrix(~treatment)   CPM &lt;- cpm(counts[2:ncol(counts)])   y &lt;- DGEList(counts=x, group=treatment)   y &lt;- calcNormFactors(y)   fit &lt;- glmQLFit(new.y, new.design, robust=TRUE)   qlf &lt;- glmQLFTest(fit)   tt &lt;- topTags(qlf)   summary(decideTests(qlf))   plotMD(qlf)</code></p>
-<figure><img src=".././fig/edgeR.png" alt="edgeR output shows differentially expressed gene table and a volcano plot" class="figure mx-auto d-block"><div class="figcaption">Example edgeR output</div>
-</figure></div>
 <section><h2 class="section-heading" id="rna-seq-experimental-planning">RNA-Seq Experimental Planning<a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a>
 <a class="anchor" aria-label="anchor" href="#rna-seq-experimental-planning"></a></h2>
 <hr class="half-width"><p>Thoughtful experimental design is the foundation of a successful
@@ -858,8 +769,8 @@ stages.</li>
   "url": "https://btmoyers.github.io/wrangling-transcriptomics/instructor/01-background.html",
   "identifier": "https://btmoyers.github.io/wrangling-transcriptomics/instructor/01-background.html",
   "dateCreated": "2024-08-06",
-  "dateModified": "2024-08-15",
-  "datePublished": "2024-08-15"
+  "dateModified": "2024-08-16",
+  "datePublished": "2024-08-16"
 }
 
   </script><script>
