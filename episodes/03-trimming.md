@@ -99,15 +99,17 @@ Cutadapt can remove adapter sequences that are in your sequence data, trim or re
 However, a complete command for cutadapt will look something like the command below. This command is an example and will not work, as we do not have the files it refers to:
 
 ```bash
-$ cutadapt -q 10 -m 35 -o example_R1_trim.fastq -p example_R2_trim.fastq exampleR1.fastq exampleR2.fastq
+$ cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 25 -o example_R1_trim.fastq -p example_R2_trim.fastq exampleR1.fastq exampleR2.fastq
 ```
 
 In this example, we have told cutadapt:
 
 | code           | meaning                                                                                                      | 
 | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `-q 10`               | remove (trim) bases with quality below 10 from the ends of reads                                           | 
-| `-m 35`               | discard any reads that are shorter than 35 bases after trimming                                             | 
+| `-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA`               | identify and remove bases that match the Illumina adapter from each R1 read       | 
+| `-A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT`               | identify and remove bases that match the Illumina adapter from each R2 read       | 
+| `--trim-n`               | trim any N bases from the beginning or end of each read                                                  |
+| `-m 25`               | discard any reads that are shorter than 25 bases after trimming                                             | 
 | `-o example_R1_trim.fastq`               | the output file for trimmed and filtered reads from the R1 input file                   | 
 | `-p example_R2_trim.fastq`               | the output file for trimmed and filtered reads from the R2 input file                   | 
 | `exampleR1.fastq`               | the input R1 fastq file          | 
