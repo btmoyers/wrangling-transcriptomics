@@ -89,64 +89,35 @@ In paired end mode, cutadapt expects the two input files (R1 and R) after the na
 
 | option         | meaning                                                                                                      | 
 | -------------- | ------------------------------------------------------------------------------------------------------------ |
+| \<outputFile1> | After -o, output file that contains trimmed or filtered reads from the first input file (typically 'R1')                        | 
+| \<outputFile2> | After -p, output file that contains trimmed or filtered reads from the first input file (typically 'R2')                        | 
 | \<inputFile1>   | Input reads to be trimmed. Typically the file name will contain an `_1` or `_R1` in the name.                                          | 
-| \<inputFile2>   | Input reads to be trimmed. Typically the file name will contain an `_2` or `_R2` in the name.                                          | 
-| \<outputFile1P> | Output file that contains surviving pairs from the `_1` file.                                                          | 
-| \<outputFile1U> | Output file that contains orphaned reads from the `_1` file.                                                           | 
-| \<outputFile2P> | Output file that contains surviving pairs from the `_2` file.                                                          | 
-| \<outputFile2U> | Output file that contains orphaned reads from the `_2` file.                                                           | 
+| \<inputFile2>   | Input reads to be trimmed. Typically the file name will contain an `_2` or `_R2` in the name.                         | 
 
-The last thing cutadapt expects to see is the trimming parameters:
-
-| step           | meaning                                                                                                      | 
-| -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `ILLUMINACLIP`               | Perform adapter removal.                                                                                     | 
-| `SLIDINGWINDOW`               | Perform sliding window trimming, cutting once the average quality within the window falls below a threshold. | 
-| `LEADING`               | Cut bases off the start of a read, if below a threshold quality.                                             | 
-| `TRAILING`               | Cut bases off the end of a read, if below a threshold quality.                                               | 
-| `CROP`               | Cut the read to a specified length.                                                                          | 
-| `HEADCROP`               | Cut the specified number of bases from the start of the read.                                                | 
-| `MINLEN`               | Drop an entire read if it is below a specified length.                                                       | 
-| `TOPHRED33`               | Convert quality scores to Phred-33.                                                                          | 
-| `TOPHRED64`               | Convert quality scores to Phred-64.                                                                          | 
-
-We will use only a few of these options and trimming steps in our
-analysis. It is important to understand the steps you are using to
-clean your data. For more information about the cutadapt arguments
-and options, see [the cutadapt manual](https://www.usadellab.org/cms/uploads/supplementary/cutadapt/cutadaptManual_V0.32.pdf).
+Cutadapt can remove adapter sequences that are in your sequence data, trim or remove low-quality bases or reads, and do a few other useful things. We will use only a few of these options and trimming steps in our analysis. It is important to understand the steps you are using to clean your data. For more information about the cutadapt arguments and options, see [the cutadapt manual](https://cutadapt.readthedocs.io/en/stable/guide.html).
 
 However, a complete command for cutadapt will look something like the command below. This command is an example and will not work, as we do not have the files it refers to:
 
 ```bash
-$ cutadapt PE -threads 4 SRR_1056_1.fastq SRR_1056_2.fastq  \
-              SRR_1056_1.trimmed.fastq SRR_1056_1un.trimmed.fastq \
-              SRR_1056_2.trimmed.fastq SRR_1056_2un.trimmed.fastq \
-              ILLUMINACLIP:SRR_adapters.fa SLIDINGWINDOW:4:20
+$ cutadapt -q 10 -m 35 -o example_R1_trim.fastq -p example_R2_trim.fastq exampleR1.fastq exampleR2.fastq
 ```
 
 In this example, we have told cutadapt:
 
 | code           | meaning                                                                                                      | 
 | -------------- | ------------------------------------------------------------------------------------------------------------ |
-| `PE`               | that it will be taking a paired end file as input                                                            | 
-| `-threads 4`               | to use four computing threads to run (this will speed up our run)                                            | 
-| `SRR_1056_1.fastq`               | the first input file name                                                                                    | 
-| `SRR_1056_2.fastq`               | the second input file name                                                                                   | 
-| `SRR_1056_1.trimmed.fastq`               | the output file for surviving pairs from the `_1` file                                                                | 
-| `SRR_1056_1un.trimmed.fastq`               | the output file for orphaned reads from the `_1` file                                                                 | 
-| `SRR_1056_2.trimmed.fastq`               | the output file for surviving pairs from the `_2` file                                                                | 
-| `SRR_1056_2un.trimmed.fastq`               | the output file for orphaned reads from the `_2` file                                                                 | 
-| `ILLUMINACLIP:SRR_adapters.fa`               | to clip the Illumina adapters from the input file using the adapter sequences listed in `SRR_adapters.fa`                     | 
-| `SLIDINGWINDOW:4:20`               | to use a sliding window of size 4 that will remove bases if their phred score is below 20                    | 
+| `-q 10`               | remove (trim) bases with quality below 10 from the ends of reads                                           | 
+| `-m 35`               | discard any reads that are shorter than 35 bases after trimming                                             | 
+| `-o example_R1_trim.fastq`               | the output file for trimmed and filtered reads from the R1 input file                   | 
+| `-p example_R2_trim.fastq`               | the output file for trimmed and filtered reads from the R2 input file                   | 
+| `exampleR1.fastq`               | the input R1 fastq file          | 
+| `exampleR2.fastq`               | the input R2 fastq file            | 
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
 ## Multi-line commands
 
-Some of the commands we ran in this lesson are long! When typing a long
-command into your terminal, you can use the `\` character
-to separate code chunks onto separate lines. This can make your code more readable.
-
+Some of the commands we ran in this lesson are long! When typing a long command into your terminal, you can use the `\` character to separate code chunks onto separate lines. This can make your code more readable.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -155,47 +126,18 @@ to separate code chunks onto separate lines. This can make your code more readab
 Now we will run cutadapt on our data. To begin, navigate to your `untrimmed_fastq` data directory:
 
 ```bash
-$ cd ~/dc_workshop/data/untrimmed_fastq
+$ cd ~/1_project/data/untrimmed_fastq
 ```
+We are going to run cutadapt on one of our paired-end samples (V1). We will remove bases from the ends of the reads if their phred score is below 10 and filter out any reads that are shorter than 35 bases in our trimmed sequences (like in our example above). 
 
-We are going to run cutadapt on one of our paired-end samples.
-While using FastQC we saw that Nextera adapters were present in our samples.
-The adapter sequences came with the installation of cutadapt, so we will first copy these sequences into our current directory.
+While using FastQC we saw that adapters were present in our samples.???
 
 ```bash
-$ cp ~/.miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/NexteraPE-PE.fa .
-```
-
-We will also use a sliding window of size 4 that will remove bases if their
-phred score is below 20 (like in our example above). We will also
-discard any reads that do not have at least 25 bases remaining after
-this trimming step. Three additional pieces of code are also added to the end
-of the ILLUMINACLIP step. These three additional numbers (2:40:15) tell
-Trimmimatic how to handle sequence matches to the Nextera adapters. A detailed
-explanation of how they work is advanced for this particular lesson. For now we
-will use these numbers as a default and recognize they are needed to for cutadapt
-to run properly. This command will take a few minutes to run.
-
-```bash
-$ cutadapt PE SRR2589044_1.fastq.gz SRR2589044_2.fastq.gz \
-                SRR2589044_1.trim.fastq.gz SRR2589044_1un.trim.fastq.gz \
-                SRR2589044_2.trim.fastq.gz SRR2589044_2un.trim.fastq.gz \
-                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
+$ cutadapt -q 10 -m 35 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq
 ```
 
 ```output
-cutadaptPE: Started with arguments:
- SRR2589044_1.fastq.gz SRR2589044_2.fastq.gz SRR2589044_1.trim.fastq.gz SRR2589044_1un.trim.fastq.gz SRR2589044_2.trim.fastq.gz SRR2589044_2un.trim.fastq.gz SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
-Multiple cores found: Using 2 threads
-Using PrefixPair: 'AGATGTGTATAAGAGACAG' and 'AGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG'
-Using Long Clipping Sequence: 'CTGTCTCTTATACACATCTCCGAGCCCACGAGAC'
-Using Long Clipping Sequence: 'CTGTCTCTTATACACATCTGACGCTGCCGACGA'
-ILLUMINACLIP: Using 1 prefix pairs, 4 forward/reverse sequences, 0 forward only sequences, 0 reverse only sequences
-Quality encoding detected as phred33
-Input Read Pairs: 1107090 Both Surviving: 885220 (79.96%) Forward Only Surviving: 216472 (19.55%) Reverse Only Surviving: 2850 (0.26%) Dropped: 2548 (0.23%)
-cutadaptPE: Completed successfully
+
 ```
 
 :::::::::::::::::::::::::::::::::::::::  challenge
@@ -323,7 +265,7 @@ control process! Before we move on, let's move our trimmed FASTQ files
 to a new subdirectory within our `data/` directory.
 
 ```bash
-$ cd ~/dc_workshop/data/untrimmed_fastq
+$ cd ~/1_project/data/untrimmed_fastq
 $ mkdir ../trimmed_fastq
 $ mv *.trim* ../trimmed_fastq
 $ cd ../trimmed_fastq
@@ -354,14 +296,14 @@ trimming.
 In your AWS terminal window do:
 
 ```bash
-$ fastqc ~/dc_workshop/data/trimmed_fastq/*.fastq*
+$ fastqc ~/1_project/data/trimmed_fastq/*.fastq*
 ```
 
 In a new tab in your terminal do:
 
 ```bash
 $ mkdir ~/Desktop/fastqc_html/trimmed
-$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/data/trimmed_fastq/*.html ~/Desktop/fastqc_html/trimmed
+$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/data/trimmed_fastq/*.html ~/Desktop/fastqc_html/trimmed
 ```
 
 Then take a look at the html files in your browser.
