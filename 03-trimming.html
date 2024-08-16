@@ -462,16 +462,21 @@ not have the files it refers to:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-q</span> 10 <span class="at">-m</span> 35 <span class="at">-o</span> example_R1_trim.fastq <span class="at">-p</span> example_R2_trim.fastq exampleR1.fastq exampleR2.fastq</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-a</span> AGATCGGAAGAGCACACGTCTGAACTCCAGTCA <span class="at">-A</span> AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT <span class="at">--trim-n</span> <span class="at">-m</span> 25 <span class="at">-o</span> example_R1_trim.fastq <span class="at">-p</span> example_R2_trim.fastq exampleR1.fastq exampleR2.fastq</span></code></pre>
 </div>
 <p>In this example, we have told cutadapt:</p>
 <table class="table"><colgroup><col width="11%"><col width="88%"></colgroup><thead><tr class="header"><th>code</th>
 <th>meaning</th>
-</tr></thead><tbody><tr class="odd"><td><code>-q 10</code></td>
-<td>remove (trim) bases with quality below 10 from the ends of
-reads</td>
-</tr><tr class="even"><td><code>-m 35</code></td>
-<td>discard any reads that are shorter than 35 bases after trimming</td>
+</tr></thead><tbody><tr class="odd"><td><code>-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA</code></td>
+<td>identify and remove bases that match the Illumina adapter from each
+R1 read</td>
+</tr><tr class="even"><td><code>-A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT</code></td>
+<td>identify and remove bases that match the Illumina adapter from each
+R2 read</td>
+</tr><tr class="odd"><td><code>--trim-n</code></td>
+<td>trim any N bases from the beginning or end of each read</td>
+</tr><tr class="even"><td><code>-m 25</code></td>
+<td>discard any reads that are shorter than 25 bases after trimming</td>
 </tr><tr class="odd"><td><code>-o example_R1_trim.fastq</code></td>
 <td>the output file for trimmed and filtered reads from the R1 input
 file</td>
@@ -542,7 +547,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal"><li>0.23%</li>
 <li>79.96%</li>
@@ -649,7 +654,7 @@ cutadapt?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -706,7 +711,7 @@ whether your per base sequence quality is higher after trimming.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>In your AWS terminal window do:</p>
 <div class="codewrapper sourceCode" id="cb22">

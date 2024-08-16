@@ -521,14 +521,9 @@ reproducible, and has the signal strength to draw meaningful biological
 results. Key aspects include selecting appropriate replicates,
 collecting detailed metadata, and considering sources of
 variability.</p>
-</section><section><h2 class="section-heading" id="the-data">The data<a class="anchor" aria-label="anchor" href="#the-data"></a>
-<a class="anchor" aria-label="anchor" href="#the-data"></a>
-</h2>
-<hr class="half-width">
-<p>We will be working with data from…</p>
-</section><div class="section level1">
-<h1 id="metadata-in-rna-seq">Metadata in RNA-Seq<a class="anchor" aria-label="anchor" href="#metadata-in-rna-seq"></a>
-</h1>
+<div class="section level3">
+<h3 id="metadata-in-rna-seq">Metadata in RNA-Seq<a class="anchor" aria-label="anchor" href="#metadata-in-rna-seq"></a>
+</h3>
 <ul>
 <li><p>Metadata refers to the descriptive information about
 samples.</p></li>
@@ -551,9 +546,9 @@ line, and batch number.</li>
 </ul>
 </li>
 </ul>
-<div class="section level2">
-<h2 id="example-metadata-table">Example Metadata Table<a class="anchor" aria-label="anchor" href="#example-metadata-table"></a>
-</h2>
+<div class="section level4">
+<h4 id="example-metadata-table">Example Metadata Table<a class="anchor" aria-label="anchor" href="#example-metadata-table"></a>
+</h4>
 <table class="table">
 <colgroup>
 <col width="8%">
@@ -668,6 +663,8 @@ line, and batch number.</li>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
 <div class="section level3">
 <h3 id="metadata-explanation">Metadata Explanation<a class="anchor" aria-label="anchor" href="#metadata-explanation"></a>
 </h3>
@@ -789,7 +786,7 @@ has more than one associated file.</li>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>36 files</li>
@@ -829,8 +826,7 @@ stages.</li>
 </div>
 </div>
 </div>
-</div>
-</div></section><section id="aio-02-quality-control"><p>Content from <a href="02-quality-control.html">Assessing Read Quality</a></p>
+</section></section><section id="aio-02-quality-control"><p>Content from <a href="02-quality-control.html">Assessing Read Quality</a></p>
 <hr>
 <p>Last updated on 2024-08-15 |
 
@@ -2017,7 +2013,7 @@ not have the files it refers to:</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-q</span> 10 <span class="at">-m</span> 35 <span class="at">-o</span> example_R1_trim.fastq <span class="at">-p</span> example_R2_trim.fastq exampleR1.fastq exampleR2.fastq</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cutadapt <span class="at">-a</span> AGATCGGAAGAGCACACGTCTGAACTCCAGTCA <span class="at">-A</span> AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT <span class="at">--trim-n</span> <span class="at">-m</span> 25 <span class="at">-o</span> example_R1_trim.fastq <span class="at">-p</span> example_R2_trim.fastq exampleR1.fastq exampleR2.fastq</span></code></pre>
 </div>
 <p>In this example, we have told cutadapt:</p>
 <table class="table">
@@ -2031,13 +2027,22 @@ not have the files it refers to:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>-q 10</code></td>
-<td>remove (trim) bases with quality below 10 from the ends of
-reads</td>
+<td><code>-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA</code></td>
+<td>identify and remove bases that match the Illumina adapter from each
+R1 read</td>
 </tr>
 <tr class="even">
-<td><code>-m 35</code></td>
-<td>discard any reads that are shorter than 35 bases after trimming</td>
+<td><code>-A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT</code></td>
+<td>identify and remove bases that match the Illumina adapter from each
+R2 read</td>
+</tr>
+<tr class="odd">
+<td><code>--trim-n</code></td>
+<td>trim any N bases from the beginning or end of each read</td>
+</tr>
+<tr class="even">
+<td><code>-m 25</code></td>
+<td>discard any reads that are shorter than 25 bases after trimming</td>
 </tr>
 <tr class="odd">
 <td><code>-o example_R1_trim.fastq</code></td>
@@ -2123,7 +2128,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>0.23%</li>
@@ -2232,7 +2237,7 @@ cutadapt?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2289,7 +2294,7 @@ whether your per base sequence quality is higher after trimming.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <p>In your AWS terminal window do:</p>
 <div class="codewrapper sourceCode" id="cb22">
@@ -2431,7 +2436,7 @@ it. What is the real name of the genome?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb2">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2908,7 +2913,7 @@ learned to assess how many variants are in the vcf file.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -3027,7 +3032,7 @@ canonical nucleotide in that position?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb29">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
