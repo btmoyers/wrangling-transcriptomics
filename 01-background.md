@@ -90,11 +90,7 @@ Unlike microarrays, RNA-Seq provides a more comprehensive view of the transcript
 
 Thoughtful experimental design is the foundation of a successful RNA-Seq study, leading to robust and reproducible results. Proper experimental design ensures that the data generated is reliable, reproducible, and has the signal strength to draw meaningful biological results. Key aspects include selecting appropriate replicates, collecting detailed metadata, and considering sources of variability.
 
-## The data
-
-We will be working with data from...
-
-# Metadata in RNA-Seq
+### Metadata in RNA-Seq
 
   - Metadata refers to the descriptive information about samples.
   - This includes biological details (e.g., tissue type, cell type, condition, treatment) and technical details such as library prep method, sequencing platform, sequencing depth, and sequencing batch.
@@ -105,7 +101,7 @@ We will be working with data from...
   - Consider a case-control study, where we are interested in changes in gene expression in treated vs. untreated cells. Treatment can refer to different growth conditions, disease vs. normal, treated with a drug or vehicle.
   - Metadata should include the treatment type, dosage, duration, cell line, and batch number.
 
-## Example Metadata Table
+#### Example Metadata Table
 
 | Sample_ID | Condition  | Treatment | Time_Point | Tissue_Type | Batch | Sequencing_Run | Library_Prep_Kit | RNA_Concentration (ng/µL) |
 |-----------|------------|-----------|------------|-------------|-------|----------------|------------------|---------------------------|
