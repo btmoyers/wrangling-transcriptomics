@@ -491,7 +491,7 @@ you in this read?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -630,7 +630,7 @@ have named this directory something different.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -718,7 +718,7 @@ script and run it using <code>sbatch</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -816,8 +816,8 @@ display these files either.</p>
 <p>So the easiest way to look at these webpage summary reports will be
 to transfer them to our local computers (i.e. your laptop).</p>
 <p>To transfer a file from a remote server to our own machines, we will
-use <code>scp</code>, which we learned yesterday in the Shell Genomics
-lesson.</p>
+use <code>scp</code>, which we learned in the introduction to bash
+lessons.</p>
 <p>First we will make a new directory on our computer to store the HTML
 files we are transferring. Let’s put it on our desktop for now. Open a
 new tab in your terminal program (you can use the pull down menu at the
@@ -903,7 +903,7 @@ worst?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
 <div class="accordion-body">
 <p>All of the reads contain usable data, but the quality decreases
 toward the beginning and end of the reads.</p>
@@ -1027,7 +1027,7 @@ message for each of the other <code>.zip</code> files. This is because
 go through and unzip each file one at a time, but this is very time
 consuming and error-prone. Someday you may have 500 files to unzip!</p>
 <p>A more efficient way is to use a <code>for</code> loop like we
-learned in the Shell Genomics lesson to iterate through all of our
+learned in the bash lessons to iterate through all of our
 <code>.zip</code> files. Let’s see what that looks like and then we will
 discuss what we are doing with each line of our loop.</p>
 <div class="codewrapper sourceCode" id="cb34">
@@ -1039,8 +1039,8 @@ discuss what we are doing with each line of our loop.</p>
 <span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a><span class="op">&gt;</span> done</span></code></pre>
 </div>
 <p>In this example, the input is six filenames (one filename for each of
-our <code>.zip</code> files). Each time the loop iterates, it will
-assign a file name to the variable <code>filename</code> and run the
+our <code>.zip</code> files).Each time the loop iterates, it will assign
+a file name to the variable <code>filename</code> and run the
 <code>unzip</code> command. The first time through the loop,
 <code>$filename</code> is
 <code>C1_S4_L001_R1_001_downsampled_fastqc.zip</code>. The interpreter
@@ -1099,9 +1099,8 @@ starts like this:</p>
 <p>The <code>unzip</code> program is decompressing the <code>.zip</code>
 files and creating a new directory (with subdirectories) for each of our
 samples, to store all of the different output that is produced by
-FastQC. There</p>
-<p>are a lot of files here. The one we are going to focus on is the
-<code>summary.txt</code> file.</p>
+FastQC. There are a lot of files here. The one we are going to focus on
+is the <code>summary.txt</code> file.</p>
 <p>If you list the files in our directory now you will see:</p>
 <pre><code><span><span class="va">C1_S4_L001_R1_001_downsampled_fastqc</span></span>
 <span><span class="va">C1_S4_L001_R1_001_downsampled_fastqc.html</span></span>
@@ -1222,7 +1221,7 @@ test(s) did those samples fail?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
 <div class="accordion-body">
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
 <div class="codewrapper sourceCode" id="cb44">
