@@ -1021,7 +1021,7 @@ you in this read?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1162,7 +1162,7 @@ have named this directory something different.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb13">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1250,7 +1250,7 @@ script and run it using <code>sbatch</code>.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb18">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -1436,7 +1436,7 @@ worst?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution4" aria-expanded="false" aria-controls="collapseSolution4">
   <h4 class="accordion-header" id="headingSolution4"> Show me the solution </h4>
 </button>
-<div id="collapseSolution4" class="accordion-collapse collapse" aria-labelledby="headingSolution4" data-bs-parent="#accordionSolution4">
+<div id="collapseSolution4" class="accordion-collapse collapse" data-bs-parent="#accordionSolution4" aria-labelledby="headingSolution4">
 <div class="accordion-body">
 <p>All of the reads contain usable data, but the quality decreases
 toward the beginning and end of the reads.</p>
@@ -1759,7 +1759,7 @@ test(s) did those samples fail?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution5" aria-expanded="false" aria-controls="collapseSolution5">
   <h4 class="accordion-header" id="headingSolution5"> Show me the solution </h4>
 </button>
-<div id="collapseSolution5" class="accordion-collapse collapse" aria-labelledby="headingSolution5" data-bs-parent="#accordionSolution5">
+<div id="collapseSolution5" class="accordion-collapse collapse" data-bs-parent="#accordionSolution5" aria-labelledby="headingSolution5">
 <div class="accordion-body">
 <p>We can get the list of all failed tests using <code>grep</code>.</p>
 <div class="codewrapper sourceCode" id="cb44">
@@ -2152,7 +2152,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>99.9%</li>
@@ -2246,7 +2246,7 @@ we can use a script to iterate through our sample files quickly!</p>
 <span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a> <span class="at">-A</span> AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT <span class="at">--trim-n</span> <span class="at">-m</span> 25 <span class="dt">\</span></span>
 <span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a> <span class="at">-o</span> <span class="va">${output_dir}</span>/<span class="va">${name}</span>_R1_001_ds_trim.fastq <span class="dt">\</span></span>
 <span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a> <span class="at">-p</span> <span class="va">${output_dir}</span>/<span class="va">${name}</span>_R2_001_ds_trim.fastq <span class="dt">\</span></span>
-<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a> <span class="va">${input_dir}</span>/<span class="va">${R1_fastq}</span> <span class="dt">\</span></span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a> <span class="va">${input_dir}</span>/<span class="va">${name}</span>_R1_001_downsampled.fastq <span class="dt">\</span></span>
 <span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a> <span class="va">${input_dir}</span>/<span class="va">${name}</span>_R2_001_downsampled.fastq</span>
 <span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a></span>
 <span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a> <span class="bu">echo</span> cutadapt is finished with <span class="va">$name</span></span>
@@ -2278,7 +2278,7 @@ line.</li>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li><p>Your answer may vary, but here is one description: This is a bash
@@ -2358,7 +2358,7 @@ you might need to modify your <code>fastqc.sh</code> script.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>There are a few ways to do this, but this one will work! Modify your
 <code>fastqc.sh</code> script like this:</p>
@@ -2465,18 +2465,19 @@ well as to a single reference genome.</p>
 <ol style="list-style-type: decimal">
 <li>Indexing the reference genome</li>
 <li>Aligning the reads to the reference genome</li>
-</ol></section><section><h2 class="section-heading" id="setting-up">Setting up<a class="anchor" aria-label="anchor" href="#setting-up"></a>
-<a class="anchor" aria-label="anchor" href="#setting-up"></a>
-</h2>
-<hr class="half-width">
-<p>First we download a reference genome for <em>Homo sapiens</em>, <a href="https://grch37.ensembl.org/Homo_sapiens/Info/Index" class="external-link">GRCh37</a>. if
+</ol>
+<div class="section level3">
+<h3 id="setting-up">Setting up<a class="anchor" aria-label="anchor" href="#setting-up"></a>
+</h3>
+<p>First we download or access a reference genome for <em>Homo
+sapiens</em>, <a href="https://grch37.ensembl.org/Homo_sapiens/Info/Index" class="external-link">GRCh37</a>. if
 you remember, we earlier downloaded a README file from the Ensembl
 database about this genome. We could download the files we need using
-<code>curl</code> or <code>wget</code>, but it will take a long time
-since the files are big! Instead, we have already downloaded them into a
-shared directory, and we can use <code>cp</code> or, to save on storage
-space, <a href="https://kb.iu.edu/d/abbe" class="external-link">soft linking</a> to access
-them.</p>
+<code>curl</code> or <code>wget</code> from the database, but it will
+take a long time since the files are big! Instead, we have already
+downloaded them into a shared directory, and we can use <code>cp</code>
+or, to save on storage space, <a href="https://kb.iu.edu/d/abbe" class="external-link">soft
+linking</a> to access them.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -2518,7 +2519,7 @@ files as well.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2531,9 +2532,10 @@ files as well.</p>
 </div>
 </div>
 </div>
-<div class="section level4">
-<h4 id="index-the-reference-genome">Index the reference genome<a class="anchor" aria-label="anchor" href="#index-the-reference-genome"></a>
-</h4>
+</div>
+<div class="section level3">
+<h3 id="index-the-reference-genome">Index the reference genome<a class="anchor" aria-label="anchor" href="#index-the-reference-genome"></a>
+</h3>
 <p>Our first step is to index the reference genome for use by HISAT2.
 Indexing allows the aligner to quickly find potential alignment sites
 for query sequences in a genome, which saves time during alignment.
@@ -2546,23 +2548,28 @@ command:</p>
 <div class="codewrapper sourceCode" id="cb4">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#SBATCH -n 24</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#SBATCH --time=10:00:00</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#SBATCH --mem=32gb</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="ex">module</span> load gcc-10.2.0-gcc-9.3.0-f3oaqv7</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="ex">module</span> load python-3.8.12-gcc-10.2.0-oe4tgov</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="ex">module</span> load hisat2-2.1.0-gcc-9.3.0-u7zbyow</span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="ex">module</span> load samtools-1.10-gcc-9.3.0-flukja5</span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="ex">hisat2-build</span> <span class="at">-p</span> 24 Homo_sapiens.GRCh38.dna.primary_assembly.fa <span class="at">--ss</span> Homo_sapiens.GRCh38_ss_file.txt <span class="at">--exon</span> Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#SBATCH --job-name=gindex # you can give your job a name</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#SBATCH --ntasks=24 # the number of processors or tasks</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#SBATCH --account=itcga # our account</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#SBATCH --reservation=ITCGA_AUG2024 # this gives us special access during the workshop</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#SBATCH --time=10:00:00 # the maximum time for the job</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#SBATCH --mem=32gb # the amount of RAM</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#SBATCH --partition=itcga # the specific server in chimera we are using</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#SBATCH --error=%x-%A.err   # a filename to save error messages into</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#SBATCH --output=%x-%A.out  # a filename to save any printed output into</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="ex">module</span> load gcc-10.2.0-gcc-9.3.0-f3oaqv7</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="ex">module</span> load python-3.8.12-gcc-10.2.0-oe4tgov</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="ex">module</span> load hisat2-2.1.0-gcc-9.3.0-u7zbyow</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="ex">module</span> load samtools-1.10-gcc-9.3.0-flukja5</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="ex">hisat2-build</span> <span class="at">-p</span> 24 ~/1_project/data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa <span class="at">--ss</span> ~/1_project/data/genome/Homo_sapiens.GRCh38_ss_file.txt <span class="at">--exon</span> ~/1_project/data/genome/Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/hg38</span></code></pre>
 </div>
-<p>Note that there are other missing parts above, so you’ll need to
-remember what other SBATCH options we have been using so far. I find it
-easiest to nano an existing script and edit it before saving it into a
-new name, but you may prefer starting with a fresh file.</p>
+<p>Don’t forget the <code>#!/bin/bash/</code> at the top of your script
+before you run the job! You could also make the script more generalized
+by making the genome path a variable given on the command line.</p>
 <p>While the index is created, you will see output that looks something
-like this if you peek in the .out log file your job is creating.</p>
+like this if you peek in the .err log file your job is creating.</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -2586,34 +2593,34 @@ like this if you peek in the .out log file your job is creating.</p>
 Input files DNA, FASTA:
   Homo_sapiens.GRCh38.dna.primary_assembly.fa</code></pre>
 </div>
-<p>Brook is here!</p>
-<p>You will also need to create directories for the results that will be
-generated as part of this workflow. We can do this in a single line of
-code, because <code>mkdir</code> can accept multiple new directory names
-as input.</p>
+<p>Indexing can take quite a while, but we wanted to give you the tools
+to do this if you end up working with a different genome. For not, we
+can also access the pre-indexed genome in the same directory that we
+soft-linked from,
+<code>/itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/</code>.</p>
+<p>Before aligning, let’s make a few directories to store the results of
+our next few steps.</p>
 <div class="codewrapper sourceCode" id="cb6">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> results/sam results/bam results/bcf results/vcf</span></code></pre>
-</div>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="ex">$</span> mkdir <span class="at">-p</span> results/sam results/bam results/counts</span></code></pre>
 </div>
 <div class="section level4">
 <h4 id="align-reads-to-reference-genome">Align reads to reference genome<a class="anchor" aria-label="anchor" href="#align-reads-to-reference-genome"></a>
 </h4>
 <p>The alignment process consists of choosing an appropriate reference
 genome to map our reads against and then deciding on an aligner. We will
-use the HISAT2-MEM algorithm, which is the latest and is generally
-recommended for high-quality queries as it is faster and more
-accurate.</p>
-<p>An example of what a <code>bwa</code> command looks like is below.
+use the HISAT2 program because it performs well with human RNA-Seq
+data.</p>
+<p>An example of what a <code>hisat2</code> command looks like is below.
 This command will not run, as we do not have the files
 <code>genome.fa</code>, <code>input_file_R1.fastq</code>, or
 <code>input_file_R2.fastq</code>.</p>
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> bwa mem genome.fasta input_file_R1.fastq input_file_R2.fastq <span class="op">&gt;</span> output.sam</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> hisat2 <span class="at">-p</span> 24 <span class="at">-x</span> hg38 <span class="at">-1</span> <span class="va">$input_dir</span>/<span class="va">${base}</span>_R1_001.fastq.gz <span class="at">-2</span> <span class="va">$input_dir</span>/<span class="va">${base}</span>_R2_001.fastq.gz <span class="at">-S</span> <span class="va">$output_dir</span>/<span class="va">${base}</span>.sam</span></code></pre>
 </div>
 <p>Have a look at the <a href="https://bio-bwa.sourceforge.net/bwa.shtml" class="external-link">bwa options page</a>.
 While we are running bwa with the default parameters here, your use case
@@ -2729,6 +2736,7 @@ file:</p>
 58 + 0 singletons (0.02% : N/A)
 0 + 0 with mate mapped to a different chr
 0 + 0 with mate mapped to a different chr (mapQ&gt;=5)</code></pre>
+</div>
 </div>
 </div>
 <div class="section level3">
@@ -3010,7 +3018,7 @@ learned to assess how many variants are in the vcf file.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb24">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -3129,7 +3137,7 @@ canonical nucleotide in that position?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb29">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -3837,7 +3845,7 @@ directory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb36">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>

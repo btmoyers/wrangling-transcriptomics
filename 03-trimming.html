@@ -564,7 +564,7 @@ questions.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal"><li>99.9%</li>
 <li>99.8%</li>
@@ -656,7 +656,7 @@ we can use a script to iterate through our sample files quickly!</p>
 <span id="cb16-33"><a href="#cb16-33" tabindex="-1"></a> <span class="at">-A</span> AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT <span class="at">--trim-n</span> <span class="at">-m</span> 25 <span class="dt">\</span></span>
 <span id="cb16-34"><a href="#cb16-34" tabindex="-1"></a> <span class="at">-o</span> <span class="va">${output_dir}</span>/<span class="va">${name}</span>_R1_001_ds_trim.fastq <span class="dt">\</span></span>
 <span id="cb16-35"><a href="#cb16-35" tabindex="-1"></a> <span class="at">-p</span> <span class="va">${output_dir}</span>/<span class="va">${name}</span>_R2_001_ds_trim.fastq <span class="dt">\</span></span>
-<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a> <span class="va">${input_dir}</span>/<span class="va">${R1_fastq}</span> <span class="dt">\</span></span>
+<span id="cb16-36"><a href="#cb16-36" tabindex="-1"></a> <span class="va">${input_dir}</span>/<span class="va">${name}</span>_R1_001_downsampled.fastq <span class="dt">\</span></span>
 <span id="cb16-37"><a href="#cb16-37" tabindex="-1"></a> <span class="va">${input_dir}</span>/<span class="va">${name}</span>_R2_001_downsampled.fastq</span>
 <span id="cb16-38"><a href="#cb16-38" tabindex="-1"></a></span>
 <span id="cb16-39"><a href="#cb16-39" tabindex="-1"></a> <span class="bu">echo</span> cutadapt is finished with <span class="va">$name</span></span>
@@ -686,7 +686,7 @@ line.</li>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <ol style="list-style-type: decimal"><li><p>Your answer may vary, but here is one description: This is a bash
 shell script that can run for up to an hour on the itcga partition and
@@ -764,7 +764,7 @@ you might need to modify your <code>fastqc.sh</code> script.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
   <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
 </button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
 <div class="accordion-body">
 <p>There are a few ways to do this, but this one will work! Modify your
 <code>fastqc.sh</code> script like this:</p>
