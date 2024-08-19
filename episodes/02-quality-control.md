@@ -369,11 +369,7 @@ $ cd ~/1_project/results/fastqc_untrimmed_reads/
 
 If we were working on our local computers, we would be able to look at each of these HTML files by opening them in a web browser.
 
-However, these files are currently sitting on our remote AWS
-instance, where our local computer can not see them.
-And, since we are only logging into the AWS instance via the
-command line - it does not have any web browser setup to display
-these files either.
+However, these files are currently sitting on chimera, where our local computer can not see them. And, since we are only logging into the chimera via the command line, it does not have any web browser setup to display these files either.
 
 So the easiest way to look at these webpage summary reports will be
 to transfer them to our local computers (i.e. your laptop).
