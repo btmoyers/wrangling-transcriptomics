@@ -371,17 +371,11 @@ If we were working on our local computers, we would be able to look at each of t
 
 However, these files are currently sitting on chimera, where our local computer can not see them. And, since we are only logging into the chimera via the command line, it does not have any web browser setup to display these files either.
 
-So the easiest way to look at these webpage summary reports will be
-to transfer them to our local computers (i.e. your laptop).
+So the easiest way to look at these webpage summary reports will be to transfer them to our local computers (i.e. your laptop).
 
-To transfer a file from a remote server to our own machines, we will
-use `scp`, which we learned yesterday in the Shell Genomics lesson.
+To transfer a file from a remote server to our own machines, we will use `scp`, which we learned in the introduction to bash lessons.
 
-First we
-will make a new directory on our computer to store the HTML files
-we are transferring. Let's put it on our desktop for now. Open a new
-tab in your terminal program (you can use the pull down menu at the
-top of your screen or the Cmd+t keyboard shortcut) and type:
+First we will make a new directory on our computer to store the HTML files we are transferring. Let's put it on our desktop for now. Open a new tab in your terminal program (you can use the pull down menu at the top of your screen or the Cmd+t keyboard shortcut) and type:
 
 ```bash
 $ mkdir -p ~/Desktop/fastqc_html
@@ -398,9 +392,7 @@ $ scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.userna
 
 ### Note on using zsh
 
-If you are using zsh instead of bash (macOS for example changed the default recently to zsh), it is
-likely that a `no matches found` error will be displayed. The reason for this is that the wildcard
-("\*") is not correctly interpreted. To fix this problem the wildcard needs to be escaped with a "\\":
+If you are using zsh instead of bash (macOS for example changed the default recently to zsh), it is likely that a `no matches found` error will be displayed. The reason for this is that the wildcard ("\*") is not correctly interpreted. To fix this problem the wildcard needs to be escaped with a "\\":
 
 ```bash
 $ scp your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.username/itcga_workshop/untrimmed_fastq/fastqc_untrimmed_reads/\*.html ~/Desktop/fastqc_html
@@ -414,14 +406,9 @@ $ scp "your.UMB.username@chimera.umb.edu:/itcgastorage/share_home/your.UMB.usern
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-The second part starts with a `:` and then gives the absolute path
-of the files you want to transfer from your remote computer. Do not
-forget the `:`. We used a wildcard (`*.html`) to indicate that we want all of
-the HTML files.
+The second part starts with a `:` and then gives the absolute path of the files you want to transfer from your remote computer. Do not forget the `:`. We used a wildcard (`*.html`) to indicate that we want all of the HTML files.
 
-The third part of the command gives the absolute path of the location
-you want to put the files. This is on your local computer and is the
-directory we just created `~/Desktop/fastqc_html`.
+The third part of the command gives the absolute path of the location you want to put the files. This is on your local computer and is the directory we just created `~/Desktop/fastqc_html`.
 
 You should see a status output like this:
 
@@ -437,26 +424,19 @@ V1_S1_L001_R2_001_downsampled_fastqc.html     100%  630KB  14.5MB/s   00:00
 
 Now we can go to our new directory and open the 6 HTML files.
 
-Depending on your system,
-you should be able to select and open them all at once via a right click menu
-in your file browser.
+Depending on your system, you should be able to select and open them all at once via a right click menu in your file browser.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ### Exercise
 
-Discuss your results with a neighbor. Which sample(s) looks the best
-in terms of per base sequence quality? Which sample(s) look the
-worst?
+Discuss your results with a neighbor. Which sample(s) looks the best in terms of per base sequence quality? Which sample(s) look the worst?
 
 :::::::::::::::  solution
 
 ### Solution
 
-All of the reads contain usable data, but the quality decreases toward
-the beginning and end of the reads.
-
-
+All of the reads contain usable data, but the quality decreases toward the beginning and end of the reads.
 
 :::::::::::::::::::::::::
 
@@ -479,11 +459,7 @@ We have now looked at quite a few "Per base sequence quality" FastQC graphs, but
 
 ### Working with the FastQC text output
 
-Now that we have looked at our HTML reports to get a feel for the data,
-let's look more closely at the other output files. Go back to the tab
-in your terminal program that is connected to the chimera
-(the tab label will start with `your.UMB.username@chimerahead`) and make sure you are in
-our results subdirectory.
+Now that we have looked at our HTML reports to get a feel for the data, let's look more closely at the other output files. Go back to the tab in your terminal program that is connected to the chimera (the tab label will start with `your.UMB.username@chimerahead`) and make sure you are in our results subdirectory.
 
 ```bash
 $ cd ~/1_project/results/fastqc_untrimmed_reads/
@@ -527,7 +503,7 @@ caution: filename not matched:  V1_S1_L001_R2_001_downsampled_fastqc.zip
 
 This did not work. We unzipped the first file and then got a warning message for each of the other `.zip` files. This is because `unzip` expects to get only one zip file as input. We could go through and unzip each file one at a time, but this is very time consuming and error-prone. Someday you may have 500 files to unzip!
 
-A more efficient way is to use a `for` loop like we learned in the Shell Genomics lesson to iterate through all of our `.zip` files. Let's see what that looks like and then we will discuss what we are doing with each line of our loop.
+A more efficient way is to use a `for` loop like we learned in the bash lessons to iterate through all of our `.zip` files. Let's see what that looks like and then we will discuss what we are doing with each line of our loop.
 
 ```bash
 $ for filename in *.zip
@@ -536,15 +512,7 @@ $ for filename in *.zip
 > done
 ```
 
-In this example, the input is six filenames (one filename for each of our `.zip` files).
-Each time the loop iterates, it will assign a file name to the variable `filename`
-and run the `unzip` command.
-The first time through the loop,
-`$filename` is `C1_S4_L001_R1_001_downsampled_fastqc.zip`.
-The interpreter runs the command `unzip` on `C1_S4_L001_R1_001_downsampled_fastqc.zip`.
-For the second iteration, `$filename` becomes
-`C1_S4_L001_R2_001_downsampled_fastqc.zip`. This time, the shell runs `unzip` on `C1_S4_L001_R2_001_downsampled_fastqc.zip`.
-It then repeats this process for the four other `.zip` files in our directory.
+In this example, the input is six filenames (one filename for each of our `.zip` files).Each time the loop iterates, it will assign a file name to the variable `filename` and run the `unzip` command. The first time through the loop, `$filename` is `C1_S4_L001_R1_001_downsampled_fastqc.zip`. The interpreter runs the command `unzip` on `C1_S4_L001_R1_001_downsampled_fastqc.zip`. For the second iteration, `$filename` becomes `C1_S4_L001_R2_001_downsampled_fastqc.zip`. This time, the shell runs `unzip` on `C1_S4_L001_R2_001_downsampled_fastqc.zip`. It then repeats this process for the four other `.zip` files in our directory.
 
 When we run our `for` loop, you will see output that starts like this:
 
@@ -589,12 +557,7 @@ Archive:  C1_S4_L001_R2_001_downsampled_fastqc.zip
   inflating: C1_S4_L001_R2_001_downsampled_fastqc/Images/duplication_levels.png 
 ```
 
-The `unzip` program is decompressing the `.zip` files and creating
-a new directory (with subdirectories) for each of our samples, to
-store all of the different output that is produced by FastQC. There
-
-are a lot of files here. The one we are going to focus on is the
-`summary.txt` file.
+The `unzip` program is decompressing the `.zip` files and creating a new directory (with subdirectories) for each of our samples, to store all of the different output that is produced by FastQC. There are a lot of files here. The one we are going to focus on is the `summary.txt` file.
 
 If you list the files in our directory now you will see:
 
@@ -621,9 +584,7 @@ V1_S1_L001_R2_001_downsampled_fastqc.zip
 ```
 {:. output}
 
-The `.html` files and the compressed `.zip` files are still present,
-but now we also have a new directory for each of our samples. We can
-see for sure that it is a directory if we use the `-F` flag for `ls`.
+The `.html` files and the compressed `.zip` files are still present, but now we also have a new directory for each of our samples. We can see for sure that it is a directory if we use the `-F` flag for `ls`.
 
 ```bash
 $ ls -F
@@ -685,9 +646,7 @@ The summary file gives us a list of tests that FastQC ran, and tells us whether 
 
 ### Documenting our work
 
-We can make a record of the results we obtained for all our samples
-by concatenating all of our `summary.txt` files into a single file
-using the `cat` command. We will call this `fastqc_summaries.txt` and move it to `~/1_project/docs`.
+We can make a record of the results we obtained for all our samples by concatenating all of our `summary.txt` files into a single file using the `cat` command. We will call this `fastqc_summaries.txt` and move it to `~/1_project/docs`.
 
 ```bash
 $ cat */summary.txt > ~/1_project/docs/fastqc_summaries.txt
@@ -697,8 +656,7 @@ $ cat */summary.txt > ~/1_project/docs/fastqc_summaries.txt
 
 ### Exercise
 
-Which samples failed at least one of FastQC's quality tests? What
-test(s) did those samples fail?
+Which samples failed at least one of FastQC's quality tests? What test(s) did those samples fail?
 
 :::::::::::::::  solution
 
@@ -738,16 +696,9 @@ FAIL	Sequence Duplication Levels	V1_S1_L001_R2_001_downsampled.fastq
 
 ### Quality encodings vary
 
-Although we have used a particular quality encoding system to demonstrate interpretation of
-read quality, different sequencing machines use different encoding systems. This means that,
-depending on which sequencer you use to generate your data, a `#` may not be an indicator of
-a poor quality base call.
+Although we have used a particular quality encoding system to demonstrate interpretation of read quality, different sequencing machines use different encoding systems. This means that, depending on which sequencer you use to generate your data, a `#` may not be an indicator of a poor quality base call.
 
-This mainly relates to older Solexa/Illumina data,
-but it is essential that you know which sequencing platform was
-used to generate your data, so that you can tell your quality control program which encoding
-to use. If you choose the wrong encoding, you run the risk of throwing away good reads or
-(even worse) not throwing away bad reads!
+This mainly relates to older Solexa/Illumina data, but it is essential that you know which sequencing platform was used to generate your data, so that you can tell your quality control program which encoding to use. If you choose the wrong encoding, you run the risk of throwing away good reads or (even worse) not throwing away bad reads!
 
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -756,17 +707,11 @@ to use. If you choose the wrong encoding, you run the risk of throwing away good
 
 ### Same symbols, different meanings
 
-Here we see `>` being used as a shell prompt, whereas `>` is also
-used to redirect output.
-Similarly, `$` is used as a shell prompt, but, as we saw earlier,
-it is also used to ask the shell to get the value of a variable.
+Here we see `>` being used as a shell prompt, whereas `>` is also used to redirect output. Similarly, `$` is used as a shell prompt, but, as we saw earlier, it is also used to ask the shell to get the value of a variable.
 
-If the *shell* prints `>` or `$` then it expects you to type something,
-and the symbol is a prompt.
+If the *shell* prints `>` or `$` then it expects you to type something, and the symbol is a prompt.
 
-If *you* type `>` or `$` yourself, it is an instruction from you that
-the shell should redirect output or get the value of a variable.
-
+If *you* type `>` or `$` yourself, it is an instruction from you that the shell should redirect output or get the value of a variable.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
