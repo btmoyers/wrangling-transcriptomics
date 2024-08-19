@@ -271,7 +271,7 @@ done
 Take a second to look, really look, through the script and note what each line does. There are a few new elements here that you might not have encountered before: what could you do to understand them?
 
 1. Write down in plain English what this script does, line by line.
-2. How could you modify this script if your FASTQ files ended in `_1.fastq` and `_2.fastq` instea?
+2. How could you modify this script if your FASTQ files ended in `_1.fastq` and `_2.fastq` instead?
 
 :::::::::::::::  solution
 
