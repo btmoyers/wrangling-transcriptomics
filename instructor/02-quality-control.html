@@ -320,7 +320,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Assessing Read Quality</h1>
-        <p>Last updated on 2024-08-15 |
+        <p>Last updated on 2024-08-19 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/02-quality-control.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -384,7 +384,19 @@ are therefore built under the assumption that the data will be provided
 in a specific format.</p>
 </section><section><h2 class="section-heading" id="starting-with-data">Starting with data<a class="anchor" aria-label="anchor" href="#starting-with-data"></a>
 <a class="anchor" aria-label="anchor" href="#starting-with-data"></a></h2>
-<hr class="half-width"><p>Stuff about the workshop data here.</p>
+<hr class="half-width"><p>Our data are three samples from an experiment on the conversion of
+fibroblasts to myofibroblasts, <a href="https://www.doi.org/10.1038/s41598-018-21506-7" class="external-link">Patalano et
+al. 2018</a>. There are two known signalling proteins involved in the
+conversion of prostate fibroblasts to myofibroblasts: TBF-beta and
+CXCL12. These proteins both affect which genes get transcribed in cells,
+but they act on different pathways and do not affect all of the same
+genes as each other.</p>
+<p>In this experiment, fibroblasts were treated with either TGF-beta,
+CXCL12, or a control (termed ‘vehicle’). The first letter of each sample
+name corresponds to the treatment (eg. the samples treated with TGF-beta
+begin with T and the vehicle controls begin with a V). For each sample,
+we have one file with all the forward reads and one file with all the
+reverse reads.</p>
 </section><section><h2 class="section-heading" id="quality-control">Quality control<a class="anchor" aria-label="anchor" href="#quality-control"></a>
 <a class="anchor" aria-label="anchor" href="#quality-control"></a></h2>
 <hr class="half-width"><p>We will now assess the quality of the sequence reads contained in our
@@ -409,15 +421,15 @@ by using <code>head</code> to look at the first four lines.</p>
 <div class="codewrapper sourceCode" id="cb1">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">$</span> head <span class="at">-n</span> 4 C1_S4_L001_R1_001_downsampled.fastq</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">$</span> head <span class="at">-n</span> 4 C1_S4_L001_R2_001_downsampled.fastq</span></code></pre>
 </div>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>@D00345:37:HBATBADXX:1:1214:3724:1975 1:N:0:GCCAAT
-GCCTATCCCAGAAGCCTCATCTTCTAGCATAAAGTCAAATAAGCCTCTCTG
+<pre class="output" tabindex="0"><code>@D00345:37:HBATBADXX:1:1214:3724:1975 2:N:0:GCCAAT
+NNNNNNNAATCNTTNCAANTCTCTTGCAAGGTNCCCTGGTTGNGAAAATAC
 +
-@@@BBDD?CFDHHE+&lt;EFGGHAHFHHB&gt;E&gt;4A*:CE@@GCCDG&lt;B@GE?BF</code></pre>
+#######22:@#2:#22&gt;#2@3=?=&lt;?@??&lt;&lt;#0:;=??&gt;&gt;?#0-=??&gt;&gt;=</code></pre>
 </div>
 <p>Line 4 shows the quality for each nucleotide in the read. Quality is
 interpreted as the probability of an incorrect base call (e.g. 1 in 10)
@@ -429,7 +441,7 @@ example, in the line above, the quality score line is:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>@@@BBDD?CFDHHE+&lt;EFGGHAHFHHB&gt;E&gt;4A*:CE@@GCCDG&lt;B@GE?BF</code></pre>
+<pre class="output" tabindex="0"><code><span><span class="co">#######22:@#2:#22&gt;#2@3=?=&lt;?@??&lt;&lt;#0:;=??&gt;&gt;?#0-=??&gt;&gt;=</span></span></code></pre>
 </div>
 <p>The numerical value assigned to each of these characters depends on
 the sequencing platform that generated the reads. The sequencing machine
@@ -453,14 +465,13 @@ depend on how much signal was captured for the base incorporation.</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>@D00345:37:HBATBADXX:1:1214:3724:1975 1:N:0:GCCAAT
-GCCTATCCCAGAAGCCTCATCTTCTAGCATAAAGTCAAATAAGCCTCTCTG
+<pre class="output" tabindex="0"><code>@D00345:37:HBATBADXX:1:1214:3724:1975 2:N:0:GCCAAT
+NNNNNNNAATCNTTNCAANTCTCTTGCAAGGTNCCCTGGTTGNGAAAATAC
 +
-@@@BBDD?CFDHHE+&lt;EFGGHAHFHHB&gt;E&gt;4A*:CE@@GCCDG&lt;B@GE?BF
-</code></pre>
+#######22:@#2:#22&gt;#2@3=?=&lt;?@??&lt;&lt;#0:;=??&gt;&gt;?#0-=??&gt;&gt;=</code></pre>
 </div>
-<p>we can now see that there is a range of quality scores, but that the
-end of the sequence is very poor (<code>#</code> = a quality score of
+<p>We can now see that there is a range of quality scores, but that the
+start of the sequence is very poor (<code>#</code> = a quality score of
 2).</p>
 <div id="exercise" class="callout challenge">
 <div class="callout-square">
@@ -497,17 +508,17 @@ GTTACTCGACCGAAGTCTTCACTATGCATCACAACTCAAGATTANNNTANA
 @@@FDDFFHGDHHIGFH@@GGHGIIIIIGGDCEGGFHHGFGGAH###--#-
 </code></pre>
 </div>
-<p>This read has less consistent quality at its end than the first read
-that we looked at, but still has a range of quality scores, most of them
-high. We will look at variations in position-based quality in just a
-moment.</p>
+<p>This read has higher quality quality overall than the first read that
+we looked at, but still has a range of quality scores, including
+low-quality bases at the end. We will look at variations in
+position-based quality in just a moment.</p>
 </div>
 </div>
 </div>
 </div>
-<p>At this point, lets validate that all the relevant tools are
+<p>At this point, let’s validate that all the relevant tools are
 installed. If you are using the Chimera then these <em>should</em> be
-preinstalled, but you’ll need to load some modules.</p>
+pre-installed, but you’ll need to load some modules.</p>
 <p>Why do we need to load modules? Chimera is a shared resource used by
 many different people working on many different types of projects. Not
 everybody needs to be able to use the same programs as each other, and
@@ -520,7 +531,8 @@ a look at how many different modules exist on the chimera:</p>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> module avail</span></code></pre>
 </div>
 <p>That was a lot!! Remember you can use <code>clear</code> to calm your
-terminal down.</p>
+terminal down. Let’s look for just the module we need, by typing its
+name after <code>module avail</code>.</p>
 <div class="codewrapper sourceCode" id="cb9">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -536,17 +548,17 @@ terminal down.</p>
 <span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="ex">Use</span> <span class="st">"module keyword key1 key2 ..."</span> to search for all possible modules matching</span>
 <span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="ex">any</span> of the <span class="st">"keys"</span>.</span></code></pre>
 </div>
-<p>if fastqc is not installed then you would expect to see an error
-like</p>
+<p>If FastQC is not installed then you would expect to see an error
+like:</p>
 <pre><code>$ module avail fastqc
 No module(s) or extension(s) found!
 Use "module spider" to find all possible modules and extensions.
 Use "module keyword key1 key2 ..." to search for all possible modules matching
 any of the "keys".
 </code></pre>
-<p>If this happens check with your instructor before trying to install
-it.</p>
-<p>Now let’s load the fastqc module:</p>
+<p>If this happens check with chimera’s manager <a href="https://www.umb.edu/rc/staff/" class="external-link">Jeff Dusenberry</a> before trying
+to install it.</p>
+<p>Now let’s load the FastQC module:</p>
 <div class="codewrapper sourceCode" id="cb11">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -593,8 +605,9 @@ the one plotted above.</p>
 <div class="section level3">
 <h3 id="running-fastqc">Running FastQC<a class="anchor" aria-label="anchor" href="#running-fastqc"></a></h3>
 <p>We will now assess the quality of the reads that we downloaded.
-First, make sure you are still in the <code>untrimmed_fastq</code>
-directory</p>
+First, make sure you are still in the new <code>untrimmed_fastq</code>
+directory inside of your project’s data directory. Note that you may
+have named this directory something different.</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
@@ -1182,10 +1195,9 @@ type <code>q</code>.</p>
 </div>
 <div class="section level3">
 <h3 id="documenting-our-work">Documenting our work<a class="anchor" aria-label="anchor" href="#documenting-our-work"></a></h3>
-<p>We can make a record of the results we obtained for all our
-samples</p>
-<p>by concatenating all of our <code>summary.txt</code> files into a
-single file using the <code>cat</code> command. We will call this
+<p>We can make a record of the results we obtained for all our samples
+by concatenating all of our <code>summary.txt</code> files into a single
+file using the <code>cat</code> command. We will call this
 <code>fastqc_summaries.txt</code> and move it to
 <code>~/1_project/docs</code>.</p>
 <div class="codewrapper sourceCode" id="cb43">
@@ -1360,8 +1372,8 @@ multiple files with a single command.</li>
   "url": "https://btmoyers.github.io/wrangling-transcriptomics/instructor/02-quality-control.html",
   "identifier": "https://btmoyers.github.io/wrangling-transcriptomics/instructor/02-quality-control.html",
   "dateCreated": "2024-08-06",
-  "dateModified": "2024-08-15",
-  "datePublished": "2024-08-16"
+  "dateModified": "2024-08-19",
+  "datePublished": "2024-08-19"
 }
 
   </script><script>
