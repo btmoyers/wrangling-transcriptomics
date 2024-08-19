@@ -85,7 +85,7 @@ Input may also be in FASTA format. Compressed input and output is supported and 
 
 Plus a lot more options.
 
-In paired end mode, cutadapt expects the two input files (R1 and R) after the names of the output files given after the options `-o` and `-p`. These files are described below. 
+In paired end mode, cutadapt expects the two input files (R1 and R2) after the names of the output files given after the options `-o` and `-p`. These files are described below. 
 
 | option         | meaning                                                                                                      | 
 | -------------- | ------------------------------------------------------------------------------------------------------------ |

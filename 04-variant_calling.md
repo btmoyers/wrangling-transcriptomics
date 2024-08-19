@@ -1,33 +1,32 @@
 ---
-title: Variant Calling Workflow
+title: RNA-Seq Workflow
 teaching: 35
 exercises: 25
 ---
 
 ::::::::::::::::::::::::::::::::::::::: objectives
 
-- Understand the steps involved in variant calling.
-- Describe the types of data formats encountered during variant calling.
-- Use command line tools to perform variant calling.
+- Understand the steps involved in aligning fastq files and extracting relevant information from the alignments.
+- Describe the types of data formats encountered during this workflow.
+- Use command line tools to perform alignment and read counting.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :::::::::::::::::::::::::::::::::::::::: questions
 
-- How do I find sequence variants between my sample and a reference genome?
+- How do I find gene expression differences between my samples?
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-We mentioned before that we are working with files from a long-term evolution study of an *E. coli* population (designated Ara-3). Now that we have looked at our data to make sure that it is high quality, and removed low-quality base calls, we can perform variant calling to see how the population changed over time. We care how this population changed relative to the original population, *E. coli* strain REL606. Therefore, we will align each of our samples to the *E. coli* REL606 reference genome, and see what differences exist in our reads versus the genome.
+We mentioned before that we are working with files from a study of fibroblast to myofibroblast phenoconversion, [Patalano et al. 2018](https://www.doi.org/10.1038/s41598-018-21506-7). Now that we have looked at our data to make sure that it is high quality, and removed low-quality base calls, we can perform alignment and read counting. We care how the three treatments (C = CXCL12, T = TFG-beta, and V = Vehicle control) compare to each other, to understand the roles of each axis in the biological process of phenoconversion.
 
 ## Alignment to a reference genome
 
 ![](fig/variant_calling_workflow_align.png){alt='workflow\_align'}
 
 We perform read alignment or mapping to determine where in the genome our reads originated from. There are a number of tools to
-choose from and, while there is no gold standard, there are some tools that are better suited for particular NGS analyses. We will be
-using the [Burrows Wheeler Aligner (BWA)](https://bio-bwa.sourceforge.net/), which is a software package for mapping low-divergent
-sequences against a large reference genome.
+choose from and, while there is no gold standard, there are some tools that are better suited for particular analyses. We will be
+using [HISAT2](https://daehwankimlab.github.io/hisat2/), which is a fast and sensitive alignment program for mapping next-generation sequencing reads (both DNA and RNA) to a population of human genomes as well as to a single reference genome.
 
 The alignment process consists of two steps:
 
@@ -36,88 +35,106 @@ The alignment process consists of two steps:
 
 ## Setting up
 
-First we download the reference genome for *E. coli* REL606. Although we could copy or move the file with `cp` or `mv`, most genomics workflows begin with a download step, so we will practice that here.
+First we download a reference genome for *Homo sapiens*, [GRCh37](https://grch37.ensembl.org/Homo_sapiens/Info/Index). if you remember, we earlier downloaded a README file from the Ensembl database about this genome. We could download the files we need using `curl` or `wget`, but it will take a long time since the files are big! Instead, we have already downloaded them into a shared directory, and we can use `cp` or, to save on storage space, [soft linking](https://kb.iu.edu/d/abbe) to access them.
 
 ```bash
-$ cd ~/dc_workshop
-$ mkdir -p data/ref_genome
-$ curl -L -o data/ref_genome/ecoli_rel606.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/017/985/GCA_000017985.1_ASM1798v1/GCA_000017985.1_ASM1798v1_genomic.fna.gz
-$ gunzip data/ref_genome/ecoli_rel606.fasta.gz
+$ cd ~/1_project
+$ mkdir -p data/genome
+$ cd data/genome/
+$ ln -s /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+$ ls
 ```
+
+```output
+Homo_sapiens.GRCh38.dna.primary_assembly.fa
+```
+
+Here, `ln -s` creates a symbolic link between the first file and the new name (or location) you have given it. This is really useful when using a shared set of files that you don't want to copy or accidentally mess up. Note that you can give it a new name or a new path, but if you don't it will create a link to the specified file in your current working directory, as it did above.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ### Exercise
 
-We saved this file as `data/ref_genome/ecoli_rel606.fasta.gz` and then decompressed it.
-What is the real name of the genome?
+We also want to be able to access the gtf, exons, and ss files stored in the same shared directory `/itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/`. Make soft links in your `genome` directory for all three files as well.
 
 :::::::::::::::  solution
 
 ### Solution
 
 ```bash
-$ head data/ref_genome/ecoli_rel606.fasta
+$ ln -s /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/Homo_sapiens.GRCh38.111.gtf
+$ ln -s /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/Homo_sapiens.GRCh38_exons_file.txt
+$ ln -s /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/Homo_sapiens.GRCh38_ss_file.txt
 ```
-
-The name of the sequence follows the `>` character. The name is `CP000819.1 Escherichia coli B str. REL606, complete genome`.
-Keep this chromosome name (`CP000819.1`) in mind, as we will use it later in the lesson.
-
-
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-We will also download a set of trimmed FASTQ files to work with. These are small subsets of our real trimmed data,
-and will enable us to run our variant calling workflow quite quickly.
+#### Index the reference genome
+
+Our first step is to index the reference genome for use by HISAT2. Indexing allows the aligner to quickly find potential alignment sites for query sequences in a genome, which saves time during alignment. Indexing the reference only has to be run once. The only reason you would want to create a new index is if you are working with a different reference genome or you are using a different tool for alignment. Make a slurm script to run the indexing, making sure to include the following SBATCH options and to load the following modules before the hisat2-build command:
 
 ```bash
-$ curl -L -o sub.tar.gz https://ndownloader.figshare.com/files/14418248
-$ tar xvf sub.tar.gz
-$ mv sub/ ~/dc_workshop/data/trimmed_fastq_small
+#SBATCH -n 24
+#SBATCH --time=10:00:00
+#SBATCH --mem=32gb
+
+module load gcc-10.2.0-gcc-9.3.0-f3oaqv7
+module load python-3.8.12-gcc-10.2.0-oe4tgov
+module load hisat2-2.1.0-gcc-9.3.0-u7zbyow
+module load samtools-1.10-gcc-9.3.0-flukja5
+
+hisat2-build -p 24 Homo_sapiens.GRCh38.dna.primary_assembly.fa --ss Homo_sapiens.GRCh38_ss_file.txt --exon Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/
 ```
+
+Note that there are other missing parts above, so you'll need to remember what other SBATCH options we have been using so far. I find it easiest to nano an existing script and edit it before saving it into a new name, but you may prefer starting with a fresh file.
+
+While the index is created, you will see output that looks something like this if you peek in the .out log file your job is creating.
+
+```output
+Settings:
+  Output files: "..*.ht2"
+  Line rate: 7 (line is 128 bytes)
+  Lines per side: 1 (side is 128 bytes)
+  Offset rate: 4 (one in 16)
+  FTable chars: 10
+  Strings: unpacked
+  Local offset rate: 3 (one in 8)
+  Local fTable chars: 6
+  Local sequence length: 57344
+  Local sequence overlap between two consecutive indexes: 1024
+  Endianness: little
+  Actual local endianness: little
+  Sanity checking: disabled
+  Assertions: disabled
+  Random seed: 0
+  Sizeofs: void*:8, int:4, long:8, size_t:8
+Input files DNA, FASTA:
+  Homo_sapiens.GRCh38.dna.primary_assembly.fa
+```
+
+Brook is here!
 
 You will also need to create directories for the results that will be generated as part of this workflow. We can do this in a single
 line of code, because `mkdir` can accept multiple new directory
 names as input.
 
 ```bash
+$ cd ~/1_project
 $ mkdir -p results/sam results/bam results/bcf results/vcf
-```
-
-#### Index the reference genome
-
-Our first step is to index the reference genome for use by BWA. Indexing allows the aligner to quickly find potential alignment sites for query sequences in a genome, which saves time during alignment. Indexing the reference only has to be run once. The only reason you would want to create a new index is if you are working with a different reference genome or you are using a different tool for alignment.
-
-```bash
-$ bwa index data/ref_genome/ecoli_rel606.fasta
-```
-
-While the index is created, you will see output that looks something like this:
-
-```output
-[bwa_index] Pack FASTA... 0.04 sec
-[bwa_index] Construct BWT for the packed sequence...
-[bwa_index] 1.05 seconds elapse.
-[bwa_index] Update BWT... 0.03 sec
-[bwa_index] Pack forward-only FASTA... 0.02 sec
-[bwa_index] Construct SA from BWT and Occ... 0.57 sec
-[main] Version: 0.7.17-r1188
-[main] CMD: bwa index data/ref_genome/ecoli_rel606.fasta
-[main] Real time: 1.765 sec; CPU: 1.715 sec
 ```
 
 #### Align reads to reference genome
 
 The alignment process consists of choosing an appropriate reference genome to map our reads against and then deciding on an
-aligner. We will use the BWA-MEM algorithm, which is the latest and is generally recommended for high-quality queries as it
+aligner. We will use the HISAT2-MEM algorithm, which is the latest and is generally recommended for high-quality queries as it
 is faster and more accurate.
 
-An example of what a `bwa` command looks like is below. This command will not run, as we do not have the files `ref_genome.fa`, `input_file_R1.fastq`, or `input_file_R2.fastq`.
+An example of what a `bwa` command looks like is below. This command will not run, as we do not have the files `genome.fa`, `input_file_R1.fastq`, or `input_file_R2.fastq`.
 
 ```bash
-$ bwa mem ref_genome.fasta input_file_R1.fastq input_file_R2.fastq > output.sam
+$ bwa mem genome.fasta input_file_R1.fastq input_file_R2.fastq > output.sam
 ```
 
 Have a look at the [bwa options page](https://bio-bwa.sourceforge.net/bwa.shtml). While we are running bwa with the default
@@ -129,7 +146,7 @@ samples in our dataset (`SRR2584866`). Later, we will be
 iterating this whole process on all of our sample files.
 
 ```bash
-$ bwa mem data/ref_genome/ecoli_rel606.fasta data/trimmed_fastq_small/SRR2584866_1.trim.sub.fastq data/trimmed_fastq_small/SRR2584866_2.trim.sub.fastq > results/sam/SRR2584866.aligned.sam
+$ bwa mem data/genome/ecoli_rel606.fasta data/trimmed_fastq_small/SRR2584866_1.trim.sub.fastq data/trimmed_fastq_small/SRR2584866_2.trim.sub.fastq > results/sam/SRR2584866.aligned.sam
 ```
 
 You will see output that starts like this:
@@ -235,7 +252,7 @@ bcf format output file, `-o` specifies where to write the output file, and `-f` 
 
 ```bash
 $ bcftools mpileup -O b -o results/bcf/SRR2584866_raw.bcf \
--f data/ref_genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam 
+-f data/genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam 
 ```
 
 ```output
@@ -297,8 +314,8 @@ some additional information:
 ##fileformat=VCFv4.2
 ##FILTER=<ID=PASS,Description="All filters passed">
 ##bcftoolsVersion=1.8+htslib-1.8
-##bcftoolsCommand=mpileup -O b -o results/bcf/SRR2584866_raw.bcf -f data/ref_genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam
-##reference=file://data/ref_genome/ecoli_rel606.fasta
+##bcftoolsCommand=mpileup -O b -o results/bcf/SRR2584866_raw.bcf -f data/genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam
+##reference=file://data/genome/ecoli_rel606.fasta
 ##contig=<ID=CP000819.1,length=4629812>
 ##ALT=<ID=*,Description="Represents allele(s) other than observed.">
 ##INFO=<ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL.">
@@ -428,7 +445,7 @@ It uses different colors to display mapping quality or base quality, subjected t
 In order to visualize our mapped reads, we use `tview`, giving it the sorted bam file and the reference file:
 
 ```bash
-$ samtools tview results/bam/SRR2584866.aligned.sorted.bam data/ref_genome/ecoli_rel606.fasta
+$ samtools tview results/bam/SRR2584866.aligned.sorted.bam data/genome/ecoli_rel606.fasta
 ```
 
 ```output
@@ -481,7 +498,7 @@ position 4377265? What is the canonical nucleotide in that position?
 ### Solution
 
 ```bash
-$ samtools tview ~/dc_workshop/results/bam/SRR2584866.aligned.sorted.bam ~/dc_workshop/data/ref_genome/ecoli_rel606.fasta
+$ samtools tview ~/1_project/results/bam/SRR2584866.aligned.sorted.bam ~/1_project/data/genome/ecoli_rel606.fasta
 ```
 
 Then type `g`. In the dialogue box, type `CP000819.1:4377265`.
@@ -501,7 +518,7 @@ in the gene *mutL*, which controls DNA mismatch repair.
 In order to use IGV, we will need to transfer some files to our local machine. We know how to do this with `scp`.
 Open a new tab in your terminal window and create a new folder. We will put this folder on our Desktop for
 demonstration purposes, but in general you should avoid proliferating folders and files on your Desktop and
-instead organize files within a directory structure like we have been using in our `dc_workshop` directory.
+instead organize files within a directory structure like we have been using in our `1_project` directory.
 
 ```bash
 $ mkdir ~/Desktop/files_for_igv
@@ -513,10 +530,10 @@ with your AWS instance number. The commands to `scp` always go in the terminal w
 local computer (not your AWS instance).
 
 ```bash
-$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/results/bam/SRR2584866.aligned.sorted.bam ~/Desktop/files_for_igv
-$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/results/bam/SRR2584866.aligned.sorted.bam.bai ~/Desktop/files_for_igv
-$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/data/ref_genome/ecoli_rel606.fasta ~/Desktop/files_for_igv
-$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/dc_workshop/results/vcf/SRR2584866_final_variants.vcf ~/Desktop/files_for_igv
+$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/results/bam/SRR2584866.aligned.sorted.bam ~/Desktop/files_for_igv
+$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/results/bam/SRR2584866.aligned.sorted.bam.bai ~/Desktop/files_for_igv
+$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/data/genome/ecoli_rel606.fasta ~/Desktop/files_for_igv
+$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/results/vcf/SRR2584866_final_variants.vcf ~/Desktop/files_for_igv
 ```
 
 You will need to type the password for your AWS instance each time you call `scp`.
@@ -568,11 +585,11 @@ on installing these software packages.
 
 :::::::::::::::::::::::::::::::::::::::::  callout
 
-### BWA alignment options
+### HISAT2 alignment options
 
-BWA consists of three algorithms: BWA-backtrack, BWA-SW and BWA-MEM. The first algorithm is designed for Illumina sequence
-reads up to 100bp, while the other two are for sequences ranging from 70bp to 1Mbp. BWA-MEM and BWA-SW share similar features such
-as long-read support and split alignment, but BWA-MEM, which is the latest, is generally recommended for high-quality queries as it
+HISAT2 consists of three algorithms: HISAT2-backtrack, HISAT2-SW and HISAT2-MEM. The first algorithm is designed for Illumina sequence
+reads up to 100bp, while the other two are for sequences ranging from 70bp to 1Mbp. HISAT2-MEM and HISAT2-SW share similar features such
+as long-read support and split alignment, but HISAT2-MEM, which is the latest, is generally recommended for high-quality queries as it
 is faster and more accurate.
 
 
