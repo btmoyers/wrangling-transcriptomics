@@ -35,15 +35,13 @@ description of each step.
 4. Perform post-alignment clean-up
 5. Variant calling
 
-These workflows in bioinformatics adopt a plug-and-play approach in that the output of one tool can be easily
-used as input to another tool without any extensive configuration. Having standards for data formats is what
-makes this feasible. Standards ensure that data is stored in a way that is generally accepted and agreed upon
-within the community. The tools that are used to analyze data at different stages of the workflow are therefore
-built under the assumption that the data will be provided in a specific format.
+These workflows in bioinformatics adopt a plug-and-play approach in that the output of one tool can be easily used as input to another tool without any extensive configuration. Having standards for data formats is what makes this feasible. Standards ensure that data is stored in a way that is generally accepted and agreed upon within the community. The tools that are used to analyze data at different stages of the workflow are therefore built under the assumption that the data will be provided in a specific format.
 
 ## Starting with data
 
-Stuff about the workshop data here.
+Our data are three samples from an experiment on the conversion of fibroblasts to myofibroblasts, [Patalano et al. 2018](https://www.doi.org/10.1038/s41598-018-21506-7). There are two known signalling proteins involved in the conversion of prostate fibroblasts to myofibroblasts: TBF-beta and CXCL12. These proteins both affect which genes get transcribed in cells, but they act on different pathways and do not affect all of the same genes as each other.
+
+In this experiment, fibroblasts were treated with either TGF-beta, CXCL12, or a control (termed 'vehicle'). The first letter of each sample name corresponds to the treatment (eg. the samples treated with TGF-beta begin with T and the vehicle controls begin with a V). For each sample, we have one file with all the forward reads and one file with all the reverse reads.
 
 ## Quality control
 
@@ -68,32 +66,24 @@ We can view the first complete read in one of the files our dataset by using `he
 the first four lines.
 
 ```bash
-$ head -n 4 C1_S4_L001_R1_001_downsampled.fastq
+$ head -n 4 C1_S4_L001_R2_001_downsampled.fastq
 ```
 
 ```output
-@D00345:37:HBATBADXX:1:1214:3724:1975 1:N:0:GCCAAT
-GCCTATCCCAGAAGCCTCATCTTCTAGCATAAAGTCAAATAAGCCTCTCTG
+@D00345:37:HBATBADXX:1:1214:3724:1975 2:N:0:GCCAAT
+NNNNNNNAATCNTTNCAANTCTCTTGCAAGGTNCCCTGGTTGNGAAAATAC
 +
-@@@BBDD?CFDHHE+<EFGGHAHFHHB>E>4A*:CE@@GCCDG<B@GE?BF
+#######22:@#2:#22>#2@3=?=<?@??<<#0:;=??>>?#0-=??>>=
 ```
 
-Line 4 shows the quality for each nucleotide in the read. Quality is interpreted as the
-probability of an incorrect base call (e.g. 1 in 10) or, equivalently, the base call
-accuracy (e.g. 90%). To make it possible to line up each individual nucleotide with its quality
-score, the numerical score is converted into a code where each individual character
-represents the numerical quality score for an individual nucleotide. For example, in the line
-above, the quality score line is:
+Line 4 shows the quality for each nucleotide in the read. Quality is interpreted as the probability of an incorrect base call (e.g. 1 in 10) or, equivalently, the base call accuracy (e.g. 90%). To make it possible to line up each individual nucleotide with its quality score, the numerical score is converted into a code where each individual character represents the numerical quality score for an individual nucleotide. For example, in the line above, the quality score line is:
 
 ```output
-@@@BBDD?CFDHHE+<EFGGHAHFHHB>E>4A*:CE@@GCCDG<B@GE?BF
+#######22:@#2:#22>#2@3=?=<?@??<<#0:;=??>>?#0-=??>>=
 ```
 
-The numerical value assigned to each of these characters depends on the
-sequencing platform that generated the reads. The sequencing machine used to generate our data
-uses the standard Sanger quality PHRED score encoding, using Illumina version 1.8 onwards.
-Each character is assigned a quality score between 0 and 41 as shown in
-the chart below.
+The numerical value assigned to each of these characters depends on the sequencing platform that generated the reads. The sequencing machine used to generate our data uses the standard Sanger quality PHRED score encoding, using Illumina version 1.8 onwards.
+Each character is assigned a quality score between 0 and 41 as shown in the chart below.
 
 ```output
 Quality encoding: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJ
@@ -101,31 +91,24 @@ Quality encoding: !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJ
 Quality score:    01........11........21........31........41
 ```
 
-Each quality score represents the probability that the corresponding nucleotide call is
-incorrect. This quality score is logarithmically based, so a quality score of 10 reflects a
-base call accuracy of 90%, but a quality score of 20 reflects a base call accuracy of 99%.
-These probability values are the results from the base calling algorithm and depend on how
-much signal was captured for the base incorporation.
+Each quality score represents the probability that the corresponding nucleotide call is incorrect. This quality score is logarithmically based, so a quality score of 10 reflects a base call accuracy of 90%, but a quality score of 20 reflects a base call accuracy of 99%. These probability values are the results from the base calling algorithm and depend on how much signal was captured for the base incorporation.
 
 Looking back at our read:
 
 ```output
-@D00345:37:HBATBADXX:1:1214:3724:1975 1:N:0:GCCAAT
-GCCTATCCCAGAAGCCTCATCTTCTAGCATAAAGTCAAATAAGCCTCTCTG
+@D00345:37:HBATBADXX:1:1214:3724:1975 2:N:0:GCCAAT
+NNNNNNNAATCNTTNCAANTCTCTTGCAAGGTNCCCTGGTTGNGAAAATAC
 +
-@@@BBDD?CFDHHE+<EFGGHAHFHHB>E>4A*:CE@@GCCDG<B@GE?BF
-
+#######22:@#2:#22>#2@3=?=<?@??<<#0:;=??>>?#0-=??>>=
 ```
 
-we can now see that there is a range of quality scores, but that the end of the sequence is
-very poor (`#` = a quality score of 2).
+We can now see that there is a range of quality scores, but that the start of the sequence is very poor (`#` = a quality score of 2).
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ### Exercise
 
-What is the last read in the `V1_S1_L001_R1_001_downsampled.fastq` file? How confident
-are you in this read?
+What is the last read in the `V1_S1_L001_R1_001_downsampled.fastq` file? How confident are you in this read?
 
 :::::::::::::::  solution
 
@@ -143,16 +126,15 @@ GTTACTCGACCGAAGTCTTCACTATGCATCACAACTCAAGATTANNNTANA
 
 ```
 
-This read has less consistent quality at its end than the first
+This read has higher quality quality overall than the first
 read that we looked at, but still has a range of quality scores,
-most of them high. We will look at variations in position-based quality
-in just a moment.
+including low-quality bases at the end. We will look at variations in position-based quality in just a moment.
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-At this point, lets validate that all the relevant tools are installed. If you are using the Chimera then these *should* be preinstalled, but you'll need to load some modules.
+At this point, let's validate that all the relevant tools are installed. If you are using the Chimera then these *should* be pre-installed, but you'll need to load some modules.
 
 Why do we need to load modules? Chimera is a shared resource used by many different people working on many different types of projects. Not everybody needs to be able to use the same programs as each other, and if we had every program loaded at the same time it would potentially slow the chimera down and lead to conflicts between programs. Let's take a look at how many different modules exist on the chimera:
 
@@ -160,7 +142,7 @@ Why do we need to load modules? Chimera is a shared resource used by many differ
 $ module avail
 ```
 
-That was a lot!! Remember you can use `clear` to calm your terminal down.
+That was a lot!! Remember you can use `clear` to calm your terminal down. Let's look for just the module we need, by typing its name after `module avail`.
 
 ```bash
 $ module avail fastqc
@@ -176,7 +158,7 @@ Use "module keyword key1 key2 ..." to search for all possible modules matching
 any of the "keys".
 ```
 
-if fastqc is not installed then you would expect to see an error like
+If FastQC is not installed then you would expect to see an error like:
 
 ```
 $ module avail fastqc
@@ -187,9 +169,9 @@ any of the "keys".
 
 ```
 
-If this happens check with your instructor before trying to install it.
+If this happens check with chimera's manager [Jeff Dusenberry](https://www.umb.edu/rc/staff/) before trying to install it.
 
-Now let's load the fastqc module:
+Now let's load the FastQC module:
 
 ```bash
 $ module load fastqc-0.11.9-gcc-10.2.0-osi6pqc
@@ -198,31 +180,15 @@ $ module load fastqc-0.11.9-gcc-10.2.0-osi6pqc
 
 ### Assessing quality using FastQC
 
-In real life, you will not be assessing the quality of your reads by visually inspecting your
-FASTQ files. Rather, you will be using a software program to assess read quality and
-filter out poor quality reads. We will first use a program called [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) to visualize the quality of our reads.
-Later in our workflow, we will use another program to filter out poor quality reads.
+In real life, you will not be assessing the quality of your reads by visually inspecting your FASTQ files. Rather, you will be using a software program to assess read quality and filter out poor quality reads. We will first use a program called [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/) to visualize the quality of our reads. Later in our workflow, we will use another program to filter out poor quality reads.
 
-FastQC has a number of features which can give you a quick impression of any problems your
-data may have, so you can take these issues into consideration before moving forward with your
-analyses. Rather than looking at quality scores for each individual read, FastQC looks at
-quality collectively across all reads within a sample. The image below shows one FastQC-generated plot that indicates
-a very high quality sample:
+FastQC has a number of features which can give you a quick impression of any problems your data may have, so you can take these issues into consideration before moving forward with your analyses. Rather than looking at quality scores for each individual read, FastQC looks at quality collectively across all reads within a sample. The image below shows one FastQC-generated plot that indicates a very high quality sample:
 
 ![](fig/good_quality1.8.png){alt='good\_quality'}
 
-The x-axis displays the base position in the read, and the y-axis shows quality scores. In this
-example, the sample contains reads that are 40 bp long. This is much shorter than the reads we
-are working with in our workflow. For each position, there is a box-and-whisker plot showing
-the distribution of quality scores for all reads at that position. The horizontal red line
-indicates the median quality score and the yellow box shows the 1st to
-3rd quartile range. This means that 50% of reads have a quality score that falls within the
-range of the yellow box at that position. The whiskers show the absolute range, which covers
-the lowest (0th quartile) to highest (4th quartile) values.
+The x-axis displays the base position in the read, and the y-axis shows quality scores. In this example, the sample contains reads that are 40 bp long. This is much shorter than the reads we are working with in our workflow. For each position, there is a box-and-whisker plot showing the distribution of quality scores for all reads at that position. The horizontal red line indicates the median quality score and the yellow box shows the 1st to 3rd quartile range. This means that 50% of reads have a quality score that falls within the range of the yellow box at that position. The whiskers show the absolute range, which covers the lowest (0th quartile) to highest (4th quartile) values.
 
-For each position in this sample, the quality values do not drop much lower than 32. This
-is a high quality score. The plot background is also color-coded to identify good (green),
-acceptable (yellow), and bad (red) quality scores.
+For each position in this sample, the quality values do not drop much lower than 32. This is a high quality score. The plot background is also color-coded to identify good (green), acceptable (yellow), and bad (red) quality scores.
 
 Now let's take a look at a quality plot on the other end of the spectrum.
 
@@ -232,7 +198,7 @@ Here, we see positions within the read in which the boxes span a much wider rang
 
 ### Running FastQC
 
-We will now assess the quality of the reads that we downloaded. First, make sure you are still in the `untrimmed_fastq` directory
+We will now assess the quality of the reads that we downloaded. First, make sure you are still in the new `untrimmed_fastq` directory inside of your project's data directory. Note that you may have named this directory something different.
 
 ```bash
 $ cd ~/1_project/data/untrimmed_fastq/
@@ -402,8 +368,7 @@ $ cd ~/1_project/results/fastqc_untrimmed_reads/
 
 ### Viewing the FastQC results
 
-If we were working on our local computers, we would be able to look at
-each of these HTML files by opening them in a web browser.
+If we were working on our local computers, we would be able to look at each of these HTML files by opening them in a web browser.
 
 However, these files are currently sitting on our remote AWS
 instance, where our local computer can not see them.
@@ -721,16 +686,13 @@ WARN    Overrepresented sequences       C1_S4_L001_R1_001_downsampled.fastq
 PASS    Adapter Content C1_S4_L001_R1_001_downsampled.fastq
 ```
 
-The summary file gives us a list of tests that FastQC ran, and tells
-us whether this sample passed, failed, or is borderline (`WARN`). Remember, to quit from `less` you must type `q`.
+The summary file gives us a list of tests that FastQC ran, and tells us whether this sample passed, failed, or is borderline (`WARN`). Remember, to quit from `less` you must type `q`.
 
 ### Documenting our work
 
 We can make a record of the results we obtained for all our samples
-
 by concatenating all of our `summary.txt` files into a single file
-using the `cat` command. We will call this `fastqc_summaries.txt` and move
-it to `~/1_project/docs`.
+using the `cat` command. We will call this `fastqc_summaries.txt` and move it to `~/1_project/docs`.
 
 ```bash
 $ cat */summary.txt > ~/1_project/docs/fastqc_summaries.txt
