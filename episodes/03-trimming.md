@@ -119,7 +119,7 @@ In this example, we have told cutadapt:
 
 ## Multi-line commands
 
-Some of the commands we ran in this lesson are long! When typing a long command into your terminal, you can use the `\` character to separate code chunks onto separate lines. This can make your code more readable.
+Some of the commands we ran in this lesson are long! When typing a long command into your terminal or nano, you can use the `\` character to separate code chunks onto separate lines. This can make your code more readable.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -130,16 +130,32 @@ Now we will run cutadapt on our data. To begin, navigate to your `untrimmed_fast
 ```bash
 $ cd ~/1_project/data/untrimmed_fastq
 ```
-We are going to run cutadapt on one of our paired-end samples (V1). We will remove bases from the ends of the reads if their phred score is below 10 and filter out any reads that are shorter than 35 bases in our trimmed sequences (like in our example above). 
-
-While using FastQC we saw that adapters were present in our samples.???
+We are going to run cutadapt on one of our paired-end samples (V1). We will identify and remove any leftover adapter sequences from the reads. We will also remove N bases from the ends of the reads and filter out any reads that are shorter than 25 bases in our trimmed sequences (like in our example above). 
 
 ```bash
-$ cutadapt -q 10 -m 35 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq
+$ cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 35 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq
 ```
 
 ```output
+This is cutadapt 2.10 with Python 3.8.6
+Command line parameters: -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 35 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq
+Processing reads on 1 core in paired-end mode ...
+[         8=-] 00:00:20       962,229 reads  @     21.8 µs/read;   2.76 M reads/minute
+Finished in 21.23 s (22 us/read; 2.72 M reads/minute).
 
+=== Summary ===
+
+Total read pairs processed:            962,229
+  Read 1 with adapter:                  18,572 (1.9%)
+  Read 2 with adapter:                  21,863 (2.3%)
+Pairs written (passing filters):       961,614 (99.9%)
+
+Total basepairs processed:    98,147,358 bp
+  Read 1:    49,073,679 bp
+  Read 2:    49,073,679 bp
+Total written (filtered):     97,939,516 bp (99.8%)
+  Read 1:    48,977,906 bp
+  Read 2:    48,961,610 bp
 ```
 
 :::::::::::::::::::::::::::::::::::::::  challenge
@@ -149,180 +165,189 @@ $ cutadapt -q 10 -m 35 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_d
 Use the output from your cutadapt command to answer the
 following questions.
 
-1) What percent of reads did we discard from our sample?
-2) What percent of reads did we keep both pairs?
+1) What percent of read pairs passed our filters?
+2) What percent of basepairs passed our filters?
 
 :::::::::::::::  solution
 
 ## Solution
 
-1) 0\.23%
-2) 79\.96%
-  
-  
+1) 99\.9%
+2) 99\.8%
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-You may have noticed that cutadapt automatically detected the
-quality encoding of our sample. It is always a good idea to
-double-check this or to enter the quality encoding manually.
-
 We can confirm that we have our output files:
 
 ```bash
-$ ls SRR2589044*
+$ ls V1*
 ```
 
 ```output
-SRR2589044_1.fastq.gz       SRR2589044_1un.trim.fastq.gz  SRR2589044_2.trim.fastq.gz
-SRR2589044_1.trim.fastq.gz  SRR2589044_2.fastq.gz         SRR2589044_2un.trim.fastq.gz
+V1_S1_L001_R1_001_downsampled.fastq  V1_S1_L001_R2_001_downsampled.fastq
+V1_S1_L001_R1_001_ds_trim.fastq      V1_S1_L001_R2_001_ds_trim.fastq
 ```
 
-The output files are also FASTQ files. It should be smaller than our
-input file, because we have removed reads. We can confirm this:
+The output files are also FASTQ files. It might be smaller than our input file, if we have removed reads. We can confirm this:
 
 ```bash
-$ ls SRR2589044* -l -h
+$ ls -thor V1*
 ```
 
 ```output
--rw-rw-r-- 1 dcuser dcuser 124M Jul  6 20:22 SRR2589044_1.fastq.gz
--rw-rw-r-- 1 dcuser dcuser  94M Jul  6 22:33 SRR2589044_1.trim.fastq.gz
--rw-rw-r-- 1 dcuser dcuser  18M Jul  6 22:33 SRR2589044_1un.trim.fastq.gz
--rw-rw-r-- 1 dcuser dcuser 128M Jul  6 20:24 SRR2589044_2.fastq.gz
--rw-rw-r-- 1 dcuser dcuser  91M Jul  6 22:33 SRR2589044_2.trim.fastq.gz
--rw-rw-r-- 1 dcuser dcuser 271K Jul  6 22:33 SRR2589044_2un.trim.fastq.gz
+-rw-rw-r-- 1 brook.moyers 146M Aug  7 00:55 V1_S1_L001_R1_001_downsampled.fastq
+-rw-rw-r-- 1 brook.moyers 146M Aug  7 00:55 V1_S1_L001_R2_001_downsampled.fastq
+-rw-rw-r-- 1 brook.moyers 146M Aug 16 17:22 V1_S1_L001_R1_001_ds_trim.fastq
+-rw-rw-r-- 1 brook.moyers 146M Aug 16 17:22 V1_S1_L001_R2_001_ds_trim.fastq
 ```
 
-We have just successfully run cutadapt on one of our FASTQ files!
-However, there is some bad news. cutadapt can only operate on
-one sample at a time and we have more than one sample. The good news
-is that we can use a `for` loop to iterate through our sample files
-quickly!
-
-We unzipped one of our files before to work with it, let's compress it again before we run our for loop.
+Hmmm, it doesn't look that different (they are all 146 MB). Maybe they are not that different because we kept most reads! We could check the number of lines, maybe using a for loop.
 
 ```bash
-gzip SRR2584863_1.fastq 
+$ for filename in V1*; do lines=$(wc -l ${filename}); echo $lines; done
 ```
+
+```
+3848916 V1_S1_L001_R1_001_downsampled.fastq
+3846456 V1_S1_L001_R1_001_ds_trim.fastq
+3848916 V1_S1_L001_R2_001_downsampled.fastq
+3846456 V1_S1_L001_R2_001_ds_trim.fastq
+```
+Yes, it looks like the trimmed files are a couple thousand lines shorter.
+
+We have just successfully run cutadapt on one pair of our FASTQ files! However, there is some bad news. cutadapt can only operate on one sample at a time and we have more than one sample. The good news is that we can use a script to iterate through our sample files quickly!
+
+Here is the text of a script you can use to do it:
 
 ```bash
-$ for infile in *_1.fastq.gz
-> do
->   base=$(basename ${infile} _1.fastq.gz)
->   cutadapt PE ${infile} ${base}_2.fastq.gz \
->                ${base}_1.trim.fastq.gz ${base}_1un.trim.fastq.gz \
->                ${base}_2.trim.fastq.gz ${base}_2un.trim.fastq.gz \
->                SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15 
-> done
-```
+#!/bin/bash
 
-Go ahead and run the for loop. It should take a few minutes for
-cutadapt to run for each of our six input files. Once it is done
-running, take a look at your directory contents. You will notice that even though we ran cutadapt on file `SRR2589044` before running the for loop, there is only one set of files for it. Because we matched the ending `_1.fastq.gz`, we re-ran cutadapt on this file, overwriting our first results. That is ok, but it is good to be aware that it happened.
+#SBATCH --job-name=trim # you can give your job a name
+#SBATCH --nodes 1 # the number of processors or tasks
+#SBATCH --cpus-per-task=2
+#SBATCH --account=itcga # our account
+#SBATCH --reservation=ITCGA_AUG2024 # this gives us special access during the workshop
+#SBATCH --time=1:00:00 # the maximum time for the job
+#SBATCH --mem=4gb # the amount of RAM
+#SBATCH --partition=itcga # the specific server in chimera we are using
+#SBATCH --error=%x-%A.err   # a filename to save error messages into
+#SBATCH --output=%x-%A.out  # a filename to save any printed output into
 
-```bash
-$ ls
-```
+# Usage: sbatch cutadapt.sh path/to/input_dir path/to/output_dir
+# Works for paired end reads where both end in the same *_001_downsampled.fastq
 
-```output
-NexteraPE-PE.fa               SRR2584866_1.fastq.gz         SRR2589044_1.trim.fastq.gz
-SRR2584863_1.fastq.gz         SRR2584866_1.trim.fastq.gz    SRR2589044_1un.trim.fastq.gz
-SRR2584863_1.trim.fastq.gz    SRR2584866_1un.trim.fastq.gz  SRR2589044_2.fastq.gz
-SRR2584863_1un.trim.fastq.gz  SRR2584866_2.fastq.gz         SRR2589044_2.trim.fastq.gz
-SRR2584863_2.fastq.gz         SRR2584866_2.trim.fastq.gz    SRR2589044_2un.trim.fastq.gz
-SRR2584863_2.trim.fastq.gz    SRR2584866_2un.trim.fastq.gz
-SRR2584863_2un.trim.fastq.gz  SRR2589044_1.fastq.gz
+# Module load
+module load py-dnaio-0.4.2-gcc-10.2.0-gaqzhv4
+module load py-xopen-1.1.0-gcc-10.2.0-5kpnvqq
+module load py-cutadapt-2.10-gcc-10.2.0-2x2ytr5
+
+# Define variables
+input_dir=$1 # takes this from the command line, first item after the script
+output_dir=$2 # takes this from the command line, second item
+
+for R1_fastq in ${input_dir}/*_R1_001_downsampled.fastq
+ do
+ # Pull basename
+ name=$(basename ${R1_fastq} _R1_001_downsampled.fastq)
+
+ # Run cutadapt
+ cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA \
+ -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 25 \
+ -o ${output_dir}/${name}_R1_001_ds_trim.fastq \
+ -p ${output_dir}/${name}_R2_001_ds_trim.fastq \
+ ${input_dir}/${R1_fastq} \
+ ${input_dir}/${name}_R2_001_downsampled.fastq
+
+ echo cutadapt is finished with $name
+
+done
 ```
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ## Exercise
+Take a second to look, really look, through the script and note what each line does. There are a few new elements here that you might not have encountered before: what could you do to understand them?
 
-We trimmed our fastq files with Nextera adapters,
-but there are other adapters that are commonly used.
-What other adapter files came with cutadapt?
+1. Write down in plain English what this script does, line by line.
+2. How could you modify this script if your FASTQ files ended in `_1.fastq` and `_2.fastq` instea?
 
 :::::::::::::::  solution
 
 ## Solution
 
+1. Your answer may vary, but here is one description: This is a bash shell script that can run for up to an hour on the itcga partition and reservation with 1 node, 2 CPUs, and 4 GB of memory. First, it loads three modules necessary to run cutadapt, then stores the paths that come after the name of the script on the command line as input_dir and output_dir. Then for each file in the input_dir that ends with `_R1_001_downsampled.fastq`, it runs cutadapt with it and its paired R2 to remove adapters, trim Ns from the ends of reads, and filter out any reads shorter than 25 bases after trimming. It stores the output with the file extension `001_ds_trim.fastq` in the output_dir.
+
+2. You will need to modify the for loop call, the basename call, and the cutadapt call as follows:
+
 ```bash
-$ ls ~/miniconda3/pkgs/cutadapt-0.38-0/share/cutadapt-0.38-0/adapters/
+for R1_fastq in ${input_dir}/*_1.fastq
 ```
 
-```output
-NexteraPE-PE.fa  TruSeq2-SE.fa    TruSeq3-PE.fa
-TruSeq2-PE.fa    TruSeq3-PE-2.fa  TruSeq3-SE.fa
+```bash
+name=$(basename ${R1_fastq} _1.fastq)
 ```
+
+```bash
+ cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA \
+ -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 25 \
+ -o ${output_dir}/${name}_R1_001_ds_trim.fastq \
+ -p ${output_dir}/${name}_R2_001_ds_trim.fastq \
+ ${input_dir}/${R1_fastq} \
+ ${input_dir}/${name}_2.fastq
+ ```
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-We have now completed the trimming and filtering steps of our quality
-control process! Before we move on, let's move our trimmed FASTQ files
-to a new subdirectory within our `data/` directory.
+It is common that you might start your work with a shared script or code from a collaborator or someone else. This kind of exercise can save you a lot of headaches when trying to adapt it to your own workflow. 
+
+Okay, now that you really understand this script, let's run it:
 
 ```bash
-$ cd ~/1_project/data/untrimmed_fastq
-$ mkdir ../trimmed_fastq
-$ mv *.trim* ../trimmed_fastq
-$ cd ../trimmed_fastq
-$ ls
+$ mkdir ~/1_project/data/trimmed_fastq
+$ sbatch cutadapt.sh ~/1_project/data/untrimmed_fastq ~/1_project/data/trimmed_fastq
 ```
 
-```output
-SRR2584863_1.trim.fastq.gz    SRR2584866_1.trim.fastq.gz    SRR2589044_1.trim.fastq.gz
-SRR2584863_1un.trim.fastq.gz  SRR2584866_1un.trim.fastq.gz  SRR2589044_1un.trim.fastq.gz
-SRR2584863_2.trim.fastq.gz    SRR2584866_2.trim.fastq.gz    SRR2589044_2.trim.fastq.gz
-SRR2584863_2un.trim.fastq.gz  SRR2584866_2un.trim.fastq.gz  SRR2589044_2un.trim.fastq.gz
-```
+If you check the trimmed_fastq directory, you can see that your trimmed fastq files have been stored there!
+
+You might also notice that your log files are kind of annoyingly piling up in various places. Think about possible ways to manage where they are stored!
+
+We have now completed the trimming and filtering steps of our quality control process! Before we move on, let's move our trimmed FASTQ files to a new subdirectory within our `data/` directory.
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ## Bonus exercise (advanced)
 
-Now that our samples have gone through quality control, they should perform
-better on the quality tests run by FastQC. Go ahead and re-run
-FastQC on your trimmed FASTQ files and visualize the HTML files
-to see whether your per base sequence quality is higher after
-trimming.
+Now that our samples have gone through quality control, they should perform better on the quality tests run by FastQC. Go ahead and re-run FastQC on your trimmed FASTQ files and visualize the HTML files to see whether your per base sequence quality is higher after
+trimming. Hint: you might need to modify your `fastqc.sh` script.
 
 :::::::::::::::  solution
 
 ## Solution
 
-In your AWS terminal window do:
+There are a few ways to do this, but this one will work! Modify your `fastqc.sh` script like this:
 
 ```bash
-$ fastqc ~/1_project/data/trimmed_fastq/*.fastq*
+# module load
+module load fastqc-0.11.9-gcc-10.2.0-osi6pqc
+
+# Define variables
+input_dir=$1 
+
+# run fastqc
+fastqc ${input_dir}/*.fastq
 ```
 
-In a new tab in your terminal do:
+Then you can run it by specifying the input directory on the command line.
 
 ```bash
-$ mkdir ~/Desktop/fastqc_html/trimmed
-$ scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/data/trimmed_fastq/*.html ~/Desktop/fastqc_html/trimmed
+$ sbatch fastqc.sh ~/1_project/data/trimmed_fastq/
 ```
 
-Then take a look at the html files in your browser.
-
-Remember to replace everything between the `@` and `:` in your scp
-command with your AWS instance number.
-
-After trimming and filtering, our overall quality is much higher,
-we have a distribution of sequence lengths, and more samples pass
-adapter content. However, quality trimming is not perfect, and some
-programs are better at removing some sequences than others. Because our
-sequences still contain 3' adapters, it could be important to explore
-other trimming tools like [cutadapt](https://cutadapt.readthedocs.io/en/stable/) to remove these, depending on your
-downstream application. cutadapt did pretty well though, and its performance
-is good enough for our workflow.
-
-
+After trimming and filtering, our overall quality is much higher, we have a distribution of sequence lengths, and more samples pass adapter content. However, you may want to explore the other options that [cutadapt](https://cutadapt.readthedocs.io/en/stable/) includes to refine your quality filtering.
 
 :::::::::::::::::::::::::
 
