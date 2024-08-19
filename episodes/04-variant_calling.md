@@ -33,9 +33,9 @@ The alignment process consists of two steps:
 1. Indexing the reference genome
 2. Aligning the reads to the reference genome
 
-## Setting up
+### Setting up
 
-First we download a reference genome for *Homo sapiens*, [GRCh37](https://grch37.ensembl.org/Homo_sapiens/Info/Index). if you remember, we earlier downloaded a README file from the Ensembl database about this genome. We could download the files we need using `curl` or `wget`, but it will take a long time since the files are big! Instead, we have already downloaded them into a shared directory, and we can use `cp` or, to save on storage space, [soft linking](https://kb.iu.edu/d/abbe) to access them.
+First we download or access a reference genome for *Homo sapiens*, [GRCh37](https://grch37.ensembl.org/Homo_sapiens/Info/Index). if you remember, we earlier downloaded a README file from the Ensembl database about this genome. We could download the files we need using `curl` or `wget` from the database, but it will take a long time since the files are big! Instead, we have already downloaded them into a shared directory, and we can use `cp` or, to save on storage space, [soft linking](https://kb.iu.edu/d/abbe) to access them.
 
 ```bash
 $ cd ~/1_project
@@ -71,26 +71,32 @@ $ ln -s /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/Homo_s
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-#### Index the reference genome
+### Index the reference genome
 
 Our first step is to index the reference genome for use by HISAT2. Indexing allows the aligner to quickly find potential alignment sites for query sequences in a genome, which saves time during alignment. Indexing the reference only has to be run once. The only reason you would want to create a new index is if you are working with a different reference genome or you are using a different tool for alignment. Make a slurm script to run the indexing, making sure to include the following SBATCH options and to load the following modules before the hisat2-build command:
 
 ```bash
-#SBATCH -n 24
-#SBATCH --time=10:00:00
-#SBATCH --mem=32gb
+#SBATCH --job-name=gindex # you can give your job a name
+#SBATCH --ntasks=24 # the number of processors or tasks
+#SBATCH --account=itcga # our account
+#SBATCH --reservation=ITCGA_AUG2024 # this gives us special access during the workshop
+#SBATCH --time=10:00:00 # the maximum time for the job
+#SBATCH --mem=32gb # the amount of RAM
+#SBATCH --partition=itcga # the specific server in chimera we are using
+#SBATCH --error=%x-%A.err   # a filename to save error messages into
+#SBATCH --output=%x-%A.out  # a filename to save any printed output into
 
 module load gcc-10.2.0-gcc-9.3.0-f3oaqv7
 module load python-3.8.12-gcc-10.2.0-oe4tgov
 module load hisat2-2.1.0-gcc-9.3.0-u7zbyow
 module load samtools-1.10-gcc-9.3.0-flukja5
 
-hisat2-build -p 24 Homo_sapiens.GRCh38.dna.primary_assembly.fa --ss Homo_sapiens.GRCh38_ss_file.txt --exon Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/
+hisat2-build -p 24 ~/1_project/data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa --ss ~/1_project/data/genome/Homo_sapiens.GRCh38_ss_file.txt --exon ~/1_project/data/genome/Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/hg38
 ```
 
-Note that there are other missing parts above, so you'll need to remember what other SBATCH options we have been using so far. I find it easiest to nano an existing script and edit it before saving it into a new name, but you may prefer starting with a fresh file.
+Don't forget the `#!/bin/bash/` at the top of your script before you run the job! You could also make the script more generalized by making the genome path a variable given on the command line.
 
-While the index is created, you will see output that looks something like this if you peek in the .out log file your job is creating.
+While the index is created, you will see output that looks something like this if you peek in the .err log file your job is creating.
 
 ```output
 Settings:
@@ -114,27 +120,23 @@ Input files DNA, FASTA:
   Homo_sapiens.GRCh38.dna.primary_assembly.fa
 ```
 
-Brook is here!
+Indexing can take quite a while, but we wanted to give you the tools to do this if you end up working with a different genome. For not, we can also access the pre-indexed genome in the same directory that we soft-linked from, `/itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/`.
 
-You will also need to create directories for the results that will be generated as part of this workflow. We can do this in a single
-line of code, because `mkdir` can accept multiple new directory
-names as input.
+Before aligning, let's make a few directories to store the results of our next few steps.
 
 ```bash
 $ cd ~/1_project
-$ mkdir -p results/sam results/bam results/bcf results/vcf
+$ mkdir -p results/sam results/bam results/counts
 ```
 
 #### Align reads to reference genome
 
-The alignment process consists of choosing an appropriate reference genome to map our reads against and then deciding on an
-aligner. We will use the HISAT2-MEM algorithm, which is the latest and is generally recommended for high-quality queries as it
-is faster and more accurate.
+The alignment process consists of choosing an appropriate reference genome to map our reads against and then deciding on an aligner. We will use the HISAT2 program because it performs well with human RNA-Seq data.
 
-An example of what a `bwa` command looks like is below. This command will not run, as we do not have the files `genome.fa`, `input_file_R1.fastq`, or `input_file_R2.fastq`.
+An example of what a `hisat2` command looks like is below. This command will not run, as we do not have the files `genome.fa`, `input_file_R1.fastq`, or `input_file_R2.fastq`.
 
 ```bash
-$ bwa mem genome.fasta input_file_R1.fastq input_file_R2.fastq > output.sam
+$ hisat2 -p 24 -x hg38 -1 $input_dir/${base}_R1_001.fastq.gz -2 $input_dir/${base}_R2_001.fastq.gz -S $output_dir/${base}.sam
 ```
 
 Have a look at the [bwa options page](https://bio-bwa.sourceforge.net/bwa.shtml). While we are running bwa with the default

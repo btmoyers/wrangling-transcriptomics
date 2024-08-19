@@ -257,7 +257,7 @@ for R1_fastq in ${input_dir}/*_R1_001_downsampled.fastq
  -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 25 \
  -o ${output_dir}/${name}_R1_001_ds_trim.fastq \
  -p ${output_dir}/${name}_R2_001_ds_trim.fastq \
- ${input_dir}/${R1_fastq} \
+ ${input_dir}/${name}_R1_001_downsampled.fastq \
  ${input_dir}/${name}_R2_001_downsampled.fastq
 
  echo cutadapt is finished with $name
