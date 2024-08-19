@@ -366,14 +366,15 @@ get off of the sequencer will need to pass through a number of different
 tools in order to generate your final desired output. The execution of
 this set of tools in a specified order is commonly referred to as a
 <em>workflow</em> or a <em>pipeline</em>.</p>
-<p>An example of the workflow we will be using for our variant calling
-analysis is provided below with a brief description of each step.</p>
-<figure><img src="../fig/variant_calling_workflow.png" alt="workflow" class="figure mx-auto d-block"></figure><ol style="list-style-type: decimal"><li>Quality control - Assessing quality using FastQC</li>
+<p>An example of the workflow we will be using for our transcriptome
+(also known as RNA-Seq or gene expression) analysis is provided below
+with a brief description of each step.</p>
+<figure><img src="../fig/rna-seq-workflow.png" alt="workflow" class="figure mx-auto d-block"></figure><ol style="list-style-type: decimal"><li>Quality control - Assessing quality using FastQC</li>
 <li>Quality control - Trimming and/or filtering reads (if
 necessary)</li>
 <li>Align reads to reference genome</li>
-<li>Perform post-alignment clean-up</li>
-<li>Variant calling</li>
+<li>Count the number of reads at each gene</li>
+<li>Analyze differences in gene expression across samples</li>
 </ol><p>These workflows in bioinformatics adopt a plug-and-play approach in
 that the output of one tool can be easily used as input to another tool
 without any extensive configuration. Having standards for data formats
