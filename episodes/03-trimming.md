@@ -55,7 +55,7 @@ module load py-xopen-1.1.0-gcc-10.2.0-5kpnvqq
 module load py-cutadapt-2.10-gcc-10.2.0-2x2ytr5
 ```
 
-## cutadapt options
+### cutadapt options
 
 cutadapt has a variety of options to trim your reads. If we run the following command, we can see some of our options.
 
@@ -133,7 +133,7 @@ $ cd ~/1_project/data/untrimmed_fastq
 We are going to run cutadapt on one of our paired-end samples (V1). We will identify and remove any leftover adapter sequences from the reads. We will also remove N bases from the ends of the reads and filter out any reads that are shorter than 25 bases in our trimmed sequences (like in our example above). 
 
 ```bash
-$ cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 35 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq
+$ cutadapt -a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT --trim-n -m 25 -o V1_S1_L001_R1_001_ds_trim.fastq -p V1_S1_L001_R2_001_ds_trim.fastq V1_S1_L001_R1_001_downsampled.fastq V1_S1_L001_R2_001_downsampled.fastq
 ```
 
 ```output
@@ -347,7 +347,7 @@ Then you can run it by specifying the input directory on the command line.
 $ sbatch fastqc.sh ~/1_project/data/trimmed_fastq/
 ```
 
-After trimming and filtering, our overall quality is much higher, we have a distribution of sequence lengths, and more samples pass adapter content. However, you may want to explore the other options that [cutadapt](https://cutadapt.readthedocs.io/en/stable/) includes to refine your quality filtering.
+After trimming and filtering, our overall quality is higher, we have a distribution of sequence lengths, and more samples pass for various quality checks. However, you may want to explore the other options that [cutadapt](https://cutadapt.readthedocs.io/en/stable/) includes to refine your quality filtering.
 
 :::::::::::::::::::::::::
 
