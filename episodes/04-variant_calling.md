@@ -265,35 +265,143 @@ In order for us to do some of our next steps, we will need to index the BAM file
 $ samtools index results/bam/V1_S1_L001_ds_trim_align.bam
 ```
 
+This generates another file with the same name but a new extension, .bai (bam index).
+
 ## Feature (read) counting
 
-Read counting is calculating the number of reads for a particular sample that align to the reference at a given position, possibly at a gene or part of a gene. Similar to other steps in this workflow, there are a number of tools available for read counting. In this workshop we will be using `featureCount`. Our final output here will be a matrix with genes or other genomic features as rows and samples as columns, with the number of reads aligned to that feature in that sample in each cell.
+Read counting is calculating the number of reads for a particular sample that align to the reference at a given position, possibly at a gene or part of a gene. Similar to other steps in this workflow, there are a number of tools available for read counting. In this workshop we will be using the `featureCounts` program within the [`subread` package](https://subread.sourceforge.net/). *Note: a package is a word we use to describe a collection of programs or scripts.*
 
-![](fig/variant_calling_workflow.png){alt='workflow'}
+Our final output here will be a matrix with genes or other genomic features as rows and samples as columns, with the number of reads aligned to that feature in that sample in each cell.
+
+![](fig/rna-seq-workflow.png){alt='workflow'}
+
+First, let's find and load the module.
 
 ```bash
-featureCounts -a $gtf_file -o ${counts_dir}/${sample}_counts.txt -T 24 -p -B -C ${bam_files[$SLURM_ARRAY_TASK_ID-1]}
+$ module avail subread
+```
+
+```output
+-------------------------- /share/apps/modulefiles/modules ---------------------------
+   subread-2.0.2-gcc-10.2.0
+
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of
+the "keys".
+```
+
+Okay, let's load the module and run it on our sorted, indexed bam file. We need to give `featureCounts` an annotation file after the `-a` flag. Annotation files store where different genomic features like genes or parts of genes are start and end in the genome. For this project, our annotation file is our [gene transfer format](https://en.wikipedia.org/wiki/Gene_transfer_format (.gtf) genome file. We will also give it the output file name after `-o`, tell it to use 24 threads (`-T 24`), that the input is paired end (`-p`), and to only count read pairs with both ends aligned (`-B`) to the same strand of the same chromosome (`-C`). Remember that we can learn more about these options with the manual or with `featureCounts --help`. Finally, we tell `featureCounts` where to find the input file **or files**. 
+
+```bash
+$ module load subread-2.0.2-gcc-10.2.0
+$ featureCounts -a data/genome/Homo_sapiens.GRCh38.111.gtf -o results/counts/V1_S1_L001_counts.txt -T 24 -p -B -C results/bam/V1_S1_L001_ds_trim_align.bam
+```
+
+You should see output that looks like this:
+```output
+
+        ==========     _____ _    _ ____  _____  ______          _____  
+        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \ 
+          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+            ====      \___ \| |  | |  _ <|  _  /|  __|   / /\ \ | |  | |
+              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+	  v2.0.2
+
+//========================== featureCounts setting ===========================\\
+||                                                                            ||
+||             Input files : 1 BAM file                                       ||
+||                                                                            ||
+||                           V1_S1_L001_ds_trim_align.bam                     ||
+||                                                                            ||
+||             Output file : V1_S1_L001_counts.txt                            ||
+||                 Summary : V1_S1_L001_counts.txt.summary                    ||
+||              Paired-end : yes                                              ||
+||        Count read pairs : no                                               ||
+||              Annotation : Homo_sapiens.GRCh38.111.gtf (GTF)                ||
+||      Dir for temp files : results                                          ||
+||                                                                            ||
+||                 Threads : 24                                               ||
+||                   Level : meta-feature level                               ||
+||      Multimapping reads : not counted                                      ||
+|| Multi-overlapping reads : not counted                                      ||
+||   Min overlapping bases : 1                                                ||
+||                                                                            ||
+\\============================================================================//
+
+//================================= Running ==================================\\
+||                                                                            ||
+|| Load annotation file Homo_sapiens.GRCh38.111.gtf ...                       ||
+||    Features : 1650905                                                      ||
+||    Meta-features : 63241                                                   ||
+||    Chromosomes/contigs : 47                                                ||
+||                                                                            ||
+|| Process BAM file V1_S1_L001_ds_trim_align.bam...                           ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 2280568                                              ||
+||    Successfully assigned alignments : 709130 (31.1%)                       ||
+||    Running time : 0.01 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "results/V1_S1_L001_coun  ||
+|| ts.txt.summary"                                                            ||
+||                                                                            ||
+\\============================================================================//
+```
+
+And if you look in the `results/counts/` directory, you can see two new files:
+
+```bash
+$ ls results/counts
+```
+
+```output
+V1_S1_L001_counts.txt  V1_S1_L001_counts.txt.summary
+```
+
+If we look at the summary file, we can learn a bit more about how well this sample performed. You might want to look up what the different values mean.
+
+```bash
+$ less results/counts/V1_S1_L001_counts.txt.summary
+```
+
+```output
+Status  results/bam/V1_S1_L001_ds_trim_align.bam
+Assigned        709130
+Unassigned_Unmapped     857773
+Unassigned_Read_Type    0
+Unassigned_Singleton    0
+Unassigned_MappingQuality       0
+Unassigned_Chimera      0
+Unassigned_FragmentLength       0
+Unassigned_Duplicate    0
+Unassigned_MultiMapping 509021
+Unassigned_Secondary    0
+Unassigned_NonSplit     0
+Unassigned_NoFeatures   62313
+Unassigned_Overlapping_Length   0
+Unassigned_Ambiguity    142331
 ```
 
 :::::::::::::::::::::::::::::::::::::::  challenge
 
 ### Exercise
+Now that we have run through our workflow for a single sample, we want to repeat this workflow for our other samples. However, we do not want to type each of these individual steps again each time. That would be very time consuming and error-prone, and would become impossible as we gathered more and more samples. Luckily, we already know the tools we need to use to automate this workflow and run it on as many files as we want using a single line of code. Those tools are: wildcards, for loops, bash scripts, and job submission with slurm. **Your challenge is to do this!**
 
+*Hint: Remember that `featureCounts` can take multiple bam files as input, and will put them altogether in a single count file.*
 
 :::::::::::::::  solution
 
 ### Solution
-
-
+Your solution can take many forms, but you will know you have solved it when you have a single count and count summary file in `results/counts/` for all three samples, after running one or more sbatch scripts!
 
 :::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-
-## Automation
-
-Now that we have run through our workflow for a single sample, we want to repeat this workflow for our other samples. However, we do not want to type each of these individual steps again each time. That would be very time consuming and error-prone, and would become impossible as we gathered more and more samples. Luckily, we already know the tools we need to use to automate this workflow and run it on as many files as we want using a single line of code. Those tools are: wildcards, for loops, bash scripts, and job submission with slurm. **Your challenge is to do this!**
 
 Once you have all the samples aligned, compressed to bam, sorted, indexed, and feature counted, we're ready to do some data science!
 
@@ -302,22 +410,10 @@ Once you have all the samples aligned, compressed to bam, sorted, indexed, and f
 
 ### Installing software
 
-It is worth noting that all of the software we are using for this workshop has been pre-installed on our remote computer. This saves us a lot of time—installing software can be a time-consuming and frustrating task—however, this does mean that you will not be able to walk out the door and start doing these analyses on your own computer. You will need to install the software first. Look at the [setup instructions](https://datacarpentry.org/genomics-workshop/index.html#setup) for more information on installing these software packages.
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::
-
-:::::::::::::::::::::::::::::::::::::::::  callout
-
-### HISAT2 alignment options
-
-HISAT2 consists of three algorithms: HISAT2-backtrack, HISAT2-SW and HISAT2-MEM. The first algorithm is designed for Illumina sequence
-reads up to 100bp, while the other two are for sequences ranging from 70bp to 1Mbp. HISAT2-MEM and HISAT2-SW share similar features such
-as long-read support and split alignment, but HISAT2-MEM, which is the latest, is generally recommended for high-quality queries as it
-is faster and more accurate.
-
+It is worth noting that all of the software we are using for this workshop has been pre-installed on our remote server. Not every program that you might need to use will be installed, however. You might need to install the software, or to ask the people in charge of your remote server to install it for you. It's a good idea to find out how your specific remote server managers prefer that you do this. There might be a wiki or help page for the computer cluster, or you might need to email someone. [Chimera](https://www.umb.edu/rc/hpc/) is managed by Jeff Dusenberry, the director of research computing at UMass Boston. You can email him or another IT professional at [It-rc@umb.edu](It-rc@umb.edu)
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
+
 
 :::::::::::::::::::::::::::::::::::::::: keypoints
 
