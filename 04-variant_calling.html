@@ -244,6 +244,8 @@
     <div id="flush-collapsecurrent" class="accordion-collapse collapse show" aria-labelledby="flush-headingcurrent" data-bs-parent="#accordionFlushcurrent">
       <div class="accordion-body">
         <ul><li><a href="#alignment-to-a-reference-genome">Alignment to a reference genome</a></li>
+<li><a href="#feature-read-counting">Feature (read) counting</a></li>
+<li><a href="#automation">Automation</a></li>
         </ul></div><!--/div.accordion-body-->
     </div><!--/div.accordion-collapse-->
 
@@ -317,7 +319,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>RNA-Seq Workflow</h1>
-        <p>Last updated on 2024-08-19 |
+        <p>Last updated on 2024-08-21 |
 
         <a href="https://github.com/btmoyers/wrangling-transcriptomics/edit/main/episodes/04-variant_calling.md" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -467,14 +469,13 @@ command:</p>
 <span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="ex">module</span> load gcc-10.2.0-gcc-9.3.0-f3oaqv7</span>
 <span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="ex">module</span> load python-3.8.12-gcc-10.2.0-oe4tgov</span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="ex">module</span> load hisat2-2.1.0-gcc-9.3.0-u7zbyow</span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="ex">module</span> load samtools-1.10-gcc-9.3.0-flukja5</span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="ex">hisat2-build</span> <span class="at">-p</span> 24 ~/1_project/data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa <span class="at">--ss</span> ~/1_project/data/genome/Homo_sapiens.GRCh38_ss_file.txt <span class="at">--exon</span> ~/1_project/data/genome/Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/hg38</span></code></pre>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="ex">hisat2-build</span> <span class="at">-p</span> 24 ~/1_project/data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa <span class="at">--ss</span> ~/1_project/data/genome/Homo_sapiens.GRCh38_ss_file.txt <span class="at">--exon</span> ~/1_project/data/genome/Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/hg38</span></code></pre>
 </div>
 <p>Don’t forget the <code>#!/bin/bash/</code> at the top of your script
 before you run the job! You could also make the script more generalized
 by making the genome path a variable given on the command line.</p>
-<p>While the index is created, you will see output that looks something
+<p>While the index is created, you would see output that looks something
 like this if you peek in the .err log file your job is creating.</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -525,36 +526,61 @@ This command will not run, as we do not have the files
 <div class="codewrapper sourceCode" id="cb7">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> hisat2 <span class="at">-p</span> 24 <span class="at">-x</span> hg38 <span class="at">-1</span> <span class="va">$input_dir</span>/<span class="va">${base}</span>_R1_001.fastq.gz <span class="at">-2</span> <span class="va">$input_dir</span>/<span class="va">${base}</span>_R2_001.fastq.gz <span class="at">-S</span> <span class="va">$output_dir</span>/<span class="va">${base}</span>.sam</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">$</span> hisat2 <span class="at">-p</span> 24 <span class="at">-x</span> /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/hg38 <span class="at">-1</span> input_file_R1.fastq <span class="at">-2</span> input_file_R2.fastq <span class="at">-S</span> ~/1_project/results/sam/output_file.sam</span></code></pre>
 </div>
-<p>Have a look at the <a href="https://bio-bwa.sourceforge.net/bwa.shtml" class="external-link">bwa options page</a>.
-While we are running bwa with the default parameters here, your use case
-might require a change of parameters. <em>NOTE: Always read the manual
-page for any tool before using and make sure the options you use are
-appropriate for your data.</em></p>
-<p>We are going to start by aligning the reads from just one of the
-samples in our dataset (<code>SRR2584866</code>). Later, we will be
-iterating this whole process on all of our sample files.</p>
+<p>On chimera, we’ll need to load these modules (same as we did for
+indexing):</p>
 <div class="codewrapper sourceCode" id="cb8">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> bwa mem data/genome/ecoli_rel606.fasta data/trimmed_fastq_small/SRR2584866_1.trim.sub.fastq data/trimmed_fastq_small/SRR2584866_2.trim.sub.fastq <span class="op">&gt;</span> results/sam/SRR2584866.aligned.sam</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">$</span> module load gcc-10.2.0-gcc-9.3.0-f3oaqv7</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="ex">$</span> module load python-3.8.12-gcc-10.2.0-oe4tgov</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="ex">$</span> module load hisat2-2.1.0-gcc-9.3.0-u7zbyow</span></code></pre>
 </div>
-<p>You will see output that starts like this:</p>
+<p>Have a look at the <a href="https://daehwankimlab.github.io/hisat2/manual/" class="external-link">HISAT2 options
+page</a>. While we are running HISAT2 with the default parameters here,
+different uses might require a change of parameters. <em>NOTE: Always
+read the manual page for any tool before using and make sure the options
+you use are appropriate for your data.</em></p>
+<p>We are going to start by aligning the reads from just one of the
+samples in our dataset (the trimmed pair of <code>V1_S1_L001</code>
+FASTQ files). Later, we will be iterating this whole process on all of
+our sample files.</p>
+<div class="codewrapper sourceCode" id="cb9">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="ex">$</span> hisat2 <span class="at">-p</span> 24 <span class="at">-x</span> /itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/hg38 <span class="at">-1</span> ~/1_project/data/trim_fastq/V1_S1_L001_R1_001_ds_trim.fastq <span class="at">-2</span> ~/1_project/data/trim_fastq/V1_S1_L001_R2_001_ds_trim.fastq <span class="at">-S</span> ~/1_project/results/sam/V1_S1_L001_ds_trim_align.sam</span></code></pre>
+</div>
+<p>You will see output that looks like this:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>[M::bwa_idx_load_from_disk] read 0 ALT contigs
-[M::process] read 77446 sequences (10000033 bp)...
-[M::process] read 77296 sequences (10000182 bp)...
-[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (48, 36728, 21, 61)
-[M::mem_pestat] analyzing insert size distribution for orientation FF...
-[M::mem_pestat] (25, 50, 75) percentile: (420, 660, 1774)
-[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 4482)
-[M::mem_pestat] mean and std.dev: (784.68, 700.87)
-[M::mem_pestat] low and high boundaries for proper pairs: (1, 5836)
-[M::mem_pestat] analyzing insert size distribution for orientation FR...</code></pre>
+<pre class="output" tabindex="0"><code>961680 reads; of these:
+  961680 (100.00%) were paired; of these:
+    450677 (46.86%) aligned concordantly 0 times
+    440285 (45.78%) aligned concordantly exactly 1 time
+    70718 (7.35%) aligned concordantly &gt;1 times
+    ----
+    450677 pairs aligned concordantly 0 times; of these:
+      4041 (0.90%) aligned discordantly 1 time
+    ----
+    446636 pairs aligned 0 times concordantly or discordantly; of these:
+      893272 mates make up the pairs; of these:
+        857773 (96.03%) aligned 0 times
+        25122 (2.81%) aligned exactly 1 time
+        10377 (1.16%) aligned &gt;1 times
+55.40% overall alignment rate</code></pre>
 </div>
+<p>Overall, a bit over half of the reads in this sample aligned to the
+reference genome we are using (overall alignment rate), and most of
+these aligned to a single location, the same place in the genome as
+their pair (“aligned concordantly exactly one time”). A small proportion
+of reads did something else: aligned in a pair in more than one genome
+position (“aligned concordantly &gt;1 time”), aligned but each pair was
+in a different location (“aligned discordantly”), or only one of the
+pair aligned (“pairs aligned 0 times”, “mates… aligned”). This isn’t
+great for a sequence file that has gone through quality control, but it
+is still workable for us!</p>
 <div class="section level5">
 <h5 id="sambam-format">SAM/BAM format<a class="anchor" aria-label="anchor" href="#sambam-format"></a></h5>
 <p>The <a href="https://genome.sph.umich.edu/wiki/SAM" class="external-link">SAM file</a>, is
@@ -577,33 +603,38 @@ variable number of other fields for aligner specific information. An
 example entry from a SAM file is displayed below with the different
 fields highlighted.</p>
 <figure><img src="fig/sam_bam.png" alt="sam_bam1" class="figure mx-auto d-block"></figure><figure><img src="fig/sam_bam3.png" alt="sam_bam2" class="figure mx-auto d-block"></figure><p>We will convert the SAM file to BAM format using the
-<code>samtools</code> program with the <code>view</code> command and
-tell this command that the input is in SAM format (<code>-S</code>) and
-to output BAM format (<code>-b</code>):</p>
-<div class="codewrapper sourceCode" id="cb10">
+<code>samtools</code> program with the <code>view</code> command (yeah,
+it’s a funny name for the conversion process) and tell this command that
+the input is in SAM format (<code>-S</code>) and to output BAM format
+(<code>-b</code>). First we’ll need to load the samtools module.</p>
+<div class="codewrapper sourceCode" id="cb11">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="ex">$</span> samtools view <span class="at">-S</span> <span class="at">-b</span> results/sam/SRR2584866.aligned.sam <span class="op">&gt;</span> results/bam/SRR2584866.aligned.bam</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="ex">$</span> module load samtools-1.10-gcc-9.3.0-flukja5</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="ex">$</span> cd ~/1_project</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="ex">$</span> samtools view <span class="at">-S</span> <span class="at">-b</span> results/sam/V1_S1_L001_ds_trim_align.sam <span class="op">&gt;</span> results/bam/V1_S1_L001_ds_trim_align.bam</span></code></pre>
 </div>
-<div class="codewrapper">
-<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="output" tabindex="0"><code>[samopen] SAM header is present: 1 sequences.</code></pre>
-</div>
+<p>This process can take a little while! You can speed it up using the
+<code>-@</code> option to allocate additional CPUs to the task (e.g.,
+try <code>-@ 4</code>).</p>
 </div>
 </div>
 <div class="section level4">
 <h4 id="sort-bam-file-by-coordinates">Sort BAM file by coordinates<a class="anchor" aria-label="anchor" href="#sort-bam-file-by-coordinates"></a></h4>
 <p>Next we sort the BAM file using the <code>sort</code> command from
 <code>samtools</code>. <code>-o</code> tells the command where to write
-the output.</p>
+the output. Notice that we are saving the file back into the same name,
+so the previous unsorted file will be overwritten by the sorted one.
+This saves us some space, but might be a bad idea if want to know which
+files are sorted and which are not. In that case, you would give the
+output a different name.</p>
 <div class="codewrapper sourceCode" id="cb12">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">$</span> samtools sort <span class="at">-o</span> results/bam/SRR2584866.aligned.sorted.bam results/bam/SRR2584866.aligned.bam </span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">$</span> samtools sort <span class="at">-o</span> results/bam/V1_S1_L001_ds_trim_align.bam results/bam/V1_S1_L001_ds_trim_align.bam</span></code></pre>
 </div>
 <p>Our files are pretty small, so we will not see this output. If you
-run the workflow with larger files, you will see something like
+run the workflow with larger files, you might see something like
 this:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -614,234 +645,34 @@ this:</p>
 alignment on the chromosome, by read name, etc. It is important to be
 aware that different alignment tools will output differently sorted
 SAM/BAM, and different downstream tools require differently sorted
-alignment files as input.</p>
-<p>You can use samtools to learn more about this bam file as well.</p>
+alignment files as input. The default, which we are using here, is to
+sort by the alignment coordinates in the reference genome.</p>
+<p>You can use samtools to learn more about this sorted bam file as
+well.</p>
 <div class="codewrapper sourceCode" id="cb14">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="ex">samtools</span> flagstat results/bam/SRR2584866.aligned.sorted.bam</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="ex">samtools</span> flagstat results/bam/V1_S1_L001_ds_trim_align.bam</span></code></pre>
 </div>
 <p>This will give you the following statistics about your sorted bam
 file:</p>
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="output" tabindex="0"><code>351169 + 0 in total (QC-passed reads + QC-failed reads)
-0 + 0 secondary
-1169 + 0 supplementary
+<pre class="output" tabindex="0"><code>2280568 + 0 in total (QC-passed reads + QC-failed reads)
+357208 + 0 secondary
+0 + 0 supplementary
 0 + 0 duplicates
-351103 + 0 mapped (99.98% : N/A)
-350000 + 0 paired in sequencing
-175000 + 0 read1
-175000 + 0 read2
-346688 + 0 properly paired (99.05% : N/A)
-349876 + 0 with itself and mate mapped
-58 + 0 singletons (0.02% : N/A)
-0 + 0 with mate mapped to a different chr
-0 + 0 with mate mapped to a different chr (mapQ&gt;=5)</code></pre>
+1422795 + 0 mapped (62.39% : N/A)
+1923360 + 0 paired in sequencing
+961680 + 0 read1
+961680 + 0 read2
+1022006 + 0 properly paired (53.14% : N/A)
+1039730 + 0 with itself and mate mapped
+25857 + 0 singletons (1.34% : N/A)
+15468 + 0 with mate mapped to a different chr
+11429 + 0 with mate mapped to a different chr (mapQ&gt;=5)</code></pre>
 </div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="variant-calling">Variant calling<a class="anchor" aria-label="anchor" href="#variant-calling"></a></h3>
-<p>A variant call is a conclusion that there is a nucleotide difference
-vs. some reference at a given position in an individual genome or
-transcriptome, often referred to as a Single Nucleotide Variant (SNV).
-The call is usually accompanied by an estimate of variant frequency and
-some measure of confidence. Similar to other steps in this workflow,
-there are a number of tools available for variant calling. In this
-workshop we will be using <code>bcftools</code>, but there are a few
-things we need to do before actually calling the variants.</p>
-<figure><img src="fig/variant_calling_workflow.png" alt="workflow" class="figure mx-auto d-block"></figure><div class="section level4">
-<h4 id="step-1-calculate-the-read-coverage-of-positions-in-the-genome">Step 1: Calculate the read coverage of positions in the genome<a class="anchor" aria-label="anchor" href="#step-1-calculate-the-read-coverage-of-positions-in-the-genome"></a></h4>
-<p>Do the first pass on variant calling by counting read coverage with
-<a href="https://samtools.github.io/bcftools/bcftools.html" class="external-link">bcftools</a>.
-We will use the command <code>mpileup</code>. The flag <code>-O b</code>
-tells bcftools to generate a bcf format output file, <code>-o</code>
-specifies where to write the output file, and <code>-f</code> flags the
-path to the reference genome:</p>
-<div class="codewrapper sourceCode" id="cb16">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> bcftools mpileup <span class="at">-O</span> b <span class="at">-o</span> results/bcf/SRR2584866_raw.bcf <span class="dt">\</span></span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>-f data/genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam </span></code></pre>
-</div>
-<div class="codewrapper">
-<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="output" tabindex="0"><code>[mpileup] 1 samples in 1 input files</code></pre>
-</div>
-<p>We have now generated a file with coverage information for every
-base.</p>
-</div>
-<div class="section level4">
-<h4 id="step-2-detect-the-single-nucleotide-variants-snvs">Step 2: Detect the single nucleotide variants (SNVs)<a class="anchor" aria-label="anchor" href="#step-2-detect-the-single-nucleotide-variants-snvs"></a></h4>
-<p>Identify SNVs using bcftools <code>call</code>. We have to specify
-ploidy with the flag <code>--ploidy</code>, which is one for the haploid
-<em>E. coli</em>. <code>-m</code> allows for multiallelic and
-rare-variant calling, <code>-v</code> tells the program to output
-variant sites only (not every site in the genome), and <code>-o</code>
-specifies where to write the output file:</p>
-<div class="codewrapper sourceCode" id="cb18">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="ex">$</span> bcftools call <span class="at">--ploidy</span> 1 <span class="at">-m</span> <span class="at">-v</span> <span class="at">-o</span> results/vcf/SRR2584866_variants.vcf results/bcf/SRR2584866_raw.bcf </span></code></pre>
-</div>
-</div>
-<div class="section level4">
-<h4 id="step-3-filter-and-report-the-snv-variants-in-variant-calling-format-vcf">Step 3: Filter and report the SNV variants in variant calling format
-(VCF)<a class="anchor" aria-label="anchor" href="#step-3-filter-and-report-the-snv-variants-in-variant-calling-format-vcf"></a></h4>
-<p>Filter the SNVs for the final output in VCF format, using
-<code>vcfutils.pl</code>:</p>
-<div class="codewrapper sourceCode" id="cb19">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="ex">$</span> vcfutils.pl varFilter results/vcf/SRR2584866_variants.vcf  <span class="op">&gt;</span> results/vcf/SRR2584866_final_variants.vcf</span></code></pre>
-</div>
-<div id="filtering" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<div id="filtering" class="callout-inner">
-<h3 class="callout-title">Filtering<a class="anchor" aria-label="anchor" href="#filtering"></a>
-</h3>
-<div class="callout-content">
-<p>The <code>vcfutils.pl varFilter</code> call filters out variants that
-do not meet minimum quality default criteria, which can be changed
-through its options. Using <code>bcftools</code> we can verify that the
-quality of the variant call set has improved after this filtering step
-by calculating the ratio of <a href="https://en.wikipedia.org/wiki/Transition_%28genetics%29" class="external-link">transitions(TS)</a>
-to <a href="https://en.wikipedia.org/wiki/Transversion" class="external-link">transversions
-(TV)</a> ratio (TS/TV), where transitions should be more likely to occur
-than transversions:</p>
-<div class="codewrapper sourceCode" id="cb20">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="ex">$</span> bcftools stats results/vcf/SRR2584866_variants.vcf <span class="kw">|</span> <span class="fu">grep</span> TSTV</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="co"># TSTV, transitions/transversions:</span></span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># TSTV	[2]id	[3]ts	[4]tv	[5]ts/tv	[6]ts (1st ALT)	[7]tv (1st ALT)	[8]ts/tv (1st ALT)</span></span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="ex">TSTV</span>	0	628	58	10.83	628	58	10.83</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="ex">$</span> bcftools stats results/vcf/SRR2584866_final_variants.vcf <span class="kw">|</span> <span class="fu">grep</span> TSTV</span>
-<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co"># TSTV, transitions/transversions:</span></span>
-<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="co"># TSTV	[2]id	[3]ts	[4]tv	[5]ts/tv	[6]ts (1st ALT)	[7]tv (1st ALT)	[8]ts/tv (1st ALT)</span></span>
-<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="ex">TSTV</span>	0	621	54	11.50	621	54	11.50</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="explore-the-vcf-format">Explore the VCF format:<a class="anchor" aria-label="anchor" href="#explore-the-vcf-format"></a></h3>
-<div class="codewrapper sourceCode" id="cb21">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> less <span class="at">-S</span> results/vcf/SRR2584866_final_variants.vcf</span></code></pre>
-</div>
-<p>You will see the header (which describes the format), the time and
-date the file was created, the version of bcftools that was used, the
-command line parameters used, and some additional information:</p>
-<div class="codewrapper">
-<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="output" tabindex="0"><code><span><span class="co">##fileformat=VCFv4.2</span></span>
-<span><span class="co">##FILTER=&lt;ID=PASS,Description="All filters passed"&gt;</span></span>
-<span><span class="co">##bcftoolsVersion=1.8+htslib-1.8</span></span>
-<span><span class="co">##bcftoolsCommand=mpileup -O b -o results/bcf/SRR2584866_raw.bcf -f data/genome/ecoli_rel606.fasta results/bam/SRR2584866.aligned.sorted.bam</span></span>
-<span><span class="co">##reference=file://data/genome/ecoli_rel606.fasta</span></span>
-<span><span class="co">##contig=&lt;ID=CP000819.1,length=4629812&gt;</span></span>
-<span><span class="co">##ALT=&lt;ID=*,Description="Represents allele(s) other than observed."&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=INDEL,Number=0,Type=Flag,Description="Indicates that the variant is an INDEL."&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=IDV,Number=1,Type=Integer,Description="Maximum number of reads supporting an indel"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=IMF,Number=1,Type=Float,Description="Maximum fraction of reads supporting an indel"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=DP,Number=1,Type=Integer,Description="Raw read depth"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=VDB,Number=1,Type=Float,Description="Variant Distance Bias for filtering splice-site artefacts in RNA-seq data (bigger is better)",Version=</span></span>
-<span><span class="co">##INFO=&lt;ID=RPB,Number=1,Type=Float,Description="Mann-Whitney U test of Read Position Bias (bigger is better)"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=MQB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality Bias (bigger is better)"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=BQB,Number=1,Type=Float,Description="Mann-Whitney U test of Base Quality Bias (bigger is better)"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=MQSB,Number=1,Type=Float,Description="Mann-Whitney U test of Mapping Quality vs Strand Bias (bigger is better)"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=SGB,Number=1,Type=Float,Description="Segregation based metric."&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=MQ0F,Number=1,Type=Float,Description="Fraction of MQ0 reads (smaller is better)"&gt;</span></span>
-<span><span class="co">##FORMAT=&lt;ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods"&gt;</span></span>
-<span><span class="co">##FORMAT=&lt;ID=GT,Number=1,Type=String,Description="Genotype"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=ICB,Number=1,Type=Float,Description="Inbreeding Coefficient Binomial test (bigger is better)"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=HOB,Number=1,Type=Float,Description="Bias in the number of HOMs number (smaller is better)"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes for each ALT allele, in the same order as listed"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=DP4,Number=4,Type=Integer,Description="Number of high-quality ref-forward , ref-reverse, alt-forward and alt-reverse bases"&gt;</span></span>
-<span><span class="co">##INFO=&lt;ID=MQ,Number=1,Type=Integer,Description="Average mapping quality"&gt;</span></span>
-<span><span class="co">##bcftools_callVersion=1.8+htslib-1.8</span></span>
-<span><span class="co">##bcftools_callCommand=call --ploidy 1 -m -v -o results/bcf/SRR2584866_variants.vcf results/bcf/SRR2584866_raw.bcf; Date=Tue Oct  9 18:48:10 2018</span></span></code></pre>
-</div>
-<p>Followed by information on each of the variations observed:</p>
-<div class="codewrapper">
-<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="output" tabindex="0"><code>#CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  results/bam/SRR2584866.aligned.sorted.bam
-CP000819.1      1521    .       C       T       207     .       DP=9;VDB=0.993024;SGB=-0.662043;MQSB=0.974597;MQ0F=0;AC=1;AN=1;DP4=0,0,4,5;MQ=60
-CP000819.1      1612    .       A       G       225     .       DP=13;VDB=0.52194;SGB=-0.676189;MQSB=0.950952;MQ0F=0;AC=1;AN=1;DP4=0,0,6,5;MQ=60
-CP000819.1      9092    .       A       G       225     .       DP=14;VDB=0.717543;SGB=-0.670168;MQSB=0.916482;MQ0F=0;AC=1;AN=1;DP4=0,0,7,3;MQ=60
-CP000819.1      9972    .       T       G       214     .       DP=10;VDB=0.022095;SGB=-0.670168;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,2,8;MQ=60      GT:PL
-CP000819.1      10563   .       G       A       225     .       DP=11;VDB=0.958658;SGB=-0.670168;MQSB=0.952347;MQ0F=0;AC=1;AN=1;DP4=0,0,5,5;MQ=60
-CP000819.1      22257   .       C       T       127     .       DP=5;VDB=0.0765947;SGB=-0.590765;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,2,3;MQ=60      GT:PL
-CP000819.1      38971   .       A       G       225     .       DP=14;VDB=0.872139;SGB=-0.680642;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,4,8;MQ=60      GT:PL
-CP000819.1      42306   .       A       G       225     .       DP=15;VDB=0.969686;SGB=-0.686358;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,5,9;MQ=60      GT:PL
-CP000819.1      45277   .       A       G       225     .       DP=15;VDB=0.470998;SGB=-0.680642;MQSB=0.95494;MQ0F=0;AC=1;AN=1;DP4=0,0,7,5;MQ=60
-CP000819.1      56613   .       C       G       183     .       DP=12;VDB=0.879703;SGB=-0.676189;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,8,3;MQ=60      GT:PL
-CP000819.1      62118   .       A       G       225     .       DP=19;VDB=0.414981;SGB=-0.691153;MQSB=0.906029;MQ0F=0;AC=1;AN=1;DP4=0,0,8,10;MQ=59
-CP000819.1      64042   .       G       A       225     .       DP=18;VDB=0.451328;SGB=-0.689466;MQSB=1;MQ0F=0;AC=1;AN=1;DP4=0,0,7,9;MQ=60      GT:PL</code></pre>
-</div>
-<p>This is a lot of information, so let’s take some time to make sure we
-understand our output.</p>
-<p>The first few columns represent the information we have about a
-predicted variation.</p>
-<table class="table"><colgroup><col width="2%"><col width="97%"></colgroup><thead><tr class="header"><th>column</th>
-<th>info</th>
-</tr></thead><tbody><tr class="odd"><td>CHROM</td>
-<td>contig location where the variation occurs</td>
-</tr><tr class="even"><td>POS</td>
-<td>position within the contig where the variation occurs</td>
-</tr><tr class="odd"><td>ID</td>
-<td>a <code>.</code> until we add annotation information</td>
-</tr><tr class="even"><td>REF</td>
-<td>reference genotype (forward strand)</td>
-</tr><tr class="odd"><td>ALT</td>
-<td>sample genotype (forward strand)</td>
-</tr><tr class="even"><td>QUAL</td>
-<td>Phred-scaled probability that the observed variant exists at this
-site (higher is better)</td>
-</tr><tr class="odd"><td>FILTER</td>
-<td>a <code>.</code> if no quality filters have been applied, PASS if a
-filter is passed, or the name of the filters this variant failed</td>
-</tr></tbody></table><p>In an ideal world, the information in the <code>QUAL</code> column
-would be all we needed to filter out bad variant calls. However, in
-reality we need to filter on multiple other metrics.</p>
-<p>The last two columns contain the genotypes and can be tricky to
-decode.</p>
-<table class="table"><colgroup><col width="2%"><col width="97%"></colgroup><thead><tr class="header"><th>column</th>
-<th>info</th>
-</tr></thead><tbody><tr class="odd"><td>FORMAT</td>
-<td>lists in order the metrics presented in the final column</td>
-</tr><tr class="even"><td>results</td>
-<td>lists the values associated with those metrics in order</td>
-</tr></tbody></table><p>For our file, the metrics presented are GT:PL:GQ.</p>
-<table class="table"><colgroup><col width="2%"><col width="97%"></colgroup><thead><tr class="header"><th>metric</th>
-<th>definition</th>
-</tr></thead><tbody><tr class="odd"><td>AD, DP</td>
-<td>the depth per allele by sample and coverage</td>
-</tr><tr class="even"><td>GT</td>
-<td>the genotype for the sample at this loci. For a diploid organism,
-the GT field indicates the two alleles carried by the sample, encoded by
-a 0 for the REF allele, 1 for the first ALT allele, 2 for the second ALT
-allele, etc. A 0/0 means homozygous reference, 0/1 is heterozygous, and
-1/1 is homozygous for the alternate allele.</td>
-</tr><tr class="odd"><td>PL</td>
-<td>the likelihoods of the given genotypes</td>
-</tr><tr class="even"><td>GQ</td>
-<td>the Phred-scaled confidence for the genotype</td>
-</tr></tbody></table><p>The Broad Institute’s <a href="https://www.broadinstitute.org/gatk/guide/article?id=1268" class="external-link">VCF
-guide</a> is an excellent place to learn more about the VCF file
-format.</p>
 <div id="exercise-1" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -850,8 +681,9 @@ format.</p>
 <h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-1"></a>
 </h3>
 <div class="callout-content">
-<p>Use the <code>grep</code> and <code>wc</code> commands you have
-learned to assess how many variants are in the vcf file.</p>
+<p>What do these different values mean? You might think to start with
+<code>samtools flagstat --help</code>, but that just gives you the
+options for the command. What could you do to find out more?</p>
 </div>
 </div>
 </div>
@@ -862,102 +694,50 @@ learned to assess how many variants are in the vcf file.</p>
 </button>
 <div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
 <div class="accordion-body">
-<div class="codewrapper sourceCode" id="cb24">
+<p>There are two common approaches to this kind of challenge:</p>
+<ol style="list-style-type: decimal"><li><p>It is a good idea to start with the full documentation or manual,
+which is usually available online. The manual for samtools and
+associated programs is <a href="https://www.htslib.org/doc/#manual-pages" class="external-link">from HTSlib here</a>,
+but it is not immediately clear how to find the information on the
+flagstat command. You can find <a href="https://www.htslib.org/doc/samtools-flagstat.html" class="external-link">the specific
+manual page here</a> after a little poking around.</p></li>
+<li><p>If the manual doesn’t help you, you can also try searching the
+internet with your question. Good search terms are specific and clear.
+In this case, you could try “samtools flagstat output”. The first hit
+(at least for me) is the manual, but the second is <a href="https://www.biostars.org/p/84396/" class="external-link">a forum post</a> on Biostars
+that might be helpful!</p></li>
+</ol><p>If these two approaches don’t work, you can also talk to someone else
+working on similar problems, make your own post on a help forum, or
+reach out to the people who made the program (see the attribution or
+citation)!</p>
+</div>
+</div>
+</div>
+</div>
+<p>In order for us to do some of our next steps, we will need to index
+the BAM file using <code>samtools</code>:</p>
+<div class="codewrapper sourceCode" id="cb16">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">$</span> grep <span class="at">-v</span> <span class="st">"#"</span> results/vcf/SRR2584866_final_variants.vcf <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span></code></pre>
-</div>
-<div class="codewrapper">
-<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="output" tabindex="0"><code><span><span class="fl">766</span></span></code></pre>
-</div>
-<p>There are 766 variants in this file.</p>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> samtools index results/bam/V1_S1_L001_ds_trim_align.bam</span></code></pre>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="section level3">
-<h3 id="assess-the-alignment-visualization---optional-step">Assess the alignment (visualization) - optional step<a class="anchor" aria-label="anchor" href="#assess-the-alignment-visualization---optional-step"></a></h3>
-<p>It is often instructive to look at your data in a genome browser.
-Visualization will allow you to get a “feel” for the data, as well as
-detecting abnormalities and problems. Also, exploring the data in such a
-way may give you ideas for further analyses. As such, visualization
-tools are useful for exploratory analysis. In this lesson we will
-describe two different tools for visualization: a light-weight
-command-line based one and the Broad Institute’s Integrative Genomics
-Viewer (IGV) which requires software installation and transfer of
-files.</p>
-<p>In order for us to visualize the alignment files, we will need to
-index the BAM file using <code>samtools</code>:</p>
-<div class="codewrapper sourceCode" id="cb26">
+</section><section><h2 class="section-heading" id="feature-read-counting">Feature (read) counting<a class="anchor" aria-label="anchor" href="#feature-read-counting"></a>
+<a class="anchor" aria-label="anchor" href="#feature-read-counting"></a></h2>
+<hr class="half-width"><p>Read counting is calculating the number of reads for a particular
+sample that align to the reference at a given position, possibly at a
+gene or part of a gene. Similar to other steps in this workflow, there
+are a number of tools available for read counting. In this workshop we
+will be using <code>featureCount</code>. Our final output here will be a
+matrix with genes or other genomic features as rows and samples as
+columns, with the number of reads aligned to that feature in that sample
+in each cell.</p>
+<figure><img src="fig/variant_calling_workflow.png" alt="workflow" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb17">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="ex">$</span> samtools index results/bam/SRR2584866.aligned.sorted.bam</span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">featureCounts</span> <span class="at">-a</span> <span class="va">$gtf_file</span> <span class="at">-o</span> <span class="va">${counts_dir}</span>/<span class="va">${sample}</span>_counts.txt <span class="at">-T</span> 24 <span class="at">-p</span> <span class="at">-B</span> <span class="at">-C</span> <span class="va">${bam_files</span><span class="op">[</span><span class="va">$SLURM_ARRAY_TASK_ID</span>-1<span class="op">]</span><span class="va">}</span></span></code></pre>
 </div>
-<div class="section level4">
-<h4 id="viewing-with-tview">Viewing with <code>tview</code>
-<a class="anchor" aria-label="anchor" href="#viewing-with-tview"></a></h4>
-<p><a href="https://www.htslib.org/" class="external-link">Samtools</a> implements a very
-simple text alignment viewer based on the GNU <code>ncurses</code>
-library, called <code>tview</code>. This alignment viewer works with
-short indels and shows <a href="https://maq.sourceforge.net/" class="external-link">MAQ</a>
-consensus. It uses different colors to display mapping quality or base
-quality, subjected to users’ choice. Samtools viewer is known to work
-with a 130 GB alignment swiftly. Due to its text interface, displaying
-alignments over network is also very fast.</p>
-<p>In order to visualize our mapped reads, we use <code>tview</code>,
-giving it the sorted bam file and the reference file:</p>
-<div class="codewrapper sourceCode" id="cb27">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="ex">$</span> samtools tview results/bam/SRR2584866.aligned.sorted.bam data/genome/ecoli_rel606.fasta</span></code></pre>
-</div>
-<div class="codewrapper">
-<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="output" tabindex="0"><code>1         11        21        31        41        51        61        71        81        91        101       111       121
-AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGCTTCTGAACTGGTTACCTGCCGTGAGTAAATTAAAATTTTATTGACTTAGGTCACTAAATAC
-..................................................................................................................................
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ..................N................. ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,........................
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ..................N................. ,,,,,,,,,,,,,,,,,,,,,,,,,,,.............................
-...................................,g,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ....................................   ................
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,....................................   ....................................      ,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ....................................  ,,a,,,,,,,,,,,,,,,,,,,,,,,,,,,,,     .......
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, .............................  ,,,,,,,,,,,,,,,,,g,,,,,    ,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ...........................T.......   ,,,,,,,,,,,,,,,,,,,,,,,c,          ......
-......................... ................................   ,g,,,,,,,,,,,,,,,,,,,      ...........................
-,,,,,,,,,,,,,,,,,,,,, ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ,,,,,,,,,,,,,,,,,,,,,,,,,,,       ..........................
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,   ................................T..  ..............................   ,,,,,,
-...........................       ,,,,,,g,,,,,,,,,,,,,,,,,   ....................................         ,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,, ....................................  ...................................        ....
-....................................  ........................  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,      ....
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,   ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-........................            .................................. .............................     ....
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,   ....................................        ..........................
-...............................       ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ....................................
-...................................  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ..................................
-.................................... ,,,,,,,,,,,,,,,,,,a,,,,,,,,,,,,,,,,,        ,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,  ............................ ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,</code></pre>
-</div>
-<p>The first line of output shows the genome coordinates in our
-reference genome. The second line shows the reference genome sequence.
-The third line shows the consensus sequence determined from the sequence
-reads. A <code>.</code> indicates a match to the reference sequence, so
-we can see that the consensus from our sample matches the reference in
-most locations. That is good! If that was not the case, we should
-probably reconsider our choice of reference.</p>
-<p>Below the horizontal line, we can see all of the reads in our sample
-aligned with the reference genome. Only positions where the called base
-differs from the reference are shown. You can use the arrow keys on your
-keyboard to scroll or type <code>?</code> for a help menu. To navigate
-to a specific position, type <code>g</code>. A dialogue box will appear.
-In this box, type the name of the “chromosome” followed by a colon and
-the position of the variant you would like to view (e.g. for this
-sample, type <code>CP000819.1:50</code> to view the 50th base. Type
-<code>Ctrl^C</code> or <code>q</code> to exit <code>tview</code>.</p>
 <div id="exercise-2" class="callout challenge">
 <div class="callout-square">
 <i class="callout-icon" data-feather="zap"></i>
@@ -966,9 +746,7 @@ sample, type <code>CP000819.1:50</code> to view the 50th base. Type
 <h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-2"></a>
 </h3>
 <div class="callout-content">
-<p>Visualize the alignment of the reads for our <code>SRR2584866</code>
-sample. What variant is present at position 4377265? What is the
-canonical nucleotide in that position?</p>
+
 </div>
 </div>
 </div>
@@ -979,97 +757,24 @@ canonical nucleotide in that position?</p>
 </button>
 <div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
 <div class="accordion-body">
-<div class="codewrapper sourceCode" id="cb29">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="ex">$</span> samtools tview ~/1_project/results/bam/SRR2584866.aligned.sorted.bam ~/1_project/data/genome/ecoli_rel606.fasta</span></code></pre>
-</div>
-<p>Then type <code>g</code>. In the dialogue box, type
-<code>CP000819.1:4377265</code>. <code>G</code> is the variant.
-<code>A</code> is canonical. This variant possibly changes the phenotype
-of this sample to hypermutable. It occurs in the gene <em>mutL</em>,
-which controls DNA mismatch repair.</p>
+
 </div>
 </div>
 </div>
 </div>
-</div>
-<div class="section level4">
-<h4 id="viewing-with-igv">Viewing with IGV<a class="anchor" aria-label="anchor" href="#viewing-with-igv"></a></h4>
-<p><a href="https://www.broadinstitute.org/igv/" class="external-link">IGV</a> is a
-stand-alone browser, which has the advantage of being installed locally
-and providing fast access. Web-based genome browsers, like <a href="https://www.ensembl.org/index.html" class="external-link">Ensembl</a> or the <a href="https://genome.ucsc.edu/" class="external-link">UCSC browser</a>, are slower, but
-provide more functionality. They not only allow for more polished and
-flexible visualization, but also provide easy access to a wealth of
-annotations and external data sources. This makes it straightforward to
-relate your data with information about repeat regions, known genes,
-epigenetic features or areas of cross-species conservation, to name just
-a few.</p>
-<p>In order to use IGV, we will need to transfer some files to our local
-machine. We know how to do this with <code>scp</code>. Open a new tab in
-your terminal window and create a new folder. We will put this folder on
-our Desktop for demonstration purposes, but in general you should avoid
-proliferating folders and files on your Desktop and instead organize
-files within a directory structure like we have been using in our
-<code>1_project</code> directory.</p>
-<div class="codewrapper sourceCode" id="cb30">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="ex">$</span> mkdir ~/Desktop/files_for_igv</span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="ex">$</span> cd ~/Desktop/files_for_igv</span></code></pre>
-</div>
-<p>Now we will transfer our files to that new directory. Remember to
-replace the text between the <code>@</code> and the <code>:</code> with
-your AWS instance number. The commands to <code>scp</code> always go in
-the terminal window that is connected to your local computer (not your
-AWS instance).</p>
-<div class="codewrapper sourceCode" id="cb31">
-<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
-</h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/results/bam/SRR2584866.aligned.sorted.bam ~/Desktop/files_for_igv</span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/results/bam/SRR2584866.aligned.sorted.bam.bai ~/Desktop/files_for_igv</span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/data/genome/ecoli_rel606.fasta ~/Desktop/files_for_igv</span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="ex">$</span> scp dcuser@ec2-34-203-203-131.compute-1.amazonaws.com:~/1_project/results/vcf/SRR2584866_final_variants.vcf ~/Desktop/files_for_igv</span></code></pre>
-</div>
-<p>You will need to type the password for your AWS instance each time
-you call <code>scp</code>.</p>
-<p>Next, we need to open the IGV software. If you have not done so
-already, you can download IGV from the <a href="https://www.broadinstitute.org/software/igv/download" class="external-link">Broad
-Institute’s software page</a>, double-click the <code>.zip</code> file
-to unzip it, and then drag the program into your Applications
-folder.</p>
-<ol style="list-style-type: decimal"><li>Open IGV.</li>
-<li>Load our reference genome file (<code>ecoli_rel606.fasta</code>)
-into IGV using the <strong>“Load Genomes from File…”</strong> option
-under the <strong>“Genomes”</strong> pull-down menu.</li>
-<li>Load our BAM file (<code>SRR2584866.aligned.sorted.bam</code>) using
-the <strong>“Load from File…”</strong> option under the
-<strong>“File”</strong> pull-down menu.</li>
-<li>Do the same with our VCF file
-(<code>SRR2584866_final_variants.vcf</code>).</li>
-</ol><p>Your IGV browser should look like the screenshot below:</p>
-<figure><img src="fig/igv-screenshot.png" alt="IGV" class="figure mx-auto d-block"></figure><p>There should be two tracks: one coresponding to our BAM file and the
-other for our VCF file.</p>
-<p>In the <strong>VCF track</strong>, each bar across the top of the
-plot shows the allele fraction for a single locus. The second bar shows
-the genotypes for each locus in each <em>sample</em>. We only have one
-sample called here, so we only see a single line. Dark blue =
-heterozygous, Cyan = homozygous variant, Grey = reference. Filtered
-entries are transparent.</p>
-<p>Zoom in to inspect variants you see in your filtered VCF file to
-become more familiar with IGV. See how quality information corresponds
-to alignment information at those loci. Use <a href="https://software.broadinstitute.org/software/igv/AlignmentData" class="external-link">this
-website</a> and the links therein to understand how IGV colors the
-alignments.</p>
-<p>Now that we have run through our workflow for a single sample, we
-want to repeat this workflow for our other five samples. However, we do
-not want to type each of these individual steps again five more times.
-That would be very time consuming and error-prone, and would become
-impossible as we gathered more and more samples. Luckily, we already
-know the tools we need to use to automate this workflow and run it on as
-many files as we want using a single line of code. Those tools are:
-wildcards, for loops, and bash scripts. We will use all three in the
-next lesson.</p>
+</section><section><h2 class="section-heading" id="automation">Automation<a class="anchor" aria-label="anchor" href="#automation"></a>
+<a class="anchor" aria-label="anchor" href="#automation"></a></h2>
+<hr class="half-width"><p>Now that we have run through our workflow for a single sample, we
+want to repeat this workflow for our other samples. However, we do not
+want to type each of these individual steps again each time. That would
+be very time consuming and error-prone, and would become impossible as
+we gathered more and more samples. Luckily, we already know the tools we
+need to use to automate this workflow and run it on as many files as we
+want using a single line of code. Those tools are: wildcards, for loops,
+bash scripts, and job submission with slurm. <strong>Your challenge is
+to do this!</strong></p>
+<p>Once you have all the samples aligned, compressed to bam, sorted,
+indexed, and feature counted, we’re ready to do some data science!</p>
 <div id="installing-software" class="callout">
 <div class="callout-square">
 <i class="callout-icon" data-feather="bell"></i>
@@ -1080,10 +785,10 @@ next lesson.</p>
 <div class="callout-content">
 <p>It is worth noting that all of the software we are using for this
 workshop has been pre-installed on our remote computer. This saves us a
-lot of time - installing software can be a time-consuming and
-frustrating task - however, this does mean that you will not be able to
-walk out the door and start doing these analyses on your own computer.
-You will need to install the software first. Look at the <a href="https://datacarpentry.org/genomics-workshop/index.html#setup" class="external-link">setup
+lot of time—installing software can be a time-consuming and frustrating
+task—however, this does mean that you will not be able to walk out the
+door and start doing these analyses on your own computer. You will need
+to install the software first. Look at the <a href="https://datacarpentry.org/genomics-workshop/index.html#setup" class="external-link">setup
 instructions</a> for more information on installing these software
 packages.</p>
 </div>
@@ -1123,8 +828,6 @@ command line.</li>
 is important to understand what type of information is contained in each
 file, and how it was derived.</li>
 </ul></div>
-</div>
-</div>
 </div>
 </div>
 </section></div> <!-- / div.lesson-content -->
@@ -1185,8 +888,8 @@ file, and how it was derived.</li>
   "url": "https://btmoyers.github.io/wrangling-transcriptomics/04-variant_calling.html",
   "identifier": "https://btmoyers.github.io/wrangling-transcriptomics/04-variant_calling.html",
   "dateCreated": "2024-08-06",
-  "dateModified": "2024-08-19",
-  "datePublished": "2024-08-20"
+  "dateModified": "2024-08-21",
+  "datePublished": "2024-08-21"
 }
 
   </script><script>
