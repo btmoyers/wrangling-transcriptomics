@@ -410,7 +410,7 @@ Once you have all the samples aligned, compressed to bam, sorted, indexed, and f
 
 ### Installing software
 
-It is worth noting that all of the software we are using for this workshop has been pre-installed on our remote server. Not every program that you might need to use will be installed, however. You might need to install the software, or to ask the people in charge of your remote server to install it for you. It's a good idea to find out how your specific remote server managers prefer that you do this. There might be a wiki or help page for the computer cluster, or you might need to email someone. [Chimera](https://www.umb.edu/rc/hpc/) is managed by Jeff Dusenberry, the director of research computing at UMass Boston. You can email him or another IT professional at [It-rc@umb.edu](It-rc@umb.edu)
+It is worth noting that all of the software we are using for this workshop has been pre-installed on our remote server. Not every program that you might need to use will be installed, however. You might need to install the software, or to ask the people in charge of your remote server to install it for you. It's a good idea to find out how your specific remote server managers prefer that you do this. There might be a wiki or help page for the computer cluster, or you might need to email someone. [Chimera](https://www.umb.edu/rc/hpc/) is managed by Jeff Dusenberry, the director of research computing at UMass Boston. You can email him or another IT professional at <It-rc@umb.edu>. There is also [a short informational page](https://www.umb.edu/rc/applications/) about applications (programs) on chimera.
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::
 
