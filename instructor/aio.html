@@ -786,7 +786,7 @@ has more than one associated file.</li>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <ol style="list-style-type: decimal">
 <li>36 files</li>
@@ -2526,7 +2526,7 @@ files as well.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb3">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2794,7 +2794,7 @@ options for the command. What could you do to find out more?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution2" aria-expanded="false" aria-controls="collapseSolution2">
   <h4 class="accordion-header" id="headingSolution2"> Show me the solution </h4>
 </button>
-<div id="collapseSolution2" class="accordion-collapse collapse" aria-labelledby="headingSolution2" data-bs-parent="#accordionSolution2">
+<div id="collapseSolution2" class="accordion-collapse collapse" data-bs-parent="#accordionSolution2" aria-labelledby="headingSolution2">
 <div class="accordion-body">
 <p>There are two common approaches to this kind of challenge:</p>
 <ol style="list-style-type: decimal">
@@ -2825,6 +2825,8 @@ the BAM file using <code>samtools</code>:</p>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="ex">$</span> samtools index results/bam/V1_S1_L001_ds_trim_align.bam</span></code></pre>
 </div>
+<p>This generates another file with the same name but a new extension,
+.bai (bam index).</p>
 </div>
 </div>
 </section><section><h2 class="section-heading" id="feature-read-counting">Feature (read) counting<a class="anchor" aria-label="anchor" href="#feature-read-counting"></a>
@@ -2835,14 +2837,142 @@ the BAM file using <code>samtools</code>:</p>
 sample that align to the reference at a given position, possibly at a
 gene or part of a gene. Similar to other steps in this workflow, there
 are a number of tools available for read counting. In this workshop we
-will be using <code>featureCount</code>. Our final output here will be a
-matrix with genes or other genomic features as rows and samples as
-columns, with the number of reads aligned to that feature in that sample
-in each cell.</p>
-<figure><img src="../fig/variant_calling_workflow.png" alt="workflow" class="figure mx-auto d-block"></figure><div class="codewrapper sourceCode" id="cb17">
+will be using the <code>featureCounts</code> program within the <a href="https://subread.sourceforge.net/" class="external-link"><code>subread</code>
+package</a>. <em>Note: a package is a word we use to describe a
+collection of programs or scripts.</em></p>
+<p>Our final output here will be a matrix with genes or other genomic
+features as rows and samples as columns, with the number of reads
+aligned to that feature in that sample in each cell.</p>
+<figure><img src="../fig/rna-seq-workflow.png" alt="workflow" class="figure mx-auto d-block"></figure><p>First, let’s find and load the module.</p>
+<div class="codewrapper sourceCode" id="cb17">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
 </h3>
-<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">featureCounts</span> <span class="at">-a</span> <span class="va">$gtf_file</span> <span class="at">-o</span> <span class="va">${counts_dir}</span>/<span class="va">${sample}</span>_counts.txt <span class="at">-T</span> 24 <span class="at">-p</span> <span class="at">-B</span> <span class="at">-C</span> <span class="va">${bam_files</span><span class="op">[</span><span class="va">$SLURM_ARRAY_TASK_ID</span>-1<span class="op">]</span><span class="va">}</span></span></code></pre>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="ex">$</span> module avail subread</span></code></pre>
+</div>
+<div class="codewrapper">
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="output" tabindex="0"><code>-------------------------- /share/apps/modulefiles/modules ---------------------------
+   subread-2.0.2-gcc-10.2.0
+
+Use "module spider" to find all possible modules and extensions.
+Use "module keyword key1 key2 ..." to search for all possible modules matching any of
+the "keys".</code></pre>
+</div>
+<p>Okay, let’s load the module and run it on our sorted, indexed bam
+file. We need to give <code>featureCounts</code> an annotation file
+after the <code>-a</code> flag. Annotation files store where different
+genomic features like genes or parts of genes are start and end in the
+genome. For this project, our annotation file is our [gene transfer
+format](<a href="https://en.wikipedia.org/wiki/Gene_transfer_format" class="external-link uri">https://en.wikipedia.org/wiki/Gene_transfer_format</a>
+(.gtf) genome file. We will also give it the output file name after
+<code>-o</code>, tell it to use 24 threads (<code>-T 24</code>), that
+the input is paired end (<code>-p</code>), and to only count read pairs
+with both ends aligned (<code>-B</code>) to the same strand of the same
+chromosome (<code>-C</code>). Remember that we can learn more about
+these options with the manual or with <code>featureCounts --help</code>.
+Finally, we tell <code>featureCounts</code> where to find the input file
+<strong>or files</strong>.</p>
+<div class="codewrapper sourceCode" id="cb19">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="ex">$</span> module load subread-2.0.2-gcc-10.2.0</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="ex">$</span> featureCounts <span class="at">-a</span> data/genome/Homo_sapiens.GRCh38.111.gtf <span class="at">-o</span> results/counts/V1_S1_L001_counts.txt <span class="at">-T</span> 24 <span class="at">-p</span> <span class="at">-B</span> <span class="at">-C</span> results/bam/V1_S1_L001_ds_trim_align.bam</span></code></pre>
+</div>
+<p>You should see output that looks like this:</p>
+<div class="codewrapper">
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="output" tabindex="0"><code>
+        ==========     _____ _    _ ____  _____  ______          _____
+        =====         / ____| |  | |  _ \|  __ \|  ____|   /\   |  __ \
+          =====      | (___ | |  | | |_) | |__) | |__     /  \  | |  | |
+            ====      \___ \| |  | |  _ &lt;|  _  /|  __|   / /\ \ | |  | |
+              ====    ____) | |__| | |_) | | \ \| |____ / ____ \| |__| |
+        ==========   |_____/ \____/|____/|_|  \_\______/_/    \_\_____/
+	  v2.0.2
+
+//========================== featureCounts setting ===========================\\
+||                                                                            ||
+||             Input files : 1 BAM file                                       ||
+||                                                                            ||
+||                           V1_S1_L001_ds_trim_align.bam                     ||
+||                                                                            ||
+||             Output file : V1_S1_L001_counts.txt                            ||
+||                 Summary : V1_S1_L001_counts.txt.summary                    ||
+||              Paired-end : yes                                              ||
+||        Count read pairs : no                                               ||
+||              Annotation : Homo_sapiens.GRCh38.111.gtf (GTF)                ||
+||      Dir for temp files : results                                          ||
+||                                                                            ||
+||                 Threads : 24                                               ||
+||                   Level : meta-feature level                               ||
+||      Multimapping reads : not counted                                      ||
+|| Multi-overlapping reads : not counted                                      ||
+||   Min overlapping bases : 1                                                ||
+||                                                                            ||
+\\============================================================================//
+
+//================================= Running ==================================\\
+||                                                                            ||
+|| Load annotation file Homo_sapiens.GRCh38.111.gtf ...                       ||
+||    Features : 1650905                                                      ||
+||    Meta-features : 63241                                                   ||
+||    Chromosomes/contigs : 47                                                ||
+||                                                                            ||
+|| Process BAM file V1_S1_L001_ds_trim_align.bam...                           ||
+||    Paired-end reads are included.                                          ||
+||    The reads are assigned on the single-end mode.                          ||
+||    Total alignments : 2280568                                              ||
+||    Successfully assigned alignments : 709130 (31.1%)                       ||
+||    Running time : 0.01 minutes                                             ||
+||                                                                            ||
+|| Write the final count table.                                               ||
+|| Write the read assignment summary.                                         ||
+||                                                                            ||
+|| Summary of counting results can be found in file "results/V1_S1_L001_coun  ||
+|| ts.txt.summary"                                                            ||
+||                                                                            ||
+\\============================================================================//</code></pre>
+</div>
+<p>And if you look in the <code>results/counts/</code> directory, you
+can see two new files:</p>
+<div class="codewrapper sourceCode" id="cb21">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="ex">$</span> ls results/counts</span></code></pre>
+</div>
+<div class="codewrapper">
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="output" tabindex="0"><code>V1_S1_L001_counts.txt  V1_S1_L001_counts.txt.summary</code></pre>
+</div>
+<p>If we look at the summary file, we can learn a bit more about how
+well this sample performed. You might want to look up what the different
+values mean.</p>
+<div class="codewrapper sourceCode" id="cb23">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="ex">$</span> less results/counts/V1_S1_L001_counts.txt.summary</span></code></pre>
+</div>
+<div class="codewrapper">
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="output" tabindex="0"><code>Status  results/bam/V1_S1_L001_ds_trim_align.bam
+Assigned        709130
+Unassigned_Unmapped     857773
+Unassigned_Read_Type    0
+Unassigned_Singleton    0
+Unassigned_MappingQuality       0
+Unassigned_Chimera      0
+Unassigned_FragmentLength       0
+Unassigned_Duplicate    0
+Unassigned_MultiMapping 509021
+Unassigned_Secondary    0
+Unassigned_NonSplit     0
+Unassigned_NoFeatures   62313
+Unassigned_Overlapping_Length   0
+Unassigned_Ambiguity    142331</code></pre>
 </div>
 <div id="exercise-2" class="callout challenge">
 <div class="callout-square">
@@ -2852,26 +2982,6 @@ in each cell.</p>
 <h3 class="callout-title">Exercise<a class="anchor" aria-label="anchor" href="#exercise-2"></a>
 </h3>
 <div class="callout-content">
-
-</div>
-</div>
-</div>
-<div id="accordionSolution3" class="accordion challenge-accordion accordion-flush">
-<div class="accordion-item">
-<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
-  <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
-</button>
-<div id="collapseSolution3" class="accordion-collapse collapse" aria-labelledby="headingSolution3" data-bs-parent="#accordionSolution3">
-<div class="accordion-body">
-
-</div>
-</div>
-</div>
-</div>
-</section><section><h2 class="section-heading" id="automation">Automation<a class="anchor" aria-label="anchor" href="#automation"></a>
-<a class="anchor" aria-label="anchor" href="#automation"></a>
-</h2>
-<hr class="half-width">
 <p>Now that we have run through our workflow for a single sample, we
 want to repeat this workflow for our other samples. However, we do not
 want to type each of these individual steps again each time. That would
@@ -2881,6 +2991,27 @@ need to use to automate this workflow and run it on as many files as we
 want using a single line of code. Those tools are: wildcards, for loops,
 bash scripts, and job submission with slurm. <strong>Your challenge is
 to do this!</strong></p>
+<p><em>Hint: Remember that <code>featureCounts</code> can take multiple
+bam files as input, and will put them altogether in a single count
+file.</em></p>
+</div>
+</div>
+</div>
+<div id="accordionSolution3" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution3" aria-expanded="false" aria-controls="collapseSolution3">
+  <h4 class="accordion-header" id="headingSolution3"> Show me the solution </h4>
+</button>
+<div id="collapseSolution3" class="accordion-collapse collapse" data-bs-parent="#accordionSolution3" aria-labelledby="headingSolution3">
+<div class="accordion-body">
+<p>Your solution can take many forms, but you will know you have solved
+it when you have a single count and count summary file in
+<code>results/counts/</code> for all three samples, after running one or
+more sbatch scripts!</p>
+</div>
+</div>
+</div>
+</div>
 <p>Once you have all the samples aligned, compressed to bam, sorted,
 indexed, and feature counted, we’re ready to do some data science!</p>
 <div id="installing-software" class="callout">
@@ -2892,31 +3023,15 @@ indexed, and feature counted, we’re ready to do some data science!</p>
 </h3>
 <div class="callout-content">
 <p>It is worth noting that all of the software we are using for this
-workshop has been pre-installed on our remote computer. This saves us a
-lot of time—installing software can be a time-consuming and frustrating
-task—however, this does mean that you will not be able to walk out the
-door and start doing these analyses on your own computer. You will need
-to install the software first. Look at the <a href="https://datacarpentry.org/genomics-workshop/index.html#setup" class="external-link">setup
-instructions</a> for more information on installing these software
-packages.</p>
-</div>
-</div>
-</div>
-<div id="hisat2-alignment-options" class="callout">
-<div class="callout-square">
-<i class="callout-icon" data-feather="bell"></i>
-</div>
-<div id="hisat2-alignment-options" class="callout-inner">
-<h3 class="callout-title">HISAT2 alignment options<a class="anchor" aria-label="anchor" href="#hisat2-alignment-options"></a>
-</h3>
-<div class="callout-content">
-<p>HISAT2 consists of three algorithms: HISAT2-backtrack, HISAT2-SW and
-HISAT2-MEM. The first algorithm is designed for Illumina sequence reads
-up to 100bp, while the other two are for sequences ranging from 70bp to
-1Mbp. HISAT2-MEM and HISAT2-SW share similar features such as long-read
-support and split alignment, but HISAT2-MEM, which is the latest, is
-generally recommended for high-quality queries as it is faster and more
-accurate.</p>
+workshop has been pre-installed on our remote server. Not every program
+that you might need to use will be installed, however. You might need to
+install the software, or to ask the people in charge of your remote
+server to install it for you. It’s a good idea to find out how your
+specific remote server managers prefer that you do this. There might be
+a wiki or help page for the computer cluster, or you might need to email
+someone. <a href="https://www.umb.edu/rc/hpc/" class="external-link">Chimera</a> is managed by
+Jeff Dusenberry, the director of research computing at UMass Boston. You
+can email him or another IT professional at <a href="../It-rc@umb.edu">It-rc@umb.edu</a></p>
 </div>
 </div>
 </div>
@@ -3494,7 +3609,7 @@ directory.</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <div class="codewrapper sourceCode" id="cb36">
 <h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
