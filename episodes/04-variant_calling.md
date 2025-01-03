@@ -79,7 +79,7 @@ Our first step is to index the reference genome for use by HISAT2. Indexing allo
 #SBATCH --job-name=gindex # you can give your job a name
 #SBATCH --ntasks=24 # the number of processors or tasks
 #SBATCH --account=itcga # our account
-#SBATCH --reservation=ITCGA_AUG2024 # this gives us special access during the workshop
+#SBATCH --reservation=ITCGA2025 # this gives us special access during the workshop
 #SBATCH --time=10:00:00 # the maximum time for the job
 #SBATCH --mem=32gb # the amount of RAM
 #SBATCH --partition=itcga # the specific server in chimera we are using
