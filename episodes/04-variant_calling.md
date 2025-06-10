@@ -125,7 +125,7 @@ Input files DNA, FASTA:
   Homo_sapiens.GRCh38.dna.primary_assembly.fa
 ```
 
-Indexing can take quite a while, but we wanted to give you the tools to do this if you end up working with a different genome. For not, we can also access the pre-indexed genome in the same directory that we soft-linked from, `/itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/`.
+Indexing can take quite a while, but we wanted to give you the tools to do this if you end up working with a different genome. For now, we can also access the pre-indexed genome in the same directory that we soft-linked from, `/itcgastorage/data01/itcga_workshops/aug2024_genomics/Genome/hg38/`.
 
 Before aligning, let's make a few directories to store the results of our next few steps.
 
