@@ -79,21 +79,27 @@ Our first step is to index the reference genome for use by HISAT2. Indexing allo
 #SBATCH --job-name=gindex # you can give your job a name
 #SBATCH --ntasks=24 # the number of processors or tasks
 #SBATCH --account=itcga # our account
-#SBATCH --reservation=ITCGA2025 # this gives us special access during the workshop
+#SBATCH --reservation=2025_JUNE_ITCGA_WORKSHOP # this gives us special access during the workshop
 #SBATCH --time=10:00:00 # the maximum time for the job
 #SBATCH --mem=32gb # the amount of RAM
 #SBATCH --partition=itcga # the specific server in chimera we are using
 #SBATCH --error=%x-%A.err   # a filename to save error messages into
 #SBATCH --output=%x-%A.out  # a filename to save any printed output into
 
+# Load modules
 module load gcc-10.2.0-gcc-9.3.0-f3oaqv7
 module load python-3.8.12-gcc-10.2.0-oe4tgov
 module load hisat2-2.1.0-gcc-9.3.0-u7zbyow
 
-hisat2-build -p 24 ~/1_project/data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa --ss ~/1_project/data/genome/Homo_sapiens.GRCh38_ss_file.txt --exon ~/1_project/data/genome/Homo_sapiens.GRCh38_exons_file.txt ~/1_project/data/genome/hg38
+# Set variables
+ref=~/1_project/data/genome/Homo_sapiens.GRCh38.dna.primary_assembly.fa
+ss=~/1_project/data/genome/Homo_sapiens.GRCh38_ss_file.txt
+gtf=~/1_project/data/genome/Homo_sapiens.GRCh38_exons_file.txt
+
+hisat2-build -p 24 $ref --ss $ss --exon $gtf ~/1_project/data/genome/hg38
 ```
 
-Don't forget the `#!/bin/bash/` at the top of your script before you run the job! You could also make the script more generalized by making the genome path a variable given on the command line.
+Don't forget the `#!/bin/bash/` at the top of your script before you run the job! We use variables to make this script easier to read and more generalized, but you could write the paths directly in the hisat2-build line, but it'll just look messy.
 
 While the index is created, you would see output that looks something like this if you peek in the .err log file your job is creating.
 
